@@ -1,0 +1,79 @@
+.popup-background {
+	z-index: 1;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	backdrop-filter: brightness(0.5);
+	-webkit-backdrop-filter: brightness(0.5);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	cursor: initial;
+	animation: 0.1s ease-out coming-background;
+}
+
+.popup {
+	background: rgb(201, 201, 201);
+	padding: 30px;
+	border-radius: 10px;
+	max-width: 400px;
+	border-radius: 20px;
+	cursor: initial;
+}
+
+.popup-cancel {
+	position: absolute;
+	top: -20px;
+	right: -20px;
+	padding: 5px;
+	border-radius: 50%;
+	background: #6a6a6a;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.popup-cancel img {
+	width: 40px;
+	height: 40px;
+}
+
+
+.popup-friends {
+	background: #6aa8e5;
+	animation: 0.1s ease-out coming-friends;
+	align-self: end;
+	margin-right: 40px;
+	height: 80%;
+}
+
+@keyframes coming-friends {
+	0% {
+		transform: translateX(110%);
+	}
+	100% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes coming-background {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes coming-center {
+	0% {
+		transform: scale(0);
+	}
+	100% {
+		transform: scale(1);
+	}
+}

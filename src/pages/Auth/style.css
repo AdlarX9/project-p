@@ -1,0 +1,53 @@
+.auth-wrapper {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	flex-direction: column;
+}
+
+.field-wrapper {
+	display: flex;
+	flex-direction: column;
+	padding-top: 40px;
+}
+
+.field-label {
+	font-size: 0.7em;
+	margin-right: 200px;
+	font-weight: 100;
+}
+
+.field {
+	margin-top: 10px;
+	padding: 20px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    margin-bottom: 10px;
+	background: #d4fdca;
+}
+
+.auth-submit-btn {
+	margin-top: 50px;
+	padding: 20px;
+	display: flex;
+	align-self: center;
+	background: #ff8181;
+}
+
+.auth-error {
+	align-self: center;
+	padding: 0;
+	margin: 0;
+	font-size: 0.6em;
+	color: rgb(180, 0, 0);
+	text-transform: none;
+	font-family: monospace;
+}
+
+.auth-loader {
+	align-self: center;
+	position: absolute;
+	top: calc(100% + 40px);
+}
