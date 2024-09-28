@@ -1,20 +1,24 @@
 import '../style.css'
+import hide from '../../../assets/hide.png'
+import unhide from '../../../assets/unhide.png'
 import { useEffect, useState } from 'react'
-import { useLogin } from '../../../hooks'
+import { useLogged, useLogin } from '../../../hooks'
 import Loader from '../../../components/Loader'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const LogIn = () => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
-	const { login, isPending, isError, error, isSuccess, data } = useLogin()
+	const [hidden, setHidden] = useState(true)
+	const { login, isPending, isError, error, data } = useLogin()
 	const navigate = useNavigate()
+	const { isLogged } = useLogged()
 
 	useEffect(() => {
 		if (data?.token) {
 			navigate('/')
 		}
-	}, [isSuccess])
+	}, [isLogged])
 
 	const handleSubmit = async (event) => {
 		event.preventDefault()
@@ -42,22 +46,35 @@ const LogIn = () => {
 				<label className='field-label' htmlFor='password'>
 					password
 				</label>
-				<input
-					className='field shadowed'
-					label='password'
-					type='text'
-					id='password'
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-				/>
+				<div className='password-wrapper'>
+					<input
+						className='field shadowed'
+						label='password'
+						id='password'
+						type={ hidden ? 'password' : 'text' }
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+					/>
+					<img
+						src={hidden ? hide : unhide}
+						alt={hidden ? 'hide' : 'show'}
+						onClick={() => setHidden(!hidden)}
+					/>
+				</div>
 			</div>
 
-			{isPending && <div className='auth-loader'><Loader /></div>}
 			{isError && <p className='auth-error'>{error.message}</p>}
 
 			<button className='auth-submit-btn int-btn skewed'>
 				<span>Envoyer</span>
 			</button>
+			<p className='cartoon2-txt auth-link'>
+				Vous n&apos;avez pas de compte ? 
+				<br />
+				<Link to='/signup'>Créez-en un !</Link>
+			</p>
+
+			{isPending && <div className='auth-loader'><Loader /></div>}
 
 		</form>
 	)

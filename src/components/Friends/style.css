@@ -8,3 +8,61 @@
     height: 60px;
 	margin-right: 10px;
 }
+
+
+.friends-popup-wrapper {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	height: 100%;
+	width: 30rem;
+}
+
+.friends-popup-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.friends-popup-header h2 {
+	font-size: 1em;
+	padding: 0;
+	margin: 10px;
+}
+
+.friends-popup-header img {
+	height: 40px;
+	width: auto;
+	cursor: pointer;
+}
+
+.friends-result-wrapper {
+	display: flex;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 30px;
+	overflow-y: auto;
+}
+
+.friends-result-wrapper::-webkit-scrollbar {
+    width: 0;
+}
+
+.friend-fetched {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 90%;
+	padding: 10px;
+	margin-top: 10px;
+	border-radius: 15px;
+	background: var(--blue);
+}
+
+.friends-result-btn {
+	margin-top: 20px;
+}

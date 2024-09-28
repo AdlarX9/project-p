@@ -11,15 +11,18 @@ import Shop from '../pages/Shop/'
 import Auth from '../pages/Auth/'
 import { ReactQueryDevtools, ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import React from 'react'
+import Check from './Check'
 
 const queryClient = new QueryClient()
 
 function App() {
 	const [isOpen, setIsOpen] = React.useState(false)
+
 	return (
 		<Provider store={store}>
 			<QueryClientProvider client={queryClient}>
 				<Router>
+					<Check />
 					<Routes>
 						<Route path='*' element={<Error />} />
 						<Route path='/' element={<Home />} />
@@ -30,9 +33,6 @@ function App() {
 						<Route path='/signup' element={<Auth type='signup' />} />
 					</Routes>
 				</Router>
-				<button onClick={() => setIsOpen(!isOpen)}>
-					{`${isOpen ? 'Close' : 'Open'} the devtools panel`}
-				</button>
 				{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
 				<ReactQueryDevtools initialIsOpen={false} />
 			</QueryClientProvider>

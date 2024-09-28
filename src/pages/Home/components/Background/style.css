@@ -1,13 +1,8 @@
 .bg-wrapper {
-	position: absolute;
+	position: absolute !important;
 	top: 0;
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	background: #33aed7;
-	z-index: -1;
-	/* background-image: url('../../../../assets/background.png'); */
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center center;
+	z-index: 0;
 }

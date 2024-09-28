@@ -10,7 +10,7 @@
 .field-wrapper {
 	display: flex;
 	flex-direction: column;
-	padding-top: 40px;
+	margin-top: 40px;
 }
 
 .field-label {
@@ -26,6 +26,21 @@
     font-size: 0.8em;
     margin-bottom: 10px;
 	background: #d4fdca;
+}
+
+.password-wrapper {
+	display: flex;
+	position: relative;
+}
+
+.password-wrapper img {
+	position: absolute;
+	height: 70px;
+	width: auto;
+	top: 50%;
+	right: 20px;
+	transform: translateY(-50%);
+	cursor: pointer;
 }
 
 .auth-submit-btn {
@@ -50,4 +65,12 @@
 	align-self: center;
 	position: absolute;
 	top: calc(100% + 40px);
+}
+
+.auth-link {
+	display: flex;
+	align-self: center;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }

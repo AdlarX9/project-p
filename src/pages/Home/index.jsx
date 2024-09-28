@@ -1,5 +1,5 @@
-import './style.css'
 import '../../index.css'
+import './style.css'
 
 import settings from '../../assets/settings.png'
 import money from '../../assets/money.png'
@@ -9,20 +9,23 @@ import Profile from './components/Profile'
 import Background from './components/Background'
 import Play from './components/Play'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { getUser } from '../../app/selectors'
+import Money from '../../components/Money'
 
 const Home = () => {
+	const user = useSelector(getUser)
+	
 	return (
 		<section className='home-wrapper'>
 			<header className='home-header'>
 				<Profile />
 				<div className='money-friends'>
-					<button className='money'>
-						<img src={money} alt='money'  draggable='false' />
-						<span className='cartoon-txt'>1000</span>
-					</button>
+					<Money />
 					<Friends />
 				</div>
 			</header>
+			<Background />
 			<footer className='home-footer'>
 				<button className='int-btn home-settings'>
 					<Link to='/settings'>
@@ -31,7 +34,6 @@ const Home = () => {
 				</button>
 				<Play />
 			</footer>
-			<Background />
 		</section>
 	)
 }

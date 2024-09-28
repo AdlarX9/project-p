@@ -1,25 +1,28 @@
 .popup-background {
-	z-index: 1;
+	z-index: 2;
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	backdrop-filter: brightness(0.5);
-	-webkit-backdrop-filter: brightness(0.5);
+	background: rgba(0, 0, 0, 0.5);
+	opacity: 1;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	cursor: initial;
-	animation: 0.1s ease-out coming-background;
+	animation: 0.1s linear coming-background;
+}
+
+.popup-bg-closing {
+	animation: 150ms linear coming-background-reverse;
 }
 
 .popup {
 	background: rgb(201, 201, 201);
 	padding: 30px;
 	border-radius: 10px;
-	max-width: 400px;
 	border-radius: 20px;
 	cursor: initial;
 }
@@ -43,13 +46,46 @@
 }
 
 
+
+
+
 .popup-friends {
-	background: #6aa8e5;
+	background: var(--dark-blue);
 	animation: 0.1s ease-out coming-friends;
 	align-self: end;
 	margin-right: 40px;
 	height: 80%;
 }
+
+.popup-friends-closing {
+	animation: 150ms ease-out coming-friends-reverse;
+}
+
+
+
+
+.popup-profile {
+	animation: 0.1s ease-out coming-center;
+	background: #555;
+	color: white;
+}
+
+.popup-profile-closing {
+	animation: 150ms ease-out coming-center-reverse;
+}
+
+
+
+
+.friend-detail {
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+}
+
+
+
+
 
 @keyframes coming-friends {
 	0% {
@@ -57,6 +93,14 @@
 	}
 	100% {
 		transform: translateX(0);
+	}
+}
+@keyframes coming-friends-reverse {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(110%);
 	}
 }
 
@@ -68,6 +112,14 @@
 		opacity: 1;
 	}
 }
+@keyframes coming-background-reverse {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
 
 @keyframes coming-center {
 	0% {
@@ -75,5 +127,13 @@
 	}
 	100% {
 		transform: scale(1);
+	}
+}
+@keyframes coming-center-reverse {
+	0% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(0);
 	}
 }

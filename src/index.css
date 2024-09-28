@@ -3,6 +3,24 @@
     src: url('./assets/main.ttf');
 }
 
+@font-face {
+    font-family: 'cartoon-2';
+    src: url('./assets/sofadi.ttf');
+}
+
+* {
+	z-index: 1;
+}
+
+:root {
+	--yellow: rgb(240, 188, 0);
+	--gray: #555;
+	--red: #ff8181;
+	--green: #d4fdca;
+	--dark-blue: #1d71ba;
+	--blue: #6aa8e5;
+}
+
 body, html {
 	margin: 0;
 	padding: 0;
@@ -10,7 +28,7 @@ body, html {
 	min-height: 100vh;
 	user-select: none;
 	background: #33aed7;
-	overflow: hidden;
+	z-index: 0;
 }
 
 .int-btn {
@@ -53,12 +71,52 @@ body, html {
 	height: 15px;
 }
 
+.flat-btn {
+	padding: 10px;
+	background: #cda8a8;
+	color: black;
+	border-radius: 20px;
+	border: 1px solid black;
+	transition: 100ms linear;
+	cursor: pointer;
+}
+
+.flat-btn:hover {
+	filter: brightness(1.2);
+}
+
+.no-btn {
+	color: black;
+	background: transparent;
+	border: none;
+	cursor: auto;
+}
+
 .cartoon-txt {
 	font-family: cartoon;
 	font-size: 50px;
 	font-weight: bold;
 	text-transform: uppercase;
 }
+
+.cartoon-short-txt {
+	font-family: cartoon;
+	font-size: 30px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.cartoon2-txt {
+	font-family: cartoon-2;
+	font-size: 30px;
+	text-transform: none;
+}
+
+.ui-txt {
+	font-family: arial, sans-serif;
+	font-size: 1rem;
+}
+
 
 .skewed {
 	transform: skewX(-10deg);
@@ -80,4 +138,27 @@ body, html {
 	border: 3px black solid;
 	box-shadow: inset 0 0 0 4px rgba(0, 0, 0, 0.3),
 	0 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.show-box {
+	border: 2px solid red;
+}
+
+.show-box * {
+	border: 2px solid red;
+}
+
+.link {
+	border: none;
+	background: transparent;
+	font-size: 1.3rem;
+	color: rgb(175, 175, 175);
+}
+
+.c-pointer {
+	cursor: pointer;
+}
+
+.red {
+	color: red;
 }
