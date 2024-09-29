@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { getToken, getUser } from '../app/selectors'
 import { useLocation } from 'react-router-dom'
+import { FriendsSlice } from '../components/Friends/FriendsSlice'
 
 const axiosLogin = async (data) => {
 	return axios.post(process.env.REACT_APP_URL + '/api/login', data)
@@ -141,6 +142,47 @@ export const useDelete = () => {
 
 	return {
 		deleteAccount,
+		...mutation
+	}
+}
+
+
+
+const axiosTransfer = async ({ body, headers }) => {
+	return axios.patch(process.env.REACT_APP_URL + '/api/user/transfer', 
+		body,
+		{ headers }
+	)
+	.then(response => response.data)
+	.catch(error => {
+		throw new Error(error.response?.data?.message || error.message)
+	})
+}
+
+export const useTransfer = () => {
+	const token = useSelector(getToken)
+	const dispatch = useDispatch()
+
+	const mutation = useMutation({
+		mutationFn: axiosTransfer,
+		onSuccess: (data) => {
+			dispatch(userSlice.actions.logPersoInf(data))
+			dispatch(FriendsSlice.actions.logFriends(data))
+		},
+		onError: (error) => {
+			console.error("Erreur lors du transfert :", error.message)
+		}
+	})
+
+	const transfer = (idFriend, amount) => {
+		mutation.mutate({
+			body: { idFriend, amount },
+			headers: { Authorization: token }
+		})
+	}
+
+	return {
+		transfer,
 		...mutation
 	}
 }

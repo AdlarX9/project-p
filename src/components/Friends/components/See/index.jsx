@@ -1,15 +1,18 @@
 import { useSelector } from "react-redux"
 import { getFriends } from "../../../../app/selectors"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import FriendDetails from "../FriendDetails"
 
-const See = () => {
+const See = ({ enableDetails = true, friend, setFriend }) => {
 	const friends = useSelector(getFriends)
-	const [friend, setFriend] = useState({})
 	const [openFriends, setOpenFriends] = useState(false)
 
-	const handleOpenDetails = (friend) => {
-		setFriend(friend)
+	const handleOpenDetails = (friendSelected) => {
+		if (friendSelected.id === friend?.id) {
+			setFriend({})
+		} else {
+			setFriend(friendSelected)
+		}
 		setOpenFriends(true)
 	}
 
@@ -29,7 +32,7 @@ const See = () => {
 					))
 				}
 			</div>
-			<FriendDetails friend={friend} open={openFriends} setOpen={setOpenFriends} />
+			<FriendDetails friend={friend} open={enableDetails ? openFriends : false} setOpen={setOpenFriends} />
 		</>
 	)
 }

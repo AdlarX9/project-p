@@ -85,6 +85,14 @@
 
 
 
+.popup-confirmation {
+	animation: 0.1s ease-out coming-center;
+    background: var(--yellow);
+    color: black;
+}
+
+
+
 
 
 @keyframes coming-friends {

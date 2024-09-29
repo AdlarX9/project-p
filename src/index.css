@@ -153,6 +153,7 @@ body, html {
 	background: transparent;
 	font-size: 1.3rem;
 	color: rgb(175, 175, 175);
+	cursor: pointer;
 }
 
 .c-pointer {
@@ -161,4 +162,24 @@ body, html {
 
 .red {
 	color: red;
+}
+
+.blue {
+	color: rgb(26, 37, 108);
+}
+
+.black {
+	color: black;
+}
+
+.bg-red {
+	background: var(--red);
+}
+
+.bg-blue {
+	background: var(--blue);
+}
+
+.p-20 {
+	padding: 20px;
 }

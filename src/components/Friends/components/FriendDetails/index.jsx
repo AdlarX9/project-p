@@ -5,9 +5,12 @@ import { useAddFriend } from '../../hooks'
 import { useSelector } from 'react-redux'
 import { getFriends } from '../../../../app/selectors'
 import { useRemoveFriend } from '../../hooks/'
+import Confirmation from '../../../Confirmation'
 
 const FriendDetails = ({ friend, open, setOpen }) => {
 	const [isFriend, setIsFriend] = useState(false)
+	const [openConfirmation, setOpenConfirmation] = useState(false)
+	const [confirmed, setConfirmed] = useState(false)
 	const friends = useSelector(getFriends)
 	const { addFriend } = useAddFriend()
 	const { removeFriend } = useRemoveFriend()
@@ -25,12 +28,12 @@ const FriendDetails = ({ friend, open, setOpen }) => {
 		setIsFriend(true)
 	}
 
-	const handleRemoveFriend = (friend) => {
-		const confirmation = window.confirm('You are going to remove a friend of yours')
-		if (confirmation) {
+	useEffect(() => {
+		if (confirmed) {
 			removeFriend(friend)
+			setConfirmed(false)
 		}
-	}
+	}, [confirmed])
 
 	return (
 		<PopUp className='friend-detail popup-profile' open={open} setOpen={setOpen}>
@@ -48,13 +51,20 @@ const FriendDetails = ({ friend, open, setOpen }) => {
 				</button>
 				{ isFriend ? (
 					<button
-						onClick={() => handleRemoveFriend(friend)}
+						onClick={() => setOpenConfirmation(true)}
 						className={'link red c-pointer'}
 					>
 						Remove this friend
 					</button>
 				) : (<></>)}
 			</div>
+			<Confirmation
+				message='Do you really want to delete this friend ?'
+				confirmed={confirmed}
+				setConfirmed={setConfirmed}
+				open={openConfirmation}
+				setOpen={setOpenConfirmation}
+			/>
 		</PopUp>
 	)
 }

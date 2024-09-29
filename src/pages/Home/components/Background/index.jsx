@@ -12,8 +12,10 @@ function Box(props) {
 	useFrame((state, delta) => {
 		if (meshRef.current) {
 			meshRef.current.rotation.x += delta;
+			meshRef.current.rotation.y += delta;
+			meshRef.current.rotation.z += delta;
 		}
-	});
+	})
 
 	return (
 		<mesh
@@ -26,7 +28,7 @@ function Box(props) {
 			<boxGeometry args={[1, 1, 1]} />
 			<meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
 		</mesh>
-	);
+	)
 }
 
 const Background = () => {

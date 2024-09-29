@@ -38,7 +38,7 @@ const Profile = () => {
 
 					<div className='profile-personal-info'>
 						<p>{user.username}</p>
-						<p>{user.money}</p>
+						<p className='cartoon-short-txt'>{user.money}</p>
 					</div>
 
 					<button
@@ -53,7 +53,7 @@ const Profile = () => {
 						<button className='link' onClick={() => navigate('/login')}>Log in again</button>
 						<button className='link' onClick={() => navigate('/signup')}>Sign up again</button>
 						<button
-							className='delet-account-btn link'
+							className='delet-account-btn link red'
 							onClick={handleDelete}
 						>
 							Delete account

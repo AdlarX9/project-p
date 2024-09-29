@@ -11,7 +11,7 @@ const Friends = () => {
 	const [open, setOpen] = useState(false)
 	const [isSeeking, setIsSeeking] = useState(false)
 	const openPopUp = () => setOpen(true)
-
+	const [friend, setFriend] = useState({})
 
 	return (
 		<>
@@ -30,7 +30,7 @@ const Friends = () => {
 						</button>
 					</header>
 
-					{ isSeeking ? <Search /> : <See /> }
+					{ isSeeking ? <Search /> : <See friend={friend} setFriend={setFriend} /> }
 
 				</div>
 			</PopUp>
