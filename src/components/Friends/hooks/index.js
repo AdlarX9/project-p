@@ -1,20 +1,24 @@
-import { useMutation } from "@tanstack/react-query"
-import axios from "axios"
-import { FriendsSlice } from "../FriendsSlice"
-import { useDispatch, useSelector } from "react-redux"
-import { getToken } from "../../../app/selectors"
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
+import { friendsSlice } from '../friendsSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { getToken } from '../../../app/selectors'
 
 const axiosAddFriend = async ({ id, token }) => {
-	return axios.post(process.env.REACT_APP_URL + '/api/friends/add', { idFriend: id }, 
-		{
-			headers: {
-				Authorization: token
+	return axios
+		.post(
+			process.env.REACT_APP_URL + '/api/friends/add',
+			{ idFriend: id },
+			{
+				headers: {
+					Authorization: token
+				}
 			}
+		)
+		.then(response => response.data)
+		.catch(error => {
+			console.log(error)
 		})
-	.then(response => response.data)
-	.catch(error => {
-		console.log(error);
-	})
 }
 
 export const useAddFriend = () => {
@@ -23,12 +27,12 @@ export const useAddFriend = () => {
 
 	const mutation = useMutation({
 		mutationFn: axiosAddFriend,
-		onSuccess: (data) => {
-			dispatch(FriendsSlice.actions.add(data))
+		onSuccess: data => {
+			dispatch(friendsSlice.actions.add(data))
 		}
 	})
 
-	const addFriend = (id) => {
+	const addFriend = id => {
 		mutation.mutate({ id: id, token: token })
 	}
 
@@ -38,35 +42,35 @@ export const useAddFriend = () => {
 	}
 }
 
-
 const axiosRemoveFriend = async ({ friend, token }) => {
-	return axios.delete(`${process.env.REACT_APP_URL}/api/friends/remove`, {
-		headers: { Authorization: token },
-		data: { idFriend: friend.id }
-	})
-	.then(response => friend)
-	.catch(error => {
-		throw new Error('Erreur lors de la suppression de votre ami')
-	})
+	return axios
+		.delete(`${process.env.REACT_APP_URL}/api/friends/remove`, {
+			headers: { Authorization: token },
+			data: { idFriend: friend.id }
+		})
+		.then(response => friend)
+		.catch(error => {
+			throw new Error('Erreur lors de la suppression de votre ami')
+		})
 }
 
 export const useRemoveFriend = () => {
 	const token = useSelector(getToken)
 	const dispatch = useDispatch()
 
-    const mutation = useMutation({
+	const mutation = useMutation({
 		mutationFn: axiosRemoveFriend,
-		onSuccess: (data) => {
-			dispatch(FriendsSlice.actions.remove(data))
+		onSuccess: data => {
+			dispatch(friendsSlice.actions.remove(data))
 		}
 	})
 
-	const removeFriend = (friend) => {
-        mutation.mutate({ friend: friend, token: token })
-    }
+	const removeFriend = friend => {
+		mutation.mutate({ friend: friend, token: token })
+	}
 
 	return {
-        removeFriend,
-        ...mutation
-    }
+		removeFriend,
+		...mutation
+	}
 }

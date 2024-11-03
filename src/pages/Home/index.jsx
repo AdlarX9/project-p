@@ -15,7 +15,7 @@ import Money from '../../components/Money'
 
 const Home = () => {
 	const user = useSelector(getUser)
-	
+
 	return (
 		<section className='home-wrapper'>
 			<header className='home-header'>
@@ -29,7 +29,11 @@ const Home = () => {
 			<footer className='home-footer'>
 				<button className='int-btn home-settings'>
 					<Link to='/settings'>
-						<img src={settings} alt='settings' draggable='false' />
+						<img
+							src={settings}
+							alt='settings'
+							draggable='false'
+						/>
 					</Link>
 				</button>
 				<Play />

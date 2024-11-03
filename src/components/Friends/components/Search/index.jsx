@@ -1,10 +1,10 @@
-import { useInfiniteQuery } from "@tanstack/react-query"
-import { useState } from "react"
-import { useSelector } from "react-redux"
-import { getFriends, getToken } from "../../../../app/selectors"
-import axios from "axios"
-import Loader from "../../../Loader"
-import FriendDetails from "../FriendDetails"
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { getFriends, getToken } from '../../../../app/selectors'
+import axios from 'axios'
+import Loader from '../../../Loader'
+import FriendDetails from '../FriendDetails'
 
 const Search = () => {
 	const [openFriends, setOpenFriends] = useState(false)
@@ -13,20 +13,15 @@ const Search = () => {
 	const token = useSelector(getToken)
 	const friends = useSelector(getFriends)
 
-	const {
-		isLoading,
-		data,
-		error,
-		refetch,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage
-	} = useInfiniteQuery({
+	const { isLoading, data, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
 		queryKey: ['searchUsers', username],
 		queryFn: async ({ pageParam = 1 }) => {
-			const response = await axios.get(`${process.env.REACT_APP_URL}/api/friends/search?limit=10&page=${pageParam}&username=${username}`, {
-				headers: { Authorization: token }
-			})
+			const response = await axios.get(
+				`${process.env.REACT_APP_URL}/api/friends/search?limit=10&page=${pageParam}&username=${username}`,
+				{
+					headers: { Authorization: token }
+				}
+			)
 			if (username.trim() === '') return []
 			return response.data
 		},
@@ -38,12 +33,12 @@ const Search = () => {
 		retry: 0
 	})
 
-	const handleChange = (e) => {
+	const handleChange = e => {
 		setUsername(e.target.value)
 		refetch()
 	}
 
-	const handleOpenDetails = (friend) => {
+	const handleOpenDetails = friend => {
 		setFriend(friend)
 		setOpenFriends(true)
 	}
@@ -84,19 +79,25 @@ const Search = () => {
 					onChange={handleChange}
 				/>
 			</form>
-			
+
 			<div className='friends-result-wrapper'>
 				{content}
 				<button
 					onClick={() => fetchNextPage()}
 					disabled={!hasNextPage || isFetchingNextPage}
-					className={'friends-result-btn ' + (!hasNextPage || isFetchingNextPage ? 'cartoon2-txt no-btn' : 'flat-btn ui-txt')}
+					className={
+						'friends-result-btn ' +
+						(!hasNextPage || isFetchingNextPage ? 'cartoon2-txt no-btn' : 'flat-btn ui-txt')
+					}
 				>
-					{ isFetchingNextPage ? 'Loading more...' : hasNextPage ?
-					'Load More' : 'Nothing more to load' }
+					{isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
 				</button>
 			</div>
-			<FriendDetails friend={friend} open={openFriends} setOpen={setOpenFriends} />
+			<FriendDetails
+				friend={friend}
+				open={openFriends}
+				setOpen={setOpenFriends}
+			/>
 		</>
 	)
 }

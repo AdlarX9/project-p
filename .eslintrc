@@ -24,10 +24,10 @@
 	],
 	"rules": {
 		"prettier/prettier": ["warn"],
-		"react/react-in-jsx-scope": "on",
-		"react/prop-types": "on",
-		"no-unused-vars": "warn",
-		"jsx-a11y/no-noninteractive-element-interactions": "warn",
+		"react/react-in-jsx-scope": "off",
+		"react/prop-types": "off",
+		"no-unused-vars": "off",
+		"jsx-a11y/no-noninteractive-element-interactions": "off",
 		"jsx-a11y/click-events-have-key-events": "warn"
 	},
 	"settings": {

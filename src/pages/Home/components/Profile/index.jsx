@@ -27,15 +27,24 @@ const Profile = () => {
 
 	return (
 		<>
-			<button className='int-btn profile' onClick={() => setOpen(true)}>
-				<img src={profile} alt='profile' draggable='false' />
+			<button
+				className='int-btn profile'
+				onClick={() => setOpen(true)}
+			>
+				<img
+					src={profile}
+					alt='profile'
+					draggable='false'
+				/>
 				<span>{user.username}</span>
 			</button>
 
-
-			<PopUp open={open} setOpen={setOpen} className='popup-profile'>
+			<PopUp
+				open={open}
+				setOpen={setOpen}
+				className='popup-profile'
+			>
 				<div className='profile-popup-wrapper'>
-
 					<div className='profile-personal-info'>
 						<p>{user.username}</p>
 						<p className='cartoon-short-txt'>{user.money}</p>
@@ -45,13 +54,26 @@ const Profile = () => {
 						className='logout-btn link'
 						onClick={() => dispatch(userSlice.actions.logout())}
 					>
-						<img src={logout} alt='disconnect'/>
+						<img
+							src={logout}
+							alt='disconnect'
+						/>
 						Logout
 					</button>
 
 					<div className='profile-popup-secondary'>
-						<button className='link' onClick={() => navigate('/login')}>Log in again</button>
-						<button className='link' onClick={() => navigate('/signup')}>Sign up again</button>
+						<button
+							className='link'
+							onClick={() => navigate('/login')}
+						>
+							Log in again
+						</button>
+						<button
+							className='link'
+							onClick={() => navigate('/signup')}
+						>
+							Sign up again
+						</button>
 						<button
 							className='delet-account-btn link red'
 							onClick={handleDelete}
@@ -59,7 +81,6 @@ const Profile = () => {
 							Delete account
 						</button>
 					</div>
-
 				</div>
 			</PopUp>
 		</>

@@ -10,12 +10,8 @@ const Auth = ({ type }) => {
 
 	return (
 		<>
-			{ isLogged ? <Back /> : <></> }
-			{ type === 'login' ? (
-				<LogIn />
-			) : type === 'signup' ? (
-				<SignUp />
-			) : null }
+			{isLogged ? <Back /> : <></>}
+			{type === 'login' ? <LogIn /> : type === 'signup' ? <SignUp /> : null}
 		</>
 	)
 }

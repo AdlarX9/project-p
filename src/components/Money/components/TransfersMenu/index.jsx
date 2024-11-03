@@ -12,7 +12,7 @@ const TransfersMenu = () => {
 	const [confirmed, setConfirmed] = useState(false)
 	const { transfer } = useTransfer()
 
-	const handleSubmit = (e) => {
+	const handleSubmit = e => {
 		e.preventDefault()
 		setMessage(`Do you really want to transfer ${amount} to ${friend.username}?`)
 		if (amount > 0 && friend?.id) {
@@ -32,21 +32,30 @@ const TransfersMenu = () => {
 	return (
 		<div className='transfers-wrapper'>
 			<span>transfers</span>
-			<form onSubmit={(e) => handleSubmit(e)} className='transfers-form'>
+			<form
+				onSubmit={e => handleSubmit(e)}
+				className='transfers-form'
+			>
 				<input
-					type="number"
+					type='number'
 					className='field shadowed'
 					value={amount}
-					onChange={(e) => setAmount(e.target.value)}
+					onChange={e => setAmount(e.target.value)}
 					min='0'
 				/>
 				<button
 					type='submit'
 					className='no-btn blue cartoon-short-txt c-pointer'
-				>Transfer</button>
+				>
+					Transfer
+				</button>
 			</form>
 			<span className='link'>Friend to send the money : {friend.username ? friend.username : 'none'}</span>
-			<See enableDetails={false} friend={friend} setFriend={setFriend} />
+			<See
+				enableDetails={false}
+				friend={friend}
+				setFriend={setFriend}
+			/>
 			<Confirmation
 				message={message}
 				confirmed={confirmed}

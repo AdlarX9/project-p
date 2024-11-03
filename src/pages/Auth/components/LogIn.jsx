@@ -20,16 +20,21 @@ const LogIn = () => {
 		}
 	}, [isLogged])
 
-	const handleSubmit = async (event) => {
+	const handleSubmit = async event => {
 		event.preventDefault()
 		login(username, password)
 	}
 
 	return (
-		<form className='auth-wrapper cartoon-txt' onSubmit={handleSubmit}>
-
+		<form
+			className='auth-wrapper cartoon-txt'
+			onSubmit={handleSubmit}
+		>
 			<div className='field-wrapper'>
-				<label className='field-label' htmlFor='username'>
+				<label
+					className='field-label'
+					htmlFor='username'
+				>
 					username
 				</label>
 				<input
@@ -38,12 +43,15 @@ const LogIn = () => {
 					type='text'
 					id='username'
 					value={username}
-					onChange={(e) => setUsername(e.target.value)}
+					onChange={e => setUsername(e.target.value)}
 				/>
 			</div>
 
 			<div className='field-wrapper'>
-				<label className='field-label' htmlFor='password'>
+				<label
+					className='field-label'
+					htmlFor='password'
+				>
 					password
 				</label>
 				<div className='password-wrapper'>
@@ -51,15 +59,19 @@ const LogIn = () => {
 						className='field shadowed'
 						label='password'
 						id='password'
-						type={ hidden ? 'password' : 'text' }
+						type={hidden ? 'password' : 'text'}
 						value={password}
-						onChange={(e) => setPassword(e.target.value)}
+						onChange={e => setPassword(e.target.value)}
 					/>
-					<img
-						src={hidden ? hide : unhide}
-						alt={hidden ? 'hide' : 'show'}
+					<button
 						onClick={() => setHidden(!hidden)}
-					/>
+						className='no-btn'
+					>
+						<img
+							src={hidden ? hide : unhide}
+							alt={hidden ? 'hide' : 'show'}
+						/>
+					</button>
 				</div>
 			</div>
 
@@ -69,13 +81,16 @@ const LogIn = () => {
 				<span>Envoyer</span>
 			</button>
 			<p className='cartoon2-txt auth-link'>
-				Vous n&apos;avez pas de compte ? 
+				Vous n&apos;avez pas de compte ?
 				<br />
 				<Link to='/signup'>Créez-en un !</Link>
 			</p>
 
-			{isPending && <div className='auth-loader'><Loader /></div>}
-
+			{isPending && (
+				<div className='auth-loader'>
+					<Loader />
+				</div>
+			)}
 		</form>
 	)
 }

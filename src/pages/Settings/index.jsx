@@ -1,9 +1,7 @@
 import './style.css'
 
 const Settings = () => {
-	return (
-		<></>
-	)
+	return <></>
 }
 
 export default Settings

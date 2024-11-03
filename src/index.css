@@ -25,6 +25,7 @@ body, html {
 	margin: 0;
 	padding: 0;
 	width: 100vw;
+	min-width: 500px;
 	min-height: 100vh;
 	user-select: none;
 	background: #33aed7;

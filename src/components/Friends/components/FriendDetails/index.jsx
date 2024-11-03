@@ -23,7 +23,7 @@ const FriendDetails = ({ friend, open, setOpen }) => {
 		}
 	})
 
-	const handleAddFriend = (id) => {
+	const handleAddFriend = id => {
 		addFriend(id)
 		setIsFriend(true)
 	}
@@ -36,7 +36,11 @@ const FriendDetails = ({ friend, open, setOpen }) => {
 	}, [confirmed])
 
 	return (
-		<PopUp className='friend-detail popup-profile' open={open} setOpen={setOpen}>
+		<PopUp
+			className='friend-detail popup-profile'
+			open={open}
+			setOpen={setOpen}
+		>
 			<div className='friend-detail-pres'>
 				<span className='cartoon-short-txt'>{friend.username}</span>
 				<span className='cartoon2-txt'>{friend.money}</span>
@@ -45,18 +49,20 @@ const FriendDetails = ({ friend, open, setOpen }) => {
 				<button
 					onClick={() => handleAddFriend(friend.id)}
 					className={`link ${!isFriend ? 'c-pointer' : ''}`}
-					disabled={ isFriend }
+					disabled={isFriend}
 				>
-					{ isFriend ? 'Is a friend' : 'Add as a friend' }
+					{isFriend ? 'Is a friend' : 'Add as a friend'}
 				</button>
-				{ isFriend ? (
+				{isFriend ? (
 					<button
 						onClick={() => setOpenConfirmation(true)}
 						className={'link red c-pointer'}
 					>
 						Remove this friend
 					</button>
-				) : (<></>)}
+				) : (
+					<></>
+				)}
 			</div>
 			<Confirmation
 				message='Do you really want to delete this friend ?'

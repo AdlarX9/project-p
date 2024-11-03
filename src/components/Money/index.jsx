@@ -16,12 +16,14 @@ const Money = () => {
 	const { isPending, data, refetch } = useQuery({
 		queryKey: ['getThePercentage'],
 		queryFn: async () => {
-			return axios.get(process.env.REACT_APP_URL + '/api/user/percentage', {
-				headers: {
-					Authorization: user.token,
-				}
-			}).then(response => response.data)
-			.catch(error => error.message)
+			return axios
+				.get(process.env.REACT_APP_URL + '/api/user/percentage', {
+					headers: {
+						Authorization: user.token
+					}
+				})
+				.then(response => response.data)
+				.catch(error => error.message)
 		},
 		retry: 0,
 		enabled: !!user
@@ -33,14 +35,27 @@ const Money = () => {
 
 	return (
 		<>
-			<button className='money c-pointer' onClick={() => setOpen(true)}>
-				<img src={money} alt='money' draggable='false' />
+			<button
+				className='money c-pointer'
+				onClick={() => setOpen(true)}
+			>
+				<img
+					src={money}
+					alt='money'
+					draggable='false'
+				/>
 				<span className='cartoon-txt'>{user.money}</span>
 			</button>
-			<PopUp className='cartoon2-txt popup-profile' open={open} setOpen={setOpen} >
-				{ isPending ? <Loader /> :
+			<PopUp
+				className='cartoon2-txt popup-profile'
+				open={open}
+				setOpen={setOpen}
+			>
+				{isPending ? (
+					<Loader />
+				) : (
 					`${user.money} : C'est plus que ${Math.round(data.percentage * 100) / 100}% des gens !`
-				}
+				)}
 				<TransfersMenu />
 			</PopUp>
 		</>

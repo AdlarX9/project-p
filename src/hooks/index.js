@@ -5,57 +5,56 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { getToken, getUser } from '../app/selectors'
 import { useLocation } from 'react-router-dom'
-import { FriendsSlice } from '../components/Friends/FriendsSlice'
+import { friendsSlice } from '../components/Friends/friendsSlice'
 
-const axiosLogin = async (data) => {
-	return axios.post(process.env.REACT_APP_URL + '/api/login', data)
-	.then(response => response.data)
-	.catch(error => {
-		throw new Error('Mot de passe ou identifiant invalide !')
-	})
+const axiosLogin = async data => {
+	return axios
+		.post(process.env.REACT_APP_URL + '/api/login', data)
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error('Mot de passe ou identifiant invalide !')
+		})
 }
 
 export const useLogin = () => {
 	const dispatch = useDispatch()
-	
+
 	const mutation = useMutation({
 		mutationFn: axiosLogin,
 		onSuccess: (data, variables, context) => {
 			dispatch(userSlice.actions.login(data.token))
 		}
 	})
-	
+
 	const login = (username, password) => {
 		mutation.mutate({
 			username: username,
 			password: password
 		})
 	}
-	
+
 	return {
 		login,
 		...mutation
 	}
-	
 }
 
-
-const axiosMe = async (token) => {
+const axiosMe = async token => {
 	return axios
-	.get(process.env.REACT_APP_URL + '/api/user/me', {
-		headers: {
-			Authorization: token,
-		}
-	})
-	.then(response => ({ data: response.data, code: response.statusCode }))
-	.catch(error => error)
+		.get(process.env.REACT_APP_URL + '/api/user/me', {
+			headers: {
+				Authorization: token
+			}
+		})
+		.then(response => ({ data: response.data, code: response.statusCode }))
+		.catch(error => error)
 }
 
 export const useLogged = () => {
 	const token = useSelector(getToken)
 	const [isLogged, setIsLogged] = useState(true)
 	const user = useSelector(getUser)
-	const { pathname } = useLocation()	
+	const { pathname } = useLocation()
 
 	const query = useQuery({
 		queryKey: ['user'],
@@ -83,11 +82,11 @@ export const useLogged = () => {
 	return { isLogged, ...query }
 }
 
-
 const axiosSignup = async (data, login) => {
-	return axios.post(process.env.REACT_APP_URL + '/api/public/signup', data)
-	.then(response => (response.data))
-	.catch(error => (error))
+	return axios
+		.post(process.env.REACT_APP_URL + '/api/public/signup', data)
+		.then(response => response.data)
+		.catch(error => error)
 }
 
 export const useSignup = () => {
@@ -96,16 +95,19 @@ export const useSignup = () => {
 
 	const mutation = useMutation({
 		mutationFn: axiosSignup,
-		onSuccess: (data) => {
-			dispatch(userSlice.actions.login(data.token))			
+		onSuccess: data => {
+			dispatch(userSlice.actions.login(data.token))
 		}
 	})
 
 	const signup = (username, password) => {
-		mutation.mutate({
-			username: username,
-			password: password
-		}, login)
+		mutation.mutate(
+			{
+				username: username,
+				password: password
+			},
+			login
+		)
 	}
 
 	return {
@@ -114,15 +116,15 @@ export const useSignup = () => {
 	}
 }
 
-
-const axiosDelete = async (token) => {
-	return axios.delete(process.env.REACT_APP_URL + '/api/user/me', {
-		headers: {
-			Authorization: token,
-		}
-	})
-	.then(response => (response.data))
-	.catch(error => (error))
+const axiosDelete = async token => {
+	return axios
+		.delete(process.env.REACT_APP_URL + '/api/user/me', {
+			headers: {
+				Authorization: token
+			}
+		})
+		.then(response => response.data)
+		.catch(error => error)
 }
 
 export const useDelete = () => {
@@ -132,7 +134,7 @@ export const useDelete = () => {
 	const mutation = useMutation({
 		mutationFn: axiosDelete,
 		onSuccess: () => {
-			dispatch(userSlice.actions.logout())			
+			dispatch(userSlice.actions.logout())
 		}
 	})
 
@@ -146,17 +148,13 @@ export const useDelete = () => {
 	}
 }
 
-
-
 const axiosTransfer = async ({ body, headers }) => {
-	return axios.patch(process.env.REACT_APP_URL + '/api/user/transfer', 
-		body,
-		{ headers }
-	)
-	.then(response => response.data)
-	.catch(error => {
-		throw new Error(error.response?.data?.message || error.message)
-	})
+	return axios
+		.patch(process.env.REACT_APP_URL + '/api/user/transfer', body, { headers })
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error(error.response?.data?.message || error.message)
+		})
 }
 
 export const useTransfer = () => {
@@ -165,12 +163,12 @@ export const useTransfer = () => {
 
 	const mutation = useMutation({
 		mutationFn: axiosTransfer,
-		onSuccess: (data) => {
+		onSuccess: data => {
 			dispatch(userSlice.actions.logPersoInf(data))
-			dispatch(FriendsSlice.actions.logFriends(data))
+			dispatch(friendsSlice.actions.logFriends(data))
 		},
-		onError: (error) => {
-			console.error("Erreur lors du transfert :", error.message)
+		onError: error => {
+			console.error('Erreur lors du transfert :', error.message)
 		}
 	})
 

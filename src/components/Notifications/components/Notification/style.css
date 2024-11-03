@@ -1,0 +1,39 @@
+.notification-wrapper {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+	margin: 20px 20px 0 0;
+	animation: .2s ease-out appear;
+	cursor: auto;
+	border-radius: 20px;
+	pointer-events: auto;
+}
+
+.notification-is-closing {
+	animation: 150ms ease-in appear-reverse;
+	transform: translate(110%);
+}
+
+.notification-wrapper p {
+	padding: 0;
+	margin: 0;
+}
+
+@keyframes appear {
+	0% {
+		transform: translate(110%);
+	}
+	100% {
+		transform: translate(0%);
+	}
+}
+
+@keyframes appear-reverse {
+	0% {
+		transform: translate(0%);
+	}
+	100% {
+		transform: translate(110%);
+	}
+}

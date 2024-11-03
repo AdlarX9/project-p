@@ -12,6 +12,7 @@ import Auth from '../pages/Auth/'
 import { ReactQueryDevtools, ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import React from 'react'
 import Check from './Check'
+import Notifications from '../components/Notifications/'
 
 const queryClient = new QueryClient()
 
@@ -23,14 +24,36 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<Router>
 					<Check />
+					<Notifications />
 					<Routes>
-						<Route path='*' element={<Error />} />
-						<Route path='/' element={<Home />} />
-						<Route path='/settings' element={<Settings />} />
-						<Route path='/locker' element={<Locker />} />
-						<Route path='/shop' element={<Shop />} />
-						<Route path='/login' element={<Auth type='login' />} />
-						<Route path='/signup' element={<Auth type='signup' />} />
+						<Route
+							path='*'
+							element={<Error />}
+						/>
+						<Route
+							path='/'
+							element={<Home />}
+						/>
+						<Route
+							path='/settings'
+							element={<Settings />}
+						/>
+						<Route
+							path='/locker'
+							element={<Locker />}
+						/>
+						<Route
+							path='/shop'
+							element={<Shop />}
+						/>
+						<Route
+							path='/login'
+							element={<Auth type='login' />}
+						/>
+						<Route
+							path='/signup'
+							element={<Auth type='signup' />}
+						/>
 					</Routes>
 				</Router>
 				{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}

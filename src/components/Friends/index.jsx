@@ -10,28 +10,51 @@ import See from './components/See'
 const Friends = () => {
 	const [open, setOpen] = useState(false)
 	const [isSeeking, setIsSeeking] = useState(false)
-	const openPopUp = () => setOpen(true)
+	const openPopUp = () => {
+		setOpen(true)
+		setIsSeeking(false)
+	}
 	const [friend, setFriend] = useState({})
 
 	return (
 		<>
-			<button className='int-btn friends-btn' onClick={openPopUp}>
-				<img src={friends} alt='add-friends' draggable='false' />
+			<button
+				className='int-btn friends-btn'
+				onClick={openPopUp}
+			>
+				<img
+					src={friends}
+					alt='add-friends'
+					draggable='false'
+				/>
 			</button>
-			<PopUp open={open} setOpen={setOpen} className='popup-friends'>
+			<PopUp
+				open={open}
+				setOpen={setOpen}
+				className='popup-friends'
+			>
 				<div className='friends-popup-wrapper'>
 					<header className='friends-popup-header'>
 						<h2>Amis</h2>
-						<button className='no-btn' onClick={() => setIsSeeking(!isSeeking)}>
+						<button
+							className='no-btn'
+							onClick={() => setIsSeeking(!isSeeking)}
+						>
 							<img
-								src={ isSeeking ? seeking : seeing }
-								alt={ isSeeking ? 'btn-to-look' : 'btn-to-search' }
+								src={isSeeking ? seeking : seeing}
+								alt={isSeeking ? 'btn-to-look' : 'btn-to-search'}
 							/>
 						</button>
 					</header>
 
-					{ isSeeking ? <Search /> : <See friend={friend} setFriend={setFriend} /> }
-
+					{isSeeking ? (
+						<Search />
+					) : (
+						<See
+							friend={friend}
+							setFriend={setFriend}
+						/>
+					)}
 				</div>
 			</PopUp>
 		</>

@@ -5,7 +5,6 @@ export const userSlice = createSlice({
 	name: 'user',
 	initialState: {},
 	reducers: {
-
 		login: (currentState, action) => {
 			const user = {
 				token: 'bearer ' + action.payload
@@ -38,6 +37,5 @@ export const userSlice = createSlice({
 			saveStateFriends(state.friends)
 			return state.user
 		}
-		
 	}
 })
