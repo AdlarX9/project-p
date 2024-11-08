@@ -4,12 +4,12 @@
 	"trailingComma": "none",
 	"bracketSpacing": true,
 	"jsxBracketSameLine": false,
-	"printWidth": 120,
+	"printWidth": 90,
 	"tabWidth": 4,
 	"useTabs": true,
 	"arrowParens": "avoid",
 	"endOfLine": "auto",
 	"jsxSingleQuote": true,
 	"htmlWhitespaceSensitivity": "css",
-	"singleAttributePerLine": true
+	"singleAttributePerLine": false
 }

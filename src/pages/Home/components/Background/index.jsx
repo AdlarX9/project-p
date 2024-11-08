@@ -1,57 +1,31 @@
-import React, { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
 import './style.css'
-import { useGLTF } from '@react-three/drei'
-
+import React from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, PerspectiveCamera, useFBX } from '@react-three/drei'
+import { EffectComposer, Vignette } from '@react-three/postprocessing'
 /* eslint-disable react/no-unknown-property */
 
-const Box = props => {
-	const meshRef = useRef()
-	const [hovered, setHover] = useState(false)
-	const [active, setActive] = useState(false)
-
-	useFrame((state, delta) => {
-		if (meshRef.current) {
-			meshRef.current.rotation.x += delta
-			meshRef.current.rotation.y += delta
-			meshRef.current.rotation.z += delta
-		}
-	})
-
-	return (
-		<mesh
-			{...props}
-			ref={meshRef}
-			scale={active ? 1.5 : 1}
-			onClick={event => setActive(!active)}
-			onPointerOver={event => setHover(true)}
-			onPointerOut={event => setHover(false)}
-		>
-			<boxGeometry args={[1, 1, 1]} />
-			<meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-		</mesh>
-	)
+function Island() {
+	const fbx = useFBX('/island/source/Stronghold.fbx')
+	return <primitive object={fbx} scale={0.01} />
 }
 
 const Background = () => {
 	return (
-		<Canvas className='bg-wrapper'>
-			<ambientLight intensity={Math.PI / 2} />
-			<spotLight
-				position={[10, 10, 10]}
-				angle={0.15}
-				penumbra={1}
-				decay={0}
-				intensity={Math.PI}
-			/>
-			<pointLight
-				position={[-10, -10, -10]}
-				decay={0}
-				intensity={Math.PI}
-			/>
-			<Box position={[-1.2, 0, 0]} />
-			<Box position={[1.2, 0, 0]} />
-			{/* <primitive object={useGLTF('../../../../assets/island.glb')} /> */}
+		<Canvas className='bg-wrapper' fog={{ color: 'blue', near: 1, far: 50 }}>
+			<ambientLight intensity={6} />
+			<spotLight position={[-5, 15, 5]} angle={0.6} penumbra={1} intensity={600} />
+			<pointLight position={[10, 10, -10]} intensity={2000} />
+			<Island />
+			<PerspectiveCamera makeDefault position={[6, 4, -6]} fov={50} />
+			<OrbitControls target={[0, 2, 0]} />
+
+			{/* Effets de post-traitement */}
+			<EffectComposer
+				resize={{ scroll: true, debounce: { scroll: 50, resize: 0 } }}
+			>
+				<Vignette eskil={false} offset={0} darkness={0.6} />
+			</EffectComposer>
 		</Canvas>
 	)
 }

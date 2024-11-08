@@ -3,15 +3,22 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getToken, getUser } from '../../../app/selectors'
-import { deleteNotification, logNotifications, receiveNotification } from '../notificationsSlice'
+import {
+	deleteNotification,
+	logNotifications,
+	receiveNotification
+} from '../notificationsSlice'
 
 const axiosNotificationsGet = async token => {
 	try {
-		const response = await axios.get(process.env.REACT_APP_URL + '/api/user/getNotifications', {
-			headers: {
-				Authorization: token
+		const response = await axios.get(
+			process.env.REACT_APP_URL + '/api/user/getNotifications',
+			{
+				headers: {
+					Authorization: token
+				}
 			}
-		})
+		)
 		return { data: response.data, status: response.status }
 	} catch (error) {
 		return error

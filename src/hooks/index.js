@@ -172,9 +172,9 @@ export const useTransfer = () => {
 		}
 	})
 
-	const transfer = (idFriend, amount) => {
+	const transfer = (friend, amount) => {
 		mutation.mutate({
-			body: { idFriend, amount },
+			body: { idFriend: friend.id, amount },
 			headers: { Authorization: token }
 		})
 	}

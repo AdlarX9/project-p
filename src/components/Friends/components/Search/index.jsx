@@ -13,7 +13,15 @@ const Search = () => {
 	const token = useSelector(getToken)
 	const friends = useSelector(getFriends)
 
-	const { isLoading, data, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+	const {
+		isLoading,
+		data,
+		error,
+		refetch,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage
+	} = useInfiniteQuery({
 		queryKey: ['searchUsers', username],
 		queryFn: async ({ pageParam = 1 }) => {
 			const response = await axios.get(
@@ -87,17 +95,19 @@ const Search = () => {
 					disabled={!hasNextPage || isFetchingNextPage}
 					className={
 						'friends-result-btn ' +
-						(!hasNextPage || isFetchingNextPage ? 'cartoon2-txt no-btn' : 'flat-btn ui-txt')
+						(!hasNextPage || isFetchingNextPage
+							? 'cartoon2-txt no-btn'
+							: 'flat-btn ui-txt')
 					}
 				>
-					{isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
+					{isFetchingNextPage
+						? 'Loading more...'
+						: hasNextPage
+							? 'Load More'
+							: 'Nothing more to load'}
 				</button>
 			</div>
-			<FriendDetails
-				friend={friend}
-				open={openFriends}
-				setOpen={setOpenFriends}
-			/>
+			<FriendDetails friend={friend} open={openFriends} setOpen={setOpenFriends} />
 		</>
 	)
 }

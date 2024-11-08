@@ -8,11 +8,7 @@ const See = ({ enableDetails = true, friend, setFriend }) => {
 	const [openFriends, setOpenFriends] = useState(false)
 
 	const handleOpenDetails = friendSelected => {
-		if (friendSelected.id === friend?.id) {
-			setFriend({})
-		} else {
-			setFriend(friendSelected)
-		}
+		setFriend(friendSelected)
 		setOpenFriends(true)
 	}
 

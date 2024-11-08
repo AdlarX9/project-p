@@ -12,10 +12,7 @@ const Notifications = () => {
 	return (
 		<div className='notifications-wrapper'>
 			{notifications.map(notification => (
-				<Notification
-					notification={notification}
-					key={notification.id}
-				/>
+				<Notification notification={notification} key={notification.id} />
 			))}
 		</div>
 	)

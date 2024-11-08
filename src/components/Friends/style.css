@@ -5,10 +5,9 @@
 
 .friends-btn img {
 	width: 60px;
-    height: 60px;
+	height: 60px;
 	margin-right: 10px;
 }
-
 
 .friends-popup-wrapper {
 	display: flex;
@@ -50,7 +49,7 @@
 }
 
 .friends-result-wrapper::-webkit-scrollbar {
-    width: 0;
+	width: 0;
 }
 
 .friend-fetched {

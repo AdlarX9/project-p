@@ -35,22 +35,11 @@ const Money = () => {
 
 	return (
 		<>
-			<button
-				className='money c-pointer'
-				onClick={() => setOpen(true)}
-			>
-				<img
-					src={money}
-					alt='money'
-					draggable='false'
-				/>
+			<button className='money c-pointer' onClick={() => setOpen(true)}>
+				<img src={money} alt='money' draggable='false' />
 				<span className='cartoon-txt'>{user.money}</span>
 			</button>
-			<PopUp
-				className='cartoon2-txt popup-profile'
-				open={open}
-				setOpen={setOpen}
-			>
+			<PopUp className='cartoon2-txt popup-profile' open={open} setOpen={setOpen}>
 				{isPending ? (
 					<Loader />
 				) : (

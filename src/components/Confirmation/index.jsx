@@ -1,14 +1,38 @@
 import './style.css'
 import PopUp from '../PopUp/'
+import { useRef, useState } from 'react'
 
-const Confirmation = ({ message, confirmed, setConfirmed, open, setOpen }) => {
+const confirmAction = {
+	current: () => Promise.resolve(true)
+}
+
+export function confirm(props) {
+	return confirmAction.current(props)
+}
+
+const Confirmation = () => {
+	const [open, setOpen] = useState(false)
+	const [props, setProps] = useState({})
+	const resolveRef = useRef(null)
+
+	confirmAction.current = props =>
+		new Promise(resolve => {
+			setProps(props)
+			setOpen(true)
+			resolveRef.current = resolve
+		})
+
 	const handleCancel = () => {
-		setConfirmed(false)
+		if (resolveRef.current) {
+			resolveRef.current(false)
+		}
 		setOpen(false)
 	}
 
 	const handleConfirm = () => {
-		setConfirmed(true)
+		if (resolveRef.current) {
+			resolveRef.current(true)
+		}
 		setOpen(false)
 	}
 
@@ -18,18 +42,12 @@ const Confirmation = ({ message, confirmed, setConfirmed, open, setOpen }) => {
 			setOpen={setOpen}
 			className='popup-confirmation cartoon-short-txt popup-profile'
 		>
-			{message}
+			<div>{props.message}</div>{' '}
 			<div className='confirmation-buttons'>
-				<button
-					onClick={handleCancel}
-					className='int-btn p-20 bg-blue'
-				>
+				<button onClick={handleCancel} className='int-btn p-20 bg-blue'>
 					Cancel
 				</button>
-				<button
-					onClick={handleConfirm}
-					className='int-btn skewed p-20 bg-red'
-				>
+				<button onClick={handleConfirm} className='int-btn skewed p-20 bg-red'>
 					<span>Confirm</span>
 				</button>
 			</div>

@@ -1,11 +1,11 @@
 @font-face {
-    font-family: 'cartoon';
-    src: url('./assets/main.ttf');
+	font-family: 'cartoon';
+	src: url('./assets/main.ttf');
 }
 
 @font-face {
-    font-family: 'cartoon-2';
-    src: url('./assets/sofadi.ttf');
+	font-family: 'cartoon-2';
+	src: url('./assets/sofadi.ttf');
 }
 
 * {
@@ -21,7 +21,8 @@
 	--blue: #6aa8e5;
 }
 
-body, html {
+body,
+html {
 	margin: 0;
 	padding: 0;
 	width: 100vw;
@@ -44,15 +45,17 @@ body, html {
 	font-size: 50px;
 	font-weight: bold;
 	text-transform: uppercase;
-	box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.3),
-	0 0 0 8px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(0, 0, 0, 0.4);
+	box-shadow:
+		inset 0 0 0 5px rgba(0, 0, 0, 0.3),
+		0 0 0 8px rgba(0, 0, 0, 0.1),
+		0 0 0 3px rgba(0, 0, 0, 0.4);
 }
 
 .int-btn::before {
-	content:'';
+	content: '';
 	display: block;
 	position: absolute;
-	background: #FFF;
+	background: #fff;
 	opacity: 0.35;
 	top: 0;
 	left: 0;
@@ -61,7 +64,7 @@ body, html {
 }
 
 .int-btn::after {
-	content:'';
+	content: '';
 	display: block;
 	position: absolute;
 	background: #000;
@@ -118,7 +121,6 @@ body, html {
 	font-size: 1rem;
 }
 
-
 .skewed {
 	transform: skewX(-10deg);
 	margin-right: 30px;
@@ -131,14 +133,17 @@ body, html {
 .shadowed {
 	position: relative;
 	border: 4px black solid;
-	box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.3),
-	0 0 0 8px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(0, 0, 0, 0.4);
+	box-shadow:
+		inset 0 0 0 5px rgba(0, 0, 0, 0.3),
+		0 0 0 8px rgba(0, 0, 0, 0.1),
+		0 0 0 3px rgba(0, 0, 0, 0.4);
 }
 
 .shadowed-simple {
 	border: 3px black solid;
-	box-shadow: inset 0 0 0 4px rgba(0, 0, 0, 0.3),
-	0 0 0 4px rgba(0, 0, 0, 0.1);
+	box-shadow:
+		inset 0 0 0 4px rgba(0, 0, 0, 0.3),
+		0 0 0 4px rgba(0, 0, 0, 0.1);
 }
 
 .show-box {
@@ -159,6 +164,10 @@ body, html {
 
 .c-pointer {
 	cursor: pointer;
+}
+
+.c-auto {
+	cursor: auto;
 }
 
 .red {

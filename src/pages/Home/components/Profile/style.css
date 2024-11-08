@@ -8,9 +8,9 @@
 
 .profile img {
 	width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    filter: drop-shadow(0 0 4px black);
+	height: 140px;
+	border-radius: 50%;
+	filter: drop-shadow(0 0 4px black);
 }
 
 .profile-popup-wrapper {
@@ -51,5 +51,5 @@
 	flex-direction: column;
 	justify-content: start;
 	align-items: start;
-	gap: 20px
+	gap: 20px;
 }

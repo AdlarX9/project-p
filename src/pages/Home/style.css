@@ -14,8 +14,8 @@
 }
 
 .money-friends {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 	align-items: start;
 	width: 40%;
 }
@@ -38,5 +38,5 @@
 
 .home-settings img {
 	width: 200px;
-    height: 200px;
+	height: 200px;
 }

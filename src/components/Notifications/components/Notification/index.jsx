@@ -16,15 +16,8 @@ const Notification = ({ notification }) => {
 
 	return (
 		<div className={'notification-wrapper shadowed bg-red ' + extraClassName}>
-			<button
-				className='shadowed-simple popup-cancel'
-				onClick={closeNotification}
-			>
-				<img
-					src={cancel}
-					alt='close'
-					draggable='false'
-				/>
+			<button className='shadowed-simple popup-cancel' onClick={closeNotification}>
+				<img src={cancel} alt='close' draggable='false' />
 			</button>
 			<p className='cartoon-short-txt'>{notification.title}</p>
 			<p className='cartoon2-txt'>{notification.message}</p>

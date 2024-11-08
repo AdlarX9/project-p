@@ -1,18 +1,25 @@
+import React, { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider } from 'react-redux'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {
+	ReactQueryDevtools,
+	ReactQueryDevtoolsPanel
+} from '@tanstack/react-query-devtools'
+
 import { store } from './store'
 
+import Check from './Check'
+import Notifications from '../components/Notifications/'
+import Confirmation from '../components/Confirmation'
+
 import Error from '../pages/Error/'
-import Home from '../pages/Home/'
 import Settings from '../pages/Settings/'
 import Locker from '../pages/Locker/'
 import Shop from '../pages/Shop/'
-import Auth from '../pages/Auth/'
-import { ReactQueryDevtools, ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
-import React from 'react'
-import Check from './Check'
-import Notifications from '../components/Notifications/'
+
+const Home = lazy(() => import('../pages/Home/'))
+const Auth = lazy(() => import('../pages/Auth/'))
 
 const queryClient = new QueryClient()
 
@@ -25,36 +32,18 @@ function App() {
 				<Router>
 					<Check />
 					<Notifications />
-					<Routes>
-						<Route
-							path='*'
-							element={<Error />}
-						/>
-						<Route
-							path='/'
-							element={<Home />}
-						/>
-						<Route
-							path='/settings'
-							element={<Settings />}
-						/>
-						<Route
-							path='/locker'
-							element={<Locker />}
-						/>
-						<Route
-							path='/shop'
-							element={<Shop />}
-						/>
-						<Route
-							path='/login'
-							element={<Auth type='login' />}
-						/>
-						<Route
-							path='/signup'
-							element={<Auth type='signup' />}
-						/>
-					</Routes>
+					<Confirmation />
+					<Suspense>
+						<Routes>
+							<Route path='*' element={<Error />} />
+							<Route path='/' element={<Home />} />
+							<Route path='/settings' element={<Settings />} />
+							<Route path='/locker' element={<Locker />} />
+							<Route path='/shop' element={<Shop />} />
+							<Route path='/login' element={<Auth type='login' />} />
+							<Route path='/signup' element={<Auth type='signup' />} />
+						</Routes>
+					</Suspense>
 				</Router>
 				{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
 				<ReactQueryDevtools initialIsOpen={false} />

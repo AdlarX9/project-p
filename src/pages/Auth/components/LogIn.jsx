@@ -26,15 +26,9 @@ const LogIn = () => {
 	}
 
 	return (
-		<form
-			className='auth-wrapper cartoon-txt'
-			onSubmit={handleSubmit}
-		>
+		<form className='auth-wrapper cartoon-txt' onSubmit={handleSubmit}>
 			<div className='field-wrapper'>
-				<label
-					className='field-label'
-					htmlFor='username'
-				>
+				<label className='field-label' htmlFor='username'>
 					username
 				</label>
 				<input
@@ -48,10 +42,7 @@ const LogIn = () => {
 			</div>
 
 			<div className='field-wrapper'>
-				<label
-					className='field-label'
-					htmlFor='password'
-				>
+				<label className='field-label' htmlFor='password'>
 					password
 				</label>
 				<div className='password-wrapper'>
@@ -63,10 +54,7 @@ const LogIn = () => {
 						value={password}
 						onChange={e => setPassword(e.target.value)}
 					/>
-					<button
-						onClick={() => setHidden(!hidden)}
-						className='no-btn'
-					>
+					<button onClick={() => setHidden(!hidden)} className='no-btn'>
 						<img
 							src={hidden ? hide : unhide}
 							alt={hidden ? 'hide' : 'show'}

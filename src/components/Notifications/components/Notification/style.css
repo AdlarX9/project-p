@@ -4,7 +4,7 @@
 	flex-direction: column;
 	padding: 20px;
 	margin: 20px 20px 0 0;
-	animation: .2s ease-out appear;
+	animation: 0.2s ease-out appear;
 	cursor: auto;
 	border-radius: 20px;
 	pointer-events: auto;
