@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getToken, getUser } from '../../../app/selectors'
 import {
@@ -35,6 +35,7 @@ export const useSubscribeNotifications = () => {
 		enabled: !!token,
 		retry: 0
 	})
+
 	useEffect(() => {
 		if (data?.status == 200) {
 			dispatch(logNotifications(data.data))
@@ -42,7 +43,10 @@ export const useSubscribeNotifications = () => {
 	}, [data])
 
 	const url = new URL('http://localhost:2019/.well-known/mercure')
-	url.searchParams.append('topic', 'http://localhost:3000/' + username)
+	url.searchParams.append(
+		'topic',
+		'http://localhost:3000/' + username + '/notifications'
+	)
 	const eventSource = new EventSource(url)
 	eventSource.onmessage = notification => {
 		const parsedData = JSON.parse(notification.data)
@@ -58,7 +62,7 @@ const axiosNotificationsDelete = async (token, notification) => {
 			`${process.env.REACT_APP_URL}/api/user/deleteNotification/${notification.id}`,
 			{
 				headers: {
-					Authorization: token // Ajoutez 'Bearer' pour l'authentification
+					Authorization: token
 				}
 			}
 		)
@@ -73,7 +77,7 @@ export const useRemoveNotification = () => {
 	const dispatch = useDispatch()
 
 	const mutation = useMutation({
-		mutationKey: 'deleteNotif', // `mutationKey` est une chaîne simple ici
+		mutationKey: 'deleteNotif',
 		mutationFn: notification => axiosNotificationsDelete(token, notification),
 		onSuccess: data => {
 			dispatch(deleteNotification(data))

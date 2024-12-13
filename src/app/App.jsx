@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import { CookiesProvider } from 'react-cookie'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
 	ReactQueryDevtools,
@@ -27,28 +28,32 @@ function App() {
 	const [isOpen, setIsOpen] = React.useState(false)
 
 	return (
-		<Provider store={store}>
-			<QueryClientProvider client={queryClient}>
-				<Router>
-					<Check />
-					<Notifications />
-					<Confirmation />
-					<Suspense>
-						<Routes>
-							<Route path='*' element={<Error />} />
-							<Route path='/' element={<Home />} />
-							<Route path='/settings' element={<Settings />} />
-							<Route path='/locker' element={<Locker />} />
-							<Route path='/shop' element={<Shop />} />
-							<Route path='/login' element={<Auth type='login' />} />
-							<Route path='/signup' element={<Auth type='signup' />} />
-						</Routes>
-					</Suspense>
-				</Router>
-				{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
-				<ReactQueryDevtools initialIsOpen={false} />
-			</QueryClientProvider>
-		</Provider>
+		<CookiesProvider defaultSetOptions>
+			<Provider store={store}>
+				<QueryClientProvider client={queryClient}>
+					<Router>
+						<Check />
+						<Notifications />
+						<Confirmation />
+						<Suspense>
+							<Routes>
+								<Route path='*' element={<Error />} />
+								<Route path='/' element={<Home />} />
+								<Route path='/settings' element={<Settings />} />
+								<Route path='/locker' element={<Locker />} />
+								<Route path='/shop' element={<Shop />} />
+								<Route path='/login' element={<Auth type='login' />} />
+								<Route path='/signup' element={<Auth type='signup' />} />
+							</Routes>
+						</Suspense>
+					</Router>
+					{isOpen && (
+						<ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />
+					)}
+					<ReactQueryDevtools initialIsOpen={false} />
+				</QueryClientProvider>
+			</Provider>
+		</CookiesProvider>
 	)
 }
 

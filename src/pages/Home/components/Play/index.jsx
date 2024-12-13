@@ -1,7 +1,9 @@
+import { UsePlay } from './hooks'
 import './style.css'
 import { motion } from 'framer-motion'
 
 const Play = () => {
+	const { play } = UsePlay()
 	return (
 		<motion.div
 			initial={{ opacity: 0 }}

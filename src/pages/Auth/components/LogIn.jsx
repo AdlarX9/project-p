@@ -47,7 +47,7 @@ const LogIn = () => {
 				</label>
 				<div className='password-wrapper'>
 					<input
-						className='field shadowed'
+						className='field shadowed password-field'
 						label='password'
 						id='password'
 						type={hidden ? 'password' : 'text'}

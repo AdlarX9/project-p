@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './style.css'
 import { useTransfer } from '../../../../hooks/'
 import See from '../../../Friends/components/See'

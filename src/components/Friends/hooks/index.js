@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { friendsSlice } from '../friendsSlice'
+import { reduxAddFriend, reduxRemoveFriend } from '../friendsSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getToken } from '../../../app/selectors'
 
@@ -28,7 +28,7 @@ export const useAddFriend = () => {
 	const mutation = useMutation({
 		mutationFn: axiosAddFriend,
 		onSuccess: data => {
-			dispatch(friendsSlice.actions.add(data))
+			dispatch(reduxAddFriend(data))
 		}
 	})
 
@@ -61,7 +61,7 @@ export const useRemoveFriend = () => {
 	const mutation = useMutation({
 		mutationFn: axiosRemoveFriend,
 		onSuccess: data => {
-			dispatch(friendsSlice.actions.remove(data))
+			dispatch(reduxRemoveFriend(data))
 		}
 	})
 

@@ -31,10 +31,20 @@ const notificationsSlice = createSlice({
 			)
 			saveStateNotifications(updatedState)
 			return updatedState
+		},
+
+		logNotificationsOut: () => {
+			const state = []
+			saveStateNotifications(state)
+			return state
 		}
 	}
 })
 
-export const { logNotifications, receiveNotification, deleteNotification } =
-	notificationsSlice.actions
+export const {
+	logNotifications,
+	receiveNotification,
+	deleteNotification,
+	logNotificationsOut
+} = notificationsSlice.actions
 export default notificationsSlice.reducer

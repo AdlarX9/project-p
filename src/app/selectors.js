@@ -1,4 +1,6 @@
-export const getUser = state => state.user || {}
+export const getState = state => state
+
+export const getUser = state => getState(state).user || {}
 
 export const getToken = state => getUser(state)?.token || ''
 

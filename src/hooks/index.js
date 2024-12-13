@@ -1,36 +1,40 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { userSlice } from '../app/userSlice'
+import { logUser, logPersoInf, logUserOut } from '../app/userSlice'
+import { logFriendsOut, reduxLogFriends } from '../components/Friends/friendsSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { getToken, getUser } from '../app/selectors'
 import { useLocation } from 'react-router-dom'
-import { friendsSlice } from '../components/Friends/friendsSlice'
+import { useCookies } from 'react-cookie'
+import { logNotificationsOut } from '../components/Notifications/notificationsSlice'
 
-const axiosLogin = async data => {
+const axiosLoginFromIdentifiers = async data => {
 	return axios
 		.post(process.env.REACT_APP_URL + '/api/login', data)
 		.then(response => response.data)
 		.catch(error => {
-			throw new Error('Mot de passe ou identifiant invalide !')
+			throw new Error(error.response.data.message || 'Error while trying to log in')
 		})
 }
 
 export const useLogin = () => {
 	const dispatch = useDispatch()
+	const [cookies, setCookie, _] = useCookies(['refresh_token'])
 
 	const mutation = useMutation({
-		mutationFn: axiosLogin,
-		onSuccess: (data, variables, context) => {
-			dispatch(userSlice.actions.login(data.token))
+		mutationFn: axiosLoginFromIdentifiers,
+		onSuccess: data => {
+			setCookie('refresh_token', data.refresh_token, {
+				path: '/',
+				maxAge: 31_536_000
+			})
+			dispatch(logUser(data.token))
 		}
 	})
 
 	const login = (username, password) => {
-		mutation.mutate({
-			username: username,
-			password: password
-		})
+		mutation.mutate({ username, password })
 	}
 
 	return {
@@ -39,39 +43,96 @@ export const useLogin = () => {
 	}
 }
 
+export const useLogout = () => {
+	const dispatch = useDispatch()
+	const [, _, removeCookie] = useCookies(['refresh_token'])
+
+	return {
+		logout: () => {
+			removeCookie('refresh_token', {
+				path: '/'
+			})
+			dispatch(logUserOut())
+			dispatch(logFriendsOut())
+			dispatch(logNotificationsOut())
+		}
+	}
+}
+
+const axiosRenewAccessToken = async ({ refresh_token }) => {
+	return axios
+		.post(
+			process.env.REACT_APP_URL + '/api/token/refresh',
+			{},
+			{
+				headers: {
+					Authorization: `Bearer ${refresh_token}`
+				}
+			}
+		)
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error(error.response.data.message)
+		})
+}
+
+export const useRenewToken = () => {
+	const dispatch = useDispatch()
+	const [cookies, setCookie, _] = useCookies(['refresh_token'])
+
+	const mutation = useMutation({
+		mutationFn: axiosRenewAccessToken,
+		onSuccess: data => {
+			setCookie('refresh_token', data.refresh_token, {
+				path: '/',
+				maxAge: 31_536_000
+			})
+			dispatch(logUser(data.token))
+		}
+	})
+
+	return {
+		renewToken: async () => {
+			mutation.mutate(cookies.refresh_token)
+		}
+	}
+}
+
 const axiosMe = async token => {
 	return axios
-		.get(process.env.REACT_APP_URL + '/api/user/me', {
+		.get(`${process.env.REACT_APP_URL}/api/user/me`, {
 			headers: {
 				Authorization: token
 			}
 		})
-		.then(response => ({ data: response.data, code: response.statusCode }))
-		.catch(error => error)
+		.then(response => ({ data: response.data, code: response.status }))
+		.catch(error => ({
+			data: error.response?.data || null,
+			code: error.response?.status || 500
+		}))
 }
 
 export const useLogged = () => {
 	const token = useSelector(getToken)
 	const [isLogged, setIsLogged] = useState(true)
 	const user = useSelector(getUser)
+	const dispatch = useDispatch()
 	const { pathname } = useLocation()
 
 	const query = useQuery({
 		queryKey: ['user'],
 		queryFn: () => axiosMe(token),
 		enabled: !!token,
-		retry: 0
+		retry: 3
 	})
 
 	useEffect(() => {
-		if (query.data?.status === 401 || !user?.token) {
+		if (query.data?.code === 401 || !user?.token) {
 			setIsLogged(false)
-			query.refetch()
-		} else if (!isLogged) {
+		} else {
 			setIsLogged(true)
-			query.refetch()
 		}
-	}, [query.isPending, user])
+	}, [query.data, user])
 
 	useEffect(() => {
 		if (pathname === '/') {
@@ -96,7 +157,7 @@ export const useSignup = () => {
 	const mutation = useMutation({
 		mutationFn: axiosSignup,
 		onSuccess: data => {
-			dispatch(userSlice.actions.login(data.token))
+			dispatch(login(data.token))
 		}
 	})
 
@@ -134,7 +195,7 @@ export const useDelete = () => {
 	const mutation = useMutation({
 		mutationFn: axiosDelete,
 		onSuccess: () => {
-			dispatch(userSlice.actions.logout())
+			dispatch(logUserOut())
 		}
 	})
 
@@ -164,8 +225,8 @@ export const useTransfer = () => {
 	const mutation = useMutation({
 		mutationFn: axiosTransfer,
 		onSuccess: data => {
-			dispatch(userSlice.actions.logPersoInf(data))
-			dispatch(friendsSlice.actions.logFriends(data))
+			dispatch(logPersoInf(data))
+			dispatch(reduxLogFriends(data))
 		},
 		onError: error => {
 			console.error('Erreur lors du transfert :', error.message)

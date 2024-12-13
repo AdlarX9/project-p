@@ -162,6 +162,15 @@ html {
 	cursor: pointer;
 }
 
+.field {
+	margin-top: 10px;
+	padding: 20px;
+	border-radius: 20px;
+	font-size: 0.8em;
+	margin-bottom: 10px;
+	background: #d4fdca;
+}
+
 .c-pointer {
 	cursor: pointer;
 }
@@ -188,6 +197,10 @@ html {
 
 .bg-blue {
 	background: var(--blue);
+}
+
+.bg-green {
+	background: var(--green);
 }
 
 .p-20 {

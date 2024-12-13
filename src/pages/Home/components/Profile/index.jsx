@@ -1,30 +1,29 @@
 import './style.css'
 import profile from '../../../../assets/profile.png'
-import logout from '../../../../assets/logout.png'
+import logoutImage from '../../../../assets/logout.png'
 import PopUp from '../../../../components/PopUp'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser } from '../../../../app/selectors'
-import { userSlice } from '../../../../app/userSlice'
 import { useNavigate } from 'react-router-dom'
-import { useDelete } from '../../../../hooks'
+import { useDelete, useLogout } from '../../../../hooks'
+import { confirm } from '../../../../components/Confirmation'
 
 const Profile = () => {
 	const [open, setOpen] = useState(false)
 	const user = useSelector(getUser)
-
 	const { deleteAccount } = useDelete()
-
-	const dispatch = useDispatch()
+	const { logout } = useLogout()
 	const navigate = useNavigate()
 
 	const handleDelete = () => {
-		const confirmation = window.confirm(
-			'Êtes-vous sur de vouloir supprimer votre compte ?'
-		)
-		if (confirmation) {
-			deleteAccount()
-		} else return
+		confirm({
+			message: 'Do you really want to delte your account?'
+		}).then(result => {
+			if (result) {
+				deleteAccount()
+			}
+		})
 	}
 
 	return (
@@ -41,11 +40,8 @@ const Profile = () => {
 						<p className='cartoon-short-txt'>{user.money}</p>
 					</div>
 
-					<button
-						className='logout-btn link'
-						onClick={() => dispatch(userSlice.actions.logout())}
-					>
-						<img src={logout} alt='disconnect' />
+					<button className='logout-btn link' onClick={logout}>
+						<img src={logoutImage} alt='disconnect' />
 						Logout
 					</button>
 

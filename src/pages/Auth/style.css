@@ -19,18 +19,13 @@
 	font-weight: 100;
 }
 
-.field {
-	margin-top: 10px;
-	padding: 20px;
-	border-radius: 20px;
-	font-size: 0.8em;
-	margin-bottom: 10px;
-	background: #d4fdca;
-}
-
 .password-wrapper {
 	display: flex;
 	position: relative;
+}
+
+.password-field {
+	width: 100%;
 }
 
 .password-wrapper img {
@@ -38,7 +33,7 @@
 	height: 70px;
 	width: auto;
 	top: 50%;
-	right: 20px;
+	right: 35px;
 	transform: translateY(-50%);
 	cursor: pointer;
 }
@@ -59,6 +54,7 @@
 	color: rgb(180, 0, 0);
 	text-transform: none;
 	font-family: monospace;
+	text-align: center;
 }
 
 .auth-loader {

@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { userSlice } from './userSlice'
-import { friendsSlice } from '../components/Friends/friendsSlice'
+import userReducer from './userSlice'
+import friendsReducer from '../components/Friends/friendsSlice'
 import notificationsReducer from '../components/Notifications/notificationsSlice'
 
 const defaultState = {
@@ -63,8 +63,9 @@ let state = loadState()
 export const store = configureStore({
 	preloadedState: state,
 	reducer: combineReducers({
-		user: userSlice.reducer,
-		friends: friendsSlice.reducer,
+		user: userReducer,
+		friends: friendsReducer,
 		notifications: notificationsReducer
-	})
+	}),
+	devTools: true
 })

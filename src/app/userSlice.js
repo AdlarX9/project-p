@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { saveStateFriends, saveStateUser } from './store'
+import { saveStateFriends, saveStateNotifications, saveStateUser } from './store'
 
-export const userSlice = createSlice({
+const userSlice = createSlice({
 	name: 'user',
 	initialState: {},
 	reducers: {
-		login: (currentState, action) => {
+		logUser: (currentState, action) => {
 			const user = {
 				token: 'bearer ' + action.payload
 			}
@@ -28,14 +28,17 @@ export const userSlice = createSlice({
 			return state.user
 		},
 
-		logout: () => {
+		logUserOut: () => {
 			const state = {
 				friends: [],
-				user: {}
+				user: {},
+				notifications: []
 			}
 			saveStateUser(state.user)
-			saveStateFriends(state.friends)
 			return state.user
 		}
 	}
 })
+
+export const { logUser, logPersoInf, logUserOut } = userSlice.actions
+export default userSlice.reducer
