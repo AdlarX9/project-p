@@ -18,6 +18,7 @@ import Error from '../pages/Error/'
 import Settings from '../pages/Settings/'
 import Locker from '../pages/Locker/'
 import Shop from '../pages/Shop/'
+import MatchmakingIndicator from '../components/MatchmakingIndicator'
 
 const Home = lazy(() => import('../pages/Home/'))
 const Auth = lazy(() => import('../pages/Auth/'))
@@ -34,7 +35,6 @@ function App() {
 					<Router>
 						<Check />
 						<Notifications />
-						<Confirmation />
 						<Suspense>
 							<Routes>
 								<Route path='*' element={<Error />} />
@@ -46,6 +46,8 @@ function App() {
 								<Route path='/signup' element={<Auth type='signup' />} />
 							</Routes>
 						</Suspense>
+						<Confirmation />
+						<MatchmakingIndicator />
 					</Router>
 					{isOpen && (
 						<ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />

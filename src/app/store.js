@@ -2,11 +2,13 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './userSlice'
 import friendsReducer from '../components/Friends/friendsSlice'
 import notificationsReducer from '../components/Notifications/notificationsSlice'
+import matchmakingReducer from '../pages/Home/components/Play/matchmakingSlice'
 
 const defaultState = {
 	user: {},
 	friends: [],
-	notifications: []
+	notifications: [],
+	matchmaking: 'nothing'
 }
 
 export const saveStateUser = reduxState => {
@@ -47,7 +49,8 @@ const loadState = () => {
 		const serializedState = {
 			user: JSON.parse(user),
 			friends: JSON.parse(friends),
-			notifications: JSON.parse(notifications)
+			notifications: JSON.parse(notifications),
+			matchmaking: 'nothing'
 		}
 		if (serializedState?.friends === null || serializedState?.user === null) {
 			return defaultState
@@ -65,7 +68,8 @@ export const store = configureStore({
 	reducer: combineReducers({
 		user: userReducer,
 		friends: friendsReducer,
-		notifications: notificationsReducer
+		notifications: notificationsReducer,
+		matchmaking: matchmakingReducer
 	}),
 	devTools: true
 })

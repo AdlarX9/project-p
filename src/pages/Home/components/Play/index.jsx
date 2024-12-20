@@ -10,7 +10,7 @@ const Play = () => {
 			whileInView={{ opacity: 1 }}
 			whileHover={{ scale: 1.05 }}
 		>
-			<button className='int-btn skewed play-btn'>
+			<button className='int-btn skewed play-btn' onClick={() => play()}>
 				<span>play</span>
 			</button>
 		</motion.div>
