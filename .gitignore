@@ -1,3 +1,9 @@
+# miscellanous
+/.DS_Store
+/composer.lock
+/symfony.lock
+/updates.db
+
 
 ###> symfony/framework-bundle ###
 /.env.local

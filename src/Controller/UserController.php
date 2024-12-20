@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Notification;
-use App\Entity\User;
 use App\Repository\NotificationRepository;
 use App\Repository\UserRepository;
 use App\Utils\Functions;

@@ -25,7 +25,7 @@ class Functions {
             'id' => $notification->getId()
         ];
         $jsonData = json_encode($data);
-        $update = new Update("http://localhost:3000/" . $user->getUsername(), $jsonData);
+        $update = new Update("http://localhost:3000/" . $user->getUsername() . '/notifications', $jsonData);
         $publisher($update);
 	}
 }

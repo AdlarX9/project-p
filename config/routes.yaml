@@ -7,3 +7,7 @@ controllers:
 api_login_check:
     path: /api/login
     methods: ['GET', 'POST']
+
+gesdinet_jwt_refresh_token:
+    path: /api/token/refresh
+    methods: ['GET', 'POST']
