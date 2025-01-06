@@ -162,4 +162,27 @@ class UserController extends AbstractController
         // Retourner une réponse avec l'ID supprimé et code HTTP_OK
         return new JsonResponse(['id' => $id], Response::HTTP_OK);
     }
+
+
+
+    #[Route('/emptyNotifications', name: 'emptyNotifications', methods: ['DELETE'])]
+    public function emptyNotifications(NotificationRepository $notificationRepository, EntityManagerInterface $entityManager): JsonResponse {
+        // Récupérer toutes les notifications de l'utilisateur
+        $user = $this->getUser();
+        $notificationsList = $notificationRepository->findByUser($user);
+
+        // Vérifier si il y a des notifications
+        if (empty($notificationsList)) {
+            return new JsonResponse(['message' => 'No notifications found'], Response::HTTP_NO_CONTENT);
+        }
+
+        // Supprimer toutes les notifications
+        foreach ($notificationsList as $notification) {
+            $entityManager->remove($notification);
+        }
+
+        // Enregistrer les modifications et retourner une réponse avec un message et code HTTP_NO_CONTENT
+        $entityManager->flush();
+        return new JsonResponse(['message' => 'All notifications deleted'], Response::HTTP_NO_CONTENT);
+    }
 }
