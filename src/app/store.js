@@ -8,7 +8,7 @@ const defaultState = {
 	user: {},
 	friends: [],
 	notifications: [],
-	matchmaking: 'nothing'
+	matchmaking: { state: 'nothing', id: null }
 }
 
 export const saveStateUser = reduxState => {

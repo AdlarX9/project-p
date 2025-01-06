@@ -8,6 +8,7 @@ import { getToken, getUser } from '../app/selectors'
 import { useLocation } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import { logNotificationsOut } from '../components/Notifications/notificationsSlice'
+import { matchmakingNothing } from '../pages/Home/components/Play/matchmakingSlice'
 
 const axiosLoginFromIdentifiers = async data => {
 	return axios
@@ -20,7 +21,7 @@ const axiosLoginFromIdentifiers = async data => {
 
 export const useLogin = () => {
 	const dispatch = useDispatch()
-	const [cookies, setCookie, _] = useCookies(['refresh_token'])
+	const [_, setCookie, __] = useCookies(['refresh_token'])
 
 	const mutation = useMutation({
 		mutationFn: axiosLoginFromIdentifiers,
@@ -47,16 +48,17 @@ export const useLogout = () => {
 	const dispatch = useDispatch()
 	const [, _, removeCookie] = useCookies(['refresh_token'])
 
-	return {
-		logout: () => {
-			removeCookie('refresh_token', {
-				path: '/'
-			})
-			dispatch(logUserOut())
-			dispatch(logFriendsOut())
-			dispatch(logNotificationsOut())
-		}
+	const logout = () => {
+		removeCookie('refresh_token', {
+			path: '/'
+		})
+		dispatch(logUserOut())
+		dispatch(logFriendsOut())
+		dispatch(logNotificationsOut())
+		dispatch(matchmakingNothing())
 	}
+
+	return logout
 }
 
 const axiosRenewAccessToken = async ({ refresh_token }) => {
@@ -116,7 +118,6 @@ export const useLogged = () => {
 	const token = useSelector(getToken)
 	const [isLogged, setIsLogged] = useState(true)
 	const user = useSelector(getUser)
-	const dispatch = useDispatch()
 	const { pathname } = useLocation()
 
 	const query = useQuery({

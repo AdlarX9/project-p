@@ -6,9 +6,16 @@ const notificationsSlice = createSlice({
 	initialState: [],
 	reducers: {
 		logNotifications: (state, action) => {
-			const notifications = action.payload
-			saveStateNotifications(notifications)
-			return notifications
+			if (
+				Array.isArray(action.payload) &&
+				action.payload.forEach(notification => notification?.id)
+			) {
+				const notifications = action.payload
+				saveStateNotifications(notifications)
+				return notifications
+			} else {
+				return []
+			}
 		},
 
 		receiveNotification: (state, action) => {
@@ -17,7 +24,7 @@ const notificationsSlice = createSlice({
 				action.payload
 			]
 
-			if (notifications.length === state.length) {
+			if (notifications.length === state.length || !action.payload?.id) {
 				return state
 			} else {
 				saveStateNotifications(notifications)

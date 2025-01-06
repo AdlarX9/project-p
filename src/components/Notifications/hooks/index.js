@@ -6,8 +6,10 @@ import { getToken, getUser } from '../../../app/selectors'
 import {
 	deleteNotification,
 	logNotifications,
+	logNotificationsOut,
 	receiveNotification
 } from '../notificationsSlice'
+import { useMercureContext } from '../../../app/MercureContext'
 
 const axiosNotificationsGet = async token => {
 	try {
@@ -25,9 +27,18 @@ const axiosNotificationsGet = async token => {
 	}
 }
 
+const handleNotification = ({ type, parsedData, dispatch }) => {
+	if (type !== 'notification') {
+		return
+	}
+
+	dispatch(receiveNotification(parsedData))
+}
+
 export const useSubscribeNotifications = () => {
 	const { username, token } = useSelector(getUser)
 	const dispatch = useDispatch()
+	const { addTopic } = useMercureContext()
 
 	const { data } = useQuery({
 		queryKey: ['notificationSubscribe'],
@@ -42,16 +53,10 @@ export const useSubscribeNotifications = () => {
 		}
 	}, [data])
 
-	const url = new URL('http://localhost:2019/.well-known/mercure')
-	url.searchParams.append(
-		'topic',
-		'http://localhost:3000/' + username + '/notifications'
-	)
-	const eventSource = new EventSource(url)
-	eventSource.onmessage = notification => {
-		const parsedData = JSON.parse(notification.data)
-		dispatch(receiveNotification(parsedData))
-	}
+	const topic = process.env.REACT_APP_CLIENT_URL + '/' + username + '/notifications'
+	useEffect(() => {
+		addTopic(topic, handleNotification)
+	}, [topic])
 
 	return data
 }
@@ -92,4 +97,39 @@ export const useRemoveNotification = () => {
 	}
 
 	return remove
+}
+
+const axiosEmptyNotifications = async token => {
+	try {
+		const response = await axios.delete(
+			process.env.REACT_APP_URL + '/api/user/emptyNotifications',
+			{
+				headers: {
+					Authorization: token
+				}
+			}
+		)
+		return response.data
+	} catch (error) {
+		throw new Error(error.message)
+	}
+}
+
+export const useEmptyNotifications = () => {
+	const token = useSelector(getToken)
+	const dispatch = useDispatch()
+
+	const mutation = useMutation({
+		mutationKey: 'emptyNotifications',
+		mutationFn: () => axiosEmptyNotifications(token),
+		onSuccess: () => {
+			dispatch(logNotificationsOut())
+		}
+	})
+
+	const emptyNotifications = () => {
+		mutation.mutate()
+	}
+
+	return { emptyNotifications, ...mutation }
 }

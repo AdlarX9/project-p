@@ -131,7 +131,6 @@ html {
 }
 
 .shadowed {
-	position: relative;
 	border: 4px black solid;
 	box-shadow:
 		inset 0 0 0 5px rgba(0, 0, 0, 0.3),
@@ -179,6 +178,10 @@ html {
 	cursor: auto;
 }
 
+.c-auto {
+	cursor: auto;
+}
+
 .red {
 	color: red;
 }
@@ -201,6 +204,10 @@ html {
 
 .bg-green {
 	background: var(--green);
+}
+
+.bg-yellow {
+	background: var(--yellow);
 }
 
 .p-20 {

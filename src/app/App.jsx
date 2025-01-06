@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-query-devtools'
 
 import { store } from './store'
+import { MercureContextProvider } from './MercureContext'
 
 import Check from './Check'
 import Notifications from '../components/Notifications/'
@@ -25,30 +26,38 @@ const Auth = lazy(() => import('../pages/Auth/'))
 
 const queryClient = new QueryClient()
 
-function App() {
+const App = () => {
 	const [isOpen, setIsOpen] = React.useState(false)
 
 	return (
 		<CookiesProvider defaultSetOptions>
 			<Provider store={store}>
 				<QueryClientProvider client={queryClient}>
-					<Router>
-						<Check />
-						<Notifications />
-						<Suspense>
-							<Routes>
-								<Route path='*' element={<Error />} />
-								<Route path='/' element={<Home />} />
-								<Route path='/settings' element={<Settings />} />
-								<Route path='/locker' element={<Locker />} />
-								<Route path='/shop' element={<Shop />} />
-								<Route path='/login' element={<Auth type='login' />} />
-								<Route path='/signup' element={<Auth type='signup' />} />
-							</Routes>
-						</Suspense>
-						<Confirmation />
-						<MatchmakingIndicator />
-					</Router>
+					<MercureContextProvider>
+						<Router>
+							<Check />
+							<Notifications />
+							<Suspense>
+								<Routes>
+									<Route path='*' element={<Error />} />
+									<Route path='/' element={<Home />} />
+									<Route path='/settings' element={<Settings />} />
+									<Route path='/locker' element={<Locker />} />
+									<Route path='/shop' element={<Shop />} />
+									<Route
+										path='/login'
+										element={<Auth type='login' />}
+									/>
+									<Route
+										path='/signup'
+										element={<Auth type='signup' />}
+									/>
+								</Routes>
+							</Suspense>
+							<Confirmation />
+							<MatchmakingIndicator />
+						</Router>
+					</MercureContextProvider>
 					{isOpen && (
 						<ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />
 					)}

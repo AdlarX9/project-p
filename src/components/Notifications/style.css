@@ -11,3 +11,14 @@
 	align-items: end;
 	pointer-events: none;
 }
+
+.notifications-delete-everything {
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 20px;
+	margin: 20px;
+	border-radius: 10px;
+	pointer-events: all;
+	cursor: pointer;
+}

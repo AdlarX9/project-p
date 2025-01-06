@@ -2,22 +2,40 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const matchmakingSlice = createSlice({
 	name: 'matchmaking',
-	initialState: 'nothing',
+	initialState: {
+		state: 'nothing',
+		id: null
+	},
 	reducers: {
-		matchmakingNothing: () => {
-			return 'nothing'
+		matchmakingNothing: prevState => {
+			return {
+				...prevState,
+				state: 'nothing'
+			}
 		},
-		matchmakingPending: () => {
-			return 'pending'
+		matchmakingPending: prevState => {
+			return {
+				...prevState,
+				state: 'pending'
+			}
 		},
-		matchmakingInQueue: () => {
-			return 'inQueue'
+		matchmakingInQueue: (_, action) => {
+			return {
+				id: action.payload,
+				state: 'inQueue'
+			}
 		},
-		matchmakingConnecting: () => {
-			return 'connecting'
+		matchmakingConnecting: prevState => {
+			return {
+				...prevState,
+				state: 'connecting'
+			}
 		},
-		matchmakingConnected: () => {
-			return 'connected'
+		matchmakingConnected: prevState => {
+			return {
+				...prevState,
+				state: 'connected'
+			}
 		}
 	}
 })

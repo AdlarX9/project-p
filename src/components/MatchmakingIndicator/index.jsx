@@ -1,14 +1,22 @@
 import './style.css'
 import { useSelector } from 'react-redux'
-import { getMatchmaking } from '../../app/selectors'
+import { getMatchmakingState } from '../../app/selectors'
 
 const MatchmakingIndicator = () => {
-	const matchmakingState = useSelector(getMatchmaking)
+	const matchmakingState = useSelector(getMatchmakingState)
+	const messages = {
+		pending: 'Pending...',
+		connecting: 'Connecting...',
+		inQueue: 'In Queue...',
+		connected: 'Connected...'
+	}
+	const isValidState = Object.hasOwn(messages, matchmakingState)
+
 	return (
 		<section className='matchmaking-wrapper'>
-			{matchmakingState === 'pending' && (
+			{isValidState && (
 				<div className='matchmaking-pending matchmaking-styled-bg'>
-					<span className='cartoon2-txt'>Matching...</span>
+					<span className='cartoon2-txt'>{messages[matchmakingState]}</span>
 				</div>
 			)}
 		</section>

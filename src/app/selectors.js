@@ -6,4 +6,8 @@ export const getFriends = state => state.friends || []
 
 export const getNotifications = state => state.notifications || []
 
-export const getMatchmaking = state => state.matchmaking || 'nothing'
+export const getMatchmaking = state => state.matchmaking || { state: 'nothing', id: null }
+
+export const getMatchmakingState = state => getMatchmaking(state).state || 'nothing'
+
+export const getMatchmakingId = state => getMatchmaking(state).id || null

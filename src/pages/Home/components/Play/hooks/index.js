@@ -1,12 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { getToken, getUser } from '../../../../../app/selectors'
+import { getMatchmakingId, getToken, getUser } from '../../../../../app/selectors'
 import {
 	matchmakingConnecting,
 	matchmakingInQueue,
+	matchmakingNothing,
 	matchmakingPending
 } from '../matchmakingSlice'
+import { useEffect, useRef } from 'react'
+import { useMercureContext } from '../../../../../app/MercureContext'
 
 const axiosPlay = async token => {
 	return axios
@@ -26,40 +29,114 @@ const axiosPlay = async token => {
 		})
 }
 
+const axiosPong = async user => {
+	return axios
+		.post(
+			process.env.REACT_APP_URL + '/api/queue/pong',
+			{},
+			{
+				headers: {
+					Authorization: user.token
+				}
+			}
+		)
+		.catch(error => {
+			throw new Error(error.response.data.message)
+		})
+}
+
+const handleUpdate = ({ type, parsedData, dispatch, user }) => {
+	if (type !== 'matchmakingUpdate') {
+		return
+	}
+
+	switch (parsedData.message) {
+		case 'in_queue':
+			dispatch(matchmakingInQueue(parsedData.messageId))
+			break
+		case 'connecting':
+			dispatch(matchmakingConnecting())
+			break
+		case 'ping':
+			axiosPong(user)
+			break
+		default:
+			break
+	}
+}
+
 export const UsePlay = () => {
 	const dispatch = useDispatch()
 	const token = useSelector(getToken)
 	const user = useSelector(getUser)
+	const eventSourceRef = useRef(null)
+	const { addTopic } = useMercureContext()
+
+	const subscribeMathcmakingUpdate = () => {
+		const topic =
+			process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/matchmaking_update'
+		addTopic(topic, handleUpdate)
+	}
+
 	const mutation = useMutation({
 		mutationKey: 'play',
 		mutationFn: () => axiosPlay(token),
 		onSuccess: () => {
 			dispatch(matchmakingPending())
+			subscribeMathcmakingUpdate()
 		}
 	})
 
 	const play = () => {
 		mutation.mutate()
-		const url = new URL('http://localhost:2019/.well-known/mercure')
-		url.searchParams.append(
-			'topic',
-			'http://localhost:3000/' + user.username + '/matchmaking'
-		)
-		const eventSource = new EventSource(url)
-		eventSource.onmessage = notification => {
-			const parsedData = JSON.parse(notification.data)
-			switch (parsedData.message) {
-				case 'queued':
-					dispatch(matchmakingInQueue())
-					break
-				case 'matched':
-					dispatch(matchmakingConnecting())
-					break
-				default:
-					break
-			}
-		}
 	}
 
+	// Cleanup EventSource lors du démontage du composant
+	useEffect(() => {
+		return () => {
+			if (eventSourceRef.current) {
+				eventSourceRef.current.close()
+			}
+		}
+	}, [])
+
 	return { play, ...mutation }
+}
+
+const axiosCancelPlay = async (token, messageId) => {
+	return axios
+		.delete(process.env.REACT_APP_URL + '/api/queue/cancel_play', {
+			headers: {
+				Authorization: token
+			},
+			data: { messageId }
+		})
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error(error.response.data.message)
+		})
+}
+
+export const useCancelPlay = () => {
+	const dispatch = useDispatch()
+	const { username, token } = useSelector(getUser)
+	const { removeTopic } = useMercureContext()
+	const messageId = useSelector(getMatchmakingId)
+
+	const mutation = useMutation({
+		mutationKey: 'cancelPlay',
+		mutationFn: () => axiosCancelPlay(token, messageId),
+		onSuccess: () => {
+			const topic =
+				process.env.REACT_APP_CLIENT_URL + '/' + username + '/matchmaking_update'
+			removeTopic(topic)
+			dispatch(matchmakingNothing())
+		}
+	})
+
+	const cancelPlay = () => {
+		mutation.mutate()
+	}
+
+	return cancelPlay
 }

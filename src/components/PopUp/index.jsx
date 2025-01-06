@@ -17,7 +17,9 @@ const PopUp = ({ children, open, setOpen, className }) => {
 		}, 100)
 	}
 
-	if (!open) return null
+	if (!open) {
+		return null
+	}
 
 	return (
 		<section className={'popup-background ' + closingBg}>
