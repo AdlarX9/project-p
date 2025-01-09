@@ -14,15 +14,11 @@ const Play = () => {
 			initial={{ opacity: 0 }}
 			whileInView={{
 				opacity:
-					matchmakingState === 'connecting' || matchmakingState === 'pending'
-						? 0.5
-						: 1
+					matchmakingState === 'connecting' || matchmakingState === 'pending' ? 0.5 : 1
 			}}
 			whileHover={{
 				scale:
-					matchmakingState === 'connecting' || matchmakingState === 'pending'
-						? 1
-						: 1.05
+					matchmakingState === 'connecting' || matchmakingState === 'pending' ? 1 : 1.05
 			}}
 		>
 			<button
@@ -32,9 +28,7 @@ const Play = () => {
 					(matchmakingState !== 'nothing' ? ' bg-red' : ' bg-yellow')
 				}
 				onClick={matchmakingState === 'nothing' ? play : cancelPlay}
-				disabled={
-					matchmakingState === 'connecting' || matchmakingState === 'pending'
-				}
+				disabled={matchmakingState === 'connecting' || matchmakingState === 'pending'}
 			>
 				<span>{matchmakingState === 'nothing' ? 'play' : 'cancel'}</span>
 			</button>

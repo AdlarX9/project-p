@@ -3,6 +3,7 @@ import { useEmptyNotifications, useSubscribeNotifications } from './hooks'
 import { useSelector } from 'react-redux'
 import { getNotifications } from '../../app/selectors'
 import Notification from './components/Notification'
+import { useEffect } from 'react'
 
 const Notifications = () => {
 	useSubscribeNotifications()

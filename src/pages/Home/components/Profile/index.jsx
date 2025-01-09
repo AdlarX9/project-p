@@ -52,10 +52,7 @@ const Profile = () => {
 						<button className='link' onClick={() => navigate('/signup')}>
 							Sign up again
 						</button>
-						<button
-							className='delet-account-btn link red'
-							onClick={handleDelete}
-						>
+						<button className='delet-account-btn link red' onClick={handleDelete}>
 							Delete account
 						</button>
 					</div>

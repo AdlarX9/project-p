@@ -14,7 +14,7 @@ const notificationsSlice = createSlice({
 				saveStateNotifications(notifications)
 				return notifications
 			} else {
-				return []
+				return state
 			}
 		},
 
@@ -33,9 +33,7 @@ const notificationsSlice = createSlice({
 		},
 
 		deleteNotification: (state, action) => {
-			const updatedState = state.filter(
-				notification => notification.id !== action.payload.id
-			)
+			const updatedState = state.filter(notification => notification.id !== action.payload.id)
 			saveStateNotifications(updatedState)
 			return updatedState
 		},
@@ -48,10 +46,6 @@ const notificationsSlice = createSlice({
 	}
 })
 
-export const {
-	logNotifications,
-	receiveNotification,
-	deleteNotification,
-	logNotificationsOut
-} = notificationsSlice.actions
+export const { logNotifications, receiveNotification, deleteNotification, logNotificationsOut } =
+	notificationsSlice.actions
 export default notificationsSlice.reducer

@@ -13,14 +13,11 @@ import { useMercureContext } from '../../../app/MercureContext'
 
 const axiosNotificationsGet = async token => {
 	try {
-		const response = await axios.get(
-			process.env.REACT_APP_URL + '/api/user/getNotifications',
-			{
-				headers: {
-					Authorization: token
-				}
+		const response = await axios.get(process.env.REACT_APP_URL + '/api/user/getNotifications', {
+			headers: {
+				Authorization: token
 			}
-		)
+		})
 		return { data: response.data, status: response.status }
 	} catch (error) {
 		return error

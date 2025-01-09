@@ -23,11 +23,7 @@ const PopUp = ({ children, open, setOpen, className }) => {
 
 	return (
 		<section className={'popup-background ' + closingBg}>
-			<div
-				className={['cartoon-txt shadowed popup', className, closingPopup].join(
-					' '
-				)}
-			>
+			<div className={['cartoon-txt shadowed popup', className, closingPopup].join(' ')}>
 				{children}
 				<button className='shadowed-simple popup-cancel' onClick={closePopUp}>
 					<img src={cancel} alt='close' draggable='false' />

@@ -13,33 +13,26 @@ const Search = () => {
 	const token = useSelector(getToken)
 	const friends = useSelector(getFriends)
 
-	const {
-		isLoading,
-		data,
-		error,
-		refetch,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage
-	} = useInfiniteQuery({
-		queryKey: ['searchUsers', username],
-		queryFn: async ({ pageParam = 1 }) => {
-			const response = await axios.get(
-				`${process.env.REACT_APP_URL}/api/friends/search?limit=10&page=${pageParam}&username=${username}`,
-				{
-					headers: { Authorization: token }
-				}
-			)
-			if (username.trim() === '') return []
-			return response.data
-		},
-		initialPageParam: 1,
-		enabled: !!username,
-		getNextPageParam: (lastPage, allPages) => {
-			return lastPage.length === 10 ? allPages.length + 1 : undefined
-		},
-		retry: 0
-	})
+	const { isLoading, data, error, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
+		useInfiniteQuery({
+			queryKey: ['searchUsers', username],
+			queryFn: async ({ pageParam = 1 }) => {
+				const response = await axios.get(
+					`${process.env.REACT_APP_URL}/api/friends/search?limit=10&page=${pageParam}&username=${username}`,
+					{
+						headers: { Authorization: token }
+					}
+				)
+				if (username.trim() === '') return []
+				return response.data
+			},
+			initialPageParam: 1,
+			enabled: !!username,
+			getNextPageParam: (lastPage, allPages) => {
+				return lastPage.length === 10 ? allPages.length + 1 : undefined
+			},
+			retry: 0
+		})
 
 	const handleChange = e => {
 		setUsername(e.target.value)

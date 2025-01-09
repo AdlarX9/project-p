@@ -18,9 +18,7 @@ const Background = () => {
 			<PerspectiveCamera makeDefault position={[6, 4, -6]} fov={50} />
 			<OrbitControls target={[0, 2, 0]} />
 
-			<EffectComposer
-				resize={{ scroll: true, debounce: { scroll: 50, resize: 0 } }}
-			>
+			<EffectComposer resize={{ scroll: true, debounce: { scroll: 50, resize: 0 } }}>
 				<Vignette eskil={false} offset={0} darkness={0.6} />
 			</EffectComposer>
 		</Canvas>

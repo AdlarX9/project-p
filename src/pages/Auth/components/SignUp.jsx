@@ -56,10 +56,7 @@ const LogIn = () => {
 						onChange={e => setPassword(e.target.value)}
 					/>
 					<button onClick={() => setHidden(!hidden)} className='no-btn'>
-						<img
-							src={hidden ? hide : unhide}
-							alt={hidden ? 'hide' : 'show'}
-						/>
+						<img src={hidden ? hide : unhide} alt={hidden ? 'hide' : 'show'} />
 					</button>
 				</div>
 			</div>

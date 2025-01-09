@@ -73,8 +73,7 @@ export const UsePlay = () => {
 	const { addTopic } = useMercureContext()
 
 	const subscribeMathcmakingUpdate = () => {
-		const topic =
-			process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/matchmaking_update'
+		const topic = process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/matchmaking_update'
 		addTopic(topic, handleUpdate)
 	}
 
@@ -127,8 +126,7 @@ export const useCancelPlay = () => {
 		mutationKey: 'cancelPlay',
 		mutationFn: () => axiosCancelPlay(token, messageId),
 		onSuccess: () => {
-			const topic =
-				process.env.REACT_APP_CLIENT_URL + '/' + username + '/matchmaking_update'
+			const topic = process.env.REACT_APP_CLIENT_URL + '/' + username + '/matchmaking_update'
 			removeTopic(topic)
 			dispatch(matchmakingNothing())
 		}

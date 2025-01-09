@@ -25,10 +25,7 @@ const Friends = () => {
 				<div className='friends-popup-wrapper'>
 					<header className='friends-popup-header'>
 						<h2>Amis</h2>
-						<button
-							className='no-btn'
-							onClick={() => setIsSeeking(!isSeeking)}
-						>
+						<button className='no-btn' onClick={() => setIsSeeking(!isSeeking)}>
 							<img
 								src={isSeeking ? seeking : seeing}
 								alt={isSeeking ? 'btn-to-look' : 'btn-to-search'}
@@ -36,11 +33,7 @@ const Friends = () => {
 						</button>
 					</header>
 
-					{isSeeking ? (
-						<Search />
-					) : (
-						<See friend={friend} setFriend={setFriend} />
-					)}
+					{isSeeking ? <Search /> : <See friend={friend} setFriend={setFriend} />}
 				</div>
 			</PopUp>
 		</>

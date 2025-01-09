@@ -52,10 +52,7 @@ const FriendDetails = ({ friend, open, setOpen }) => {
 					{isFriend ? 'Is a friend' : 'Add as a friend'}
 				</button>
 				{isFriend ? (
-					<button
-						onClick={() => handleRemoveFriend()}
-						className={'link red c-pointer'}
-					>
+					<button onClick={() => handleRemoveFriend()} className={'link red c-pointer'}>
 						Remove this friend
 					</button>
 				) : (
