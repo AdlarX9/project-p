@@ -12,11 +12,6 @@
 	justify-content: center;
 	align-items: center;
 	cursor: initial;
-	animation: 0.1s linear coming-background;
-}
-
-.popup-bg-closing {
-	animation: 150ms linear coming-background-reverse;
 }
 
 .popup {
@@ -48,24 +43,14 @@
 
 .popup-friends {
 	background: var(--dark-blue);
-	animation: 0.1s ease-out coming-friends;
 	align-self: end;
 	margin-right: 40px;
 	height: 80%;
 }
 
-.popup-friends-closing {
-	animation: 150ms ease-out coming-friends-reverse;
-}
-
 .popup-profile {
-	animation: 0.1s ease-out coming-center;
 	background: #555;
 	color: white;
-}
-
-.popup-profile-closing {
-	animation: 150ms ease-out coming-center-reverse;
 }
 
 .friend-detail {
@@ -75,58 +60,6 @@
 }
 
 .popup-confirmation {
-	animation: 0.1s ease-out coming-center;
 	background: var(--yellow);
 	color: black;
-}
-
-@keyframes coming-friends {
-	0% {
-		transform: translateX(110%);
-	}
-	100% {
-		transform: translateX(0);
-	}
-}
-@keyframes coming-friends-reverse {
-	0% {
-		transform: translateX(0);
-	}
-	100% {
-		transform: translateX(110%);
-	}
-}
-
-@keyframes coming-background {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-@keyframes coming-background-reverse {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-}
-
-@keyframes coming-center {
-	0% {
-		transform: scale(0);
-	}
-	100% {
-		transform: scale(1);
-	}
-}
-@keyframes coming-center-reverse {
-	0% {
-		transform: scale(1);
-	}
-	100% {
-		transform: scale(0);
-	}
 }

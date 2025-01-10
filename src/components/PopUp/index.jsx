@@ -1,36 +1,58 @@
 import './style.css'
 import cancel from '../../assets/cancel.png'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 
 const PopUp = ({ children, open, setOpen, className }) => {
-	const [closingPopup, setClosingPopup] = useState('')
-	const [closingBg, setClosingBg] = useState('')
-
-	const closePopUp = () => {
-		setClosingPopup(className + '-closing')
-		setClosingBg('popup-bg-closing')
-
-		setTimeout(() => {
-			setOpen(false)
-			setClosingPopup('')
-			setClosingBg('')
-		}, 100)
-	}
-
-	if (!open) {
-		return null
-	}
-
 	return (
-		<section className={'popup-background ' + closingBg}>
-			<div className={['cartoon-txt shadowed popup', className, closingPopup].join(' ')}>
+		<motion.section
+			variants={backgroundVariants}
+			initial='initial'
+			animate={!open ? 'initial' : 'displayed'}
+			className='popup-background'
+		>
+			<motion.div
+				initial='initial'
+				animate={!open ? 'initial' : 'displayed'}
+				className={['cartoon-txt shadowed popup', className].join(' ')}
+				variants={className === 'popup-friends' ? positionVariants : scaleVariants}
+			>
 				{children}
-				<button className='shadowed-simple popup-cancel' onClick={closePopUp}>
+				<button className='shadowed-simple popup-cancel' onClick={() => setOpen(false)}>
 					<img src={cancel} alt='close' draggable='false' />
 				</button>
-			</div>
-		</section>
+			</motion.div>
+		</motion.section>
 	)
+}
+
+const backgroundVariants = {
+	initial: {
+		backgroundColor: 'rgba(0, 0, 0, 0)',
+		pointerEvents: 'none'
+	},
+	displayed: {
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		pointerEvents: 'auto'
+	}
+}
+
+const scaleVariants = {
+	initial: {
+		scale: 0
+	},
+	displayed: {
+		scale: 1
+	}
+}
+
+const positionVariants = {
+	initial: {
+		x: '110%'
+	},
+	displayed: {
+		x: 0
+	}
 }
 
 export default PopUp

@@ -17,21 +17,23 @@ const Play = () => {
 					matchmakingState === 'connecting' || matchmakingState === 'pending' ? 0.5 : 1
 			}}
 			whileHover={{
-				scale:
-					matchmakingState === 'connecting' || matchmakingState === 'pending' ? 1 : 1.05
+				scale: 1.05
 			}}
 		>
-			<button
-				className={
-					'int-btn skewed play-btn ' +
-					(matchmakingState === 'connecting' && 'c-auto ') +
-					(matchmakingState !== 'nothing' ? ' bg-red' : ' bg-yellow')
-				}
+			<motion.button
+				className={'int-btn skewed play-btn '}
+				style={{
+					cursor:
+						matchmakingState === 'connecting' || matchmakingState === 'pending'
+							? 'auto'
+							: 'pointer',
+					backgroundColor: matchmakingState !== 'nothing' ? 'var(--red)' : 'var(--yellow)'
+				}}
 				onClick={matchmakingState === 'nothing' ? play : cancelPlay}
 				disabled={matchmakingState === 'connecting' || matchmakingState === 'pending'}
 			>
 				<span>{matchmakingState === 'nothing' ? 'play' : 'cancel'}</span>
-			</button>
+			</motion.button>
 		</motion.div>
 	)
 }

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { saveStateFriends, saveStateNotifications, saveStateUser } from './store'
+import { saveStateFriends, saveStateUser } from './store'
 
 const userSlice = createSlice({
 	name: 'user',
@@ -34,6 +34,8 @@ const userSlice = createSlice({
 				user: {},
 				notifications: []
 			}
+			console.log('logging out')
+
 			saveStateUser(state.user)
 			return state.user
 		}

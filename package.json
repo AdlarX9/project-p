@@ -10,10 +10,8 @@
 		"@reduxjs/toolkit": "^2.5.0",
 		"@tanstack/react-query": "^5.63.0",
 		"@tanstack/react-query-devtools": "^5.63.0",
-		"@testing-library/jest-dom": "^6.6.3",
-		"@testing-library/react": "^16.1.0",
-		"@testing-library/user-event": "^14.5.2",
 		"axios": "^1.7.9",
+		"eslint": "^8.57.0",
 		"framer-motion": "^11.16.2",
 		"peerjs": "^1.5.4",
 		"react": "^18.3.1",
@@ -51,15 +49,19 @@
 		]
 	},
 	"devDependencies": {
-		"@babel/plugin-proposal-private-property-in-object": "7.21.11",
+		"@babel/plugin-transform-private-property-in-object": "^7.25.9",
 		"@tanstack/eslint-plugin-query": "^5.62.16",
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.1.0",
+		"@testing-library/user-event": "^14.5.2",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
-		"prettier": "^3.4.2",
-		"redux-devtools-extension": "^2.13.9"
+		"prettier": "^3.4.2"
 	},
-	"overrides": {
-		"nth-check": "^2.0.1",
-		"postcss": "^8.4.31"
+	"pnpm": {
+		"overrides": {
+			"postcss@<8.4.31": ">=8.4.31",
+			"nth-check@<2.0.1": ">=2.0.1"
+		}
 	}
 }

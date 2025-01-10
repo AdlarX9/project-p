@@ -25,6 +25,11 @@ const LogIn = () => {
 		login(username, password)
 	}
 
+	const toggleShowPassword = e => {
+		e.preventDefault()
+		setHidden(!hidden)
+	}
+
 	return (
 		<form className='auth-wrapper cartoon-txt' onSubmit={handleSubmit}>
 			<div className='field-wrapper'>
@@ -54,7 +59,7 @@ const LogIn = () => {
 						value={password}
 						onChange={e => setPassword(e.target.value)}
 					/>
-					<button onClick={() => setHidden(!hidden)} className='no-btn'>
+					<button onClick={toggleShowPassword} className='no-btn'>
 						<img src={hidden ? hide : unhide} alt={hidden ? 'hide' : 'show'} />
 					</button>
 				</div>

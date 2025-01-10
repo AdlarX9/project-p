@@ -13,7 +13,7 @@ const Profile = () => {
 	const [open, setOpen] = useState(false)
 	const user = useSelector(getUser)
 	const { deleteAccount } = useDelete()
-	const { logout } = useLogout()
+	const logout = useLogout()
 	const navigate = useNavigate()
 
 	const handleDelete = () => {
