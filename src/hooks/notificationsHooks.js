@@ -2,14 +2,14 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getToken, getUser } from '../../../app/selectors'
+import { getToken, getUser } from '../reduxStore/selectors'
 import {
 	deleteNotification,
 	logNotifications,
 	logNotificationsOut,
 	receiveNotification
-} from '../notificationsSlice'
-import { useMercureContext } from '../../../app/MercureContext'
+} from '../reduxStore/notificationsSlice'
+import { useMercureContext } from '../contexts/MercureContext'
 
 const axiosNotificationsGet = async token => {
 	try {
@@ -44,16 +44,13 @@ export const useSubscribeNotifications = () => {
 		retry: 0
 	})
 
+	const topic = process.env.REACT_APP_CLIENT_URL + '/' + username + '/notifications'
 	useEffect(() => {
 		if (data?.status == 200) {
 			dispatch(logNotifications(data.data))
+			addTopic(topic, handleNotification)
 		}
 	}, [data])
-
-	const topic = process.env.REACT_APP_CLIENT_URL + '/' + username + '/notifications'
-	useEffect(() => {
-		addTopic(topic, handleNotification)
-	}, [topic])
 
 	return data
 }

@@ -1,15 +1,15 @@
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { logPersoInf, logUserOut } from './userSlice'
-import { useLogged, useLogout, useRenewToken } from '../hooks'
-import { reduxLogFriends } from '../components/Friends/friendsSlice'
+import { logPersoInf } from '../reduxStore/userSlice'
+import { useLogged, useLogout, useRenewToken } from '../hooks/userHooks'
+import { reduxLogFriends } from '../reduxStore/friendsSlice'
 
 const Check = () => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
-	const { isLogged, isLoading, data, refetch } = useLogged()
+	const { isLogged, isLoading, data } = useLogged()
 	const { renewToken } = useRenewToken()
 	const logout = useLogout()
 

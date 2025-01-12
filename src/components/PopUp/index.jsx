@@ -1,6 +1,5 @@
 import './style.css'
 import cancel from '../../assets/cancel.png'
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 const PopUp = ({ children, open, setOpen, className }) => {

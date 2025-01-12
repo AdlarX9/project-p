@@ -1,15 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { saveStateNotifications } from '../../app/store'
+import { saveStateNotifications } from './store'
 
 const notificationsSlice = createSlice({
 	name: 'notifications',
 	initialState: [],
 	reducers: {
 		logNotifications: (state, action) => {
-			if (
-				Array.isArray(action.payload) &&
-				action.payload.forEach(notification => notification?.id)
-			) {
+			if (Array.isArray(action.payload)) {
 				const notifications = action.payload
 				saveStateNotifications(notifications)
 				return notifications

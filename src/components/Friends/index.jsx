@@ -4,6 +4,7 @@ import seeking from '../../assets/seeing.png'
 import seeing from '../../assets/loupe.png'
 import PopUp from '../PopUp/'
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import Search from './components/Search'
 import See from './components/See'
 
@@ -18,9 +19,15 @@ const Friends = () => {
 
 	return (
 		<>
-			<button className='int-btn friends-btn' onClick={openPopUp}>
+			<motion.button
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				whileHover={{ scale: 1.05 }}
+				className='int-btn friends-btn'
+				onClick={openPopUp}
+			>
 				<img src={friends} alt='add-friends' draggable='false' />
-			</button>
+			</motion.button>
 			<PopUp open={open} setOpen={setOpen} className='popup-friends'>
 				<div className='friends-popup-wrapper'>
 					<header className='friends-popup-header'>

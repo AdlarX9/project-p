@@ -1,15 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMatchmakingId, getToken, getUser } from '../../../../../app/selectors'
+import { getMatchmakingId, getToken, getUser } from '../reduxStore/selectors'
 import {
 	matchmakingConnecting,
 	matchmakingInQueue,
 	matchmakingNothing,
 	matchmakingPending
-} from '../matchmakingSlice'
+} from '../reduxStore/matchmakingSlice'
 import { useEffect, useRef } from 'react'
-import { useMercureContext } from '../../../../../app/MercureContext'
+import { useMercureContext } from '../contexts/MercureContext'
 
 const axiosPlay = async token => {
 	return axios

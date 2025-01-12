@@ -3,10 +3,11 @@ import profile from '../../../../assets/profile.png'
 import logoutImage from '../../../../assets/logout.png'
 import PopUp from '../../../../components/PopUp'
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getUser } from '../../../../app/selectors'
+import { useSelector } from 'react-redux'
+import { motion } from 'framer-motion'
+import { getUser } from '../../../../reduxStore/selectors'
 import { useNavigate } from 'react-router-dom'
-import { useDelete, useLogout } from '../../../../hooks'
+import { useDelete, useLogout } from '../../../../hooks/userHooks'
 import { confirm } from '../../../../components/Confirmation'
 
 const Profile = () => {
@@ -28,10 +29,16 @@ const Profile = () => {
 
 	return (
 		<>
-			<button className='int-btn profile' onClick={() => setOpen(true)}>
+			<motion.button
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				whileHover={{ scale: 1.05 }}
+				className='int-btn profile'
+				onClick={() => setOpen(true)}
+			>
 				<img src={profile} alt='profile' draggable='false' />
 				<span>{user.username}</span>
-			</button>
+			</motion.button>
 
 			<PopUp open={open} setOpen={setOpen} className='popup-profile'>
 				<div className='profile-popup-wrapper'>

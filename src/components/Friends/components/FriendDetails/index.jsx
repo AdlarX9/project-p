@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import PopUp from '../../../PopUp'
 import './style.css'
-import { useAddFriend } from '../../hooks'
+import { useAddFriend } from '../../../../hooks/friendsHooks'
 import { useSelector } from 'react-redux'
-import { getFriends } from '../../../../app/selectors'
-import { useRemoveFriend } from '../../hooks/'
+import { getFriends } from '../../../../reduxStore/selectors'
+import { useRemoveFriend } from '../../../../hooks/friendsHooks'
 import { confirm } from '../../../Confirmation'
 
 const FriendDetails = ({ friend, open, setOpen }) => {

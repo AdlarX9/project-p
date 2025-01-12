@@ -1,10 +1,12 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { getFriends, getToken } from '../../../../app/selectors'
+import { motion } from 'framer-motion'
+import { getFriends, getToken } from '../../../reduxStore/selectors'
 import axios from 'axios'
-import Loader from '../../../Loader'
-import FriendDetails from '../FriendDetails'
+import Loader from '../../Loader'
+import FriendDetails from './FriendDetails'
+import FriendButton from './FriendButton'
 
 const Search = () => {
 	const [openFriends, setOpenFriends] = useState(false)
@@ -46,9 +48,7 @@ const Search = () => {
 
 	let content
 
-	if (isLoading) {
-		content = <Loader />
-	} else if (error) {
+	if (error) {
 		content = <span className='cartoon-txt'>{error.message}</span>
 	} else if (data?.pages?.length === 0) {
 		content = <span className='cartoon2-txt'>Aucun résultat trouvé</span>
@@ -56,14 +56,7 @@ const Search = () => {
 		content = data?.pages.flatMap(page =>
 			page.map(friend => {
 				return !friends.map(user => user.id).includes(friend.id) ? (
-					<button
-						key={friend.id}
-						className='friend-fetched shadowed c-pointer no-btn'
-						onClick={() => handleOpenDetails(friend)}
-					>
-						<span className='cartoon-short-txt'>{friend.username}</span>
-						<span className='cartoon2-txt'>{friend.money}</span>
-					</button>
+					<FriendButton friend={friend} key={friend.id} onClick={handleOpenDetails} />
 				) : null
 			})
 		)
@@ -72,7 +65,9 @@ const Search = () => {
 	return (
 		<>
 			<form>
-				<input
+				<motion.input
+					initial={{ x: '100%', opacity: 0, scaleY: 0 }}
+					animate={{ x: 0, opacity: 1, scaleY: 1 }}
 					className='field shadowed'
 					type='text'
 					placeholder='Ajouter un ami'
@@ -93,12 +88,17 @@ const Search = () => {
 							: 'flat-btn ui-txt')
 					}
 				>
-					{isFetchingNextPage
-						? 'Loading more...'
-						: hasNextPage
-							? 'Load More'
-							: 'Nothing more to load'}
+					<motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }}>
+						{isFetchingNextPage ? (
+							<Loader />
+						) : hasNextPage ? (
+							'Load More'
+						) : (
+							'Nothing more to load'
+						)}
+					</motion.div>
 				</button>
+				{isLoading && <Loader />}
 			</div>
 			<FriendDetails friend={friend} open={openFriends} setOpen={setOpenFriends} />
 		</>

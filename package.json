@@ -4,7 +4,7 @@
 	"private": true,
 	"dependencies": {
 		"@mediapipe/tasks-vision": "^0.10.20",
-		"@react-three/drei": "^9.120.6",
+		"@react-three/drei": "^9.120.7",
 		"@react-three/fiber": "^8.17.12",
 		"@react-three/postprocessing": "^2.16.6",
 		"@reduxjs/toolkit": "^2.5.0",
@@ -12,7 +12,7 @@
 		"@tanstack/react-query-devtools": "^5.63.0",
 		"axios": "^1.7.9",
 		"eslint": "^8.57.0",
-		"framer-motion": "^11.16.2",
+		"framer-motion": "^11.17.0",
 		"peerjs": "^1.5.4",
 		"react": "^18.3.1",
 		"react-cookie": "^7.2.2",

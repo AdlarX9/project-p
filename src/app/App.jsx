@@ -5,8 +5,9 @@ import { CookiesProvider } from 'react-cookie'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools, ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 
-import { store } from './store'
-import { MercureContextProvider } from './MercureContext'
+import { store } from '../reduxStore/store'
+import { MercureContextProvider } from '../contexts/MercureContext'
+import { HomeContextProvider } from '../contexts/HomeContext'
 
 import Check from './Check'
 import Notifications from '../components/Notifications/'
@@ -16,6 +17,7 @@ import Error from '../pages/Error/'
 import Settings from '../pages/Settings/'
 import Locker from '../pages/Locker/'
 import Shop from '../pages/Shop/'
+import LoadingPage from '../pages/LoadingPage/'
 import MatchmakingIndicator from '../components/MatchmakingIndicator'
 
 const Home = lazy(() => import('../pages/Home/'))
@@ -34,16 +36,18 @@ const App = () => {
 						<Router>
 							<Check />
 							<Notifications />
-							<Suspense>
-								<Routes>
-									<Route path='*' element={<Error />} />
-									<Route path='/' element={<Home />} />
-									<Route path='/settings' element={<Settings />} />
-									<Route path='/locker' element={<Locker />} />
-									<Route path='/shop' element={<Shop />} />
-									<Route path='/login' element={<Auth type='login' />} />
-									<Route path='/signup' element={<Auth type='signup' />} />
-								</Routes>
+							<Suspense fallback={<LoadingPage />}>
+								<HomeContextProvider>
+									<Routes>
+										<Route path='*' element={<Error />} />
+										<Route path='/' element={<Home />} />
+										<Route path='/settings' element={<Settings />} />
+										<Route path='/locker' element={<Locker />} />
+										<Route path='/shop' element={<Shop />} />
+										<Route path='/login' element={<Auth type='login' />} />
+										<Route path='/signup' element={<Auth type='signup' />} />
+									</Routes>
+								</HomeContextProvider>
 							</Suspense>
 							<Confirmation />
 							<MatchmakingIndicator />

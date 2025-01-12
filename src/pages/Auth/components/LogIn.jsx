@@ -1,80 +1,45 @@
 import '../style.css'
-import hide from '../../../assets/hide.png'
-import unhide from '../../../assets/unhide.png'
 import { useEffect, useState } from 'react'
-import { useLogged, useLogin } from '../../../hooks'
-import Loader from '../../../components/Loader'
 import { Link, useNavigate } from 'react-router-dom'
+import { useLogin } from '../../../hooks/userHooks'
+import Loader from '../../../components/Loader'
+
+import PasswordField from './PasswordField'
+import UsernameField from './UsernameField'
+import SubmitButton from './SubmitButton'
+import AuthMessage from './AuthMessage'
 
 const LogIn = () => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
-	const [hidden, setHidden] = useState(true)
 	const { login, isPending, isError, error, data } = useLogin()
 	const navigate = useNavigate()
-	const { isLogged } = useLogged()
 
 	useEffect(() => {
 		if (data?.token) {
 			navigate('/')
 		}
-	}, [isLogged])
+	}, [data])
 
 	const handleSubmit = async event => {
 		event.preventDefault()
 		login(username, password)
 	}
 
-	const toggleShowPassword = e => {
-		e.preventDefault()
-		setHidden(!hidden)
-	}
-
 	return (
 		<form className='auth-wrapper cartoon-txt' onSubmit={handleSubmit}>
-			<div className='field-wrapper'>
-				<label className='field-label' htmlFor='username'>
-					username
-				</label>
-				<input
-					className='field shadowed'
-					label='username'
-					type='text'
-					id='username'
-					value={username}
-					onChange={e => setUsername(e.target.value)}
-				/>
-			</div>
-
-			<div className='field-wrapper'>
-				<label className='field-label' htmlFor='password'>
-					password
-				</label>
-				<div className='password-wrapper'>
-					<input
-						className='field shadowed password-field'
-						label='password'
-						id='password'
-						type={hidden ? 'password' : 'text'}
-						value={password}
-						onChange={e => setPassword(e.target.value)}
-					/>
-					<button onClick={toggleShowPassword} className='no-btn'>
-						<img src={hidden ? hide : unhide} alt={hidden ? 'hide' : 'show'} />
-					</button>
-				</div>
-			</div>
+			<UsernameField username={username} setUsername={setUsername} />
+			<PasswordField isNewPassword={false} password={password} setPassword={setPassword} />
 
 			{isError && <p className='auth-error'>{error.message}</p>}
 
-			<button className='auth-submit-btn int-btn skewed'>
-				<span>Envoyer</span>
-			</button>
-			<p className='cartoon2-txt auth-link'>
-				Vous n&apos;avez pas de compte ?
-				<br />
-				<Link to='/signup'>Créez-en un !</Link>
-			</p>
+			<SubmitButton />
+
+			<AuthMessage
+				text="Vous n'avez pas de compte ?"
+				endpoint='/signup'
+				linkMessage='Créez-en un !'
+			/>
 
 			{isPending && (
 				<div className='auth-loader'>

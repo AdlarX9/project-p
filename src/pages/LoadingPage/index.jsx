@@ -1,9 +1,12 @@
 import './style.css'
+import { motion } from 'framer-motion'
 
 const LoadingPage = () => {
 	return (
 		<section className='loading-page-wrapper cartoon-txt'>
-			it&apos;s harder than you thought huh !
+			<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+				Setting up...
+			</motion.p>
 		</section>
 	)
 }

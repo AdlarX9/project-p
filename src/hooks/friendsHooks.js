@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { reduxAddFriend, reduxRemoveFriend } from '../friendsSlice'
+import { reduxAddFriend, reduxRemoveFriend } from '../reduxStore/friendsSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { getToken } from '../../../app/selectors'
+import { getToken } from '../reduxStore/selectors'
 
 const axiosAddFriend = async ({ id, token }) => {
 	return axios

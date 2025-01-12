@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './style.css'
-import { useTransfer } from '../../../../hooks/'
+import { useTransfer } from '../../../../hooks/userHooks'
 import See from '../../../Friends/components/See'
 import { confirm } from '../../../Confirmation'
 

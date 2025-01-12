@@ -1,8 +1,8 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './userSlice'
-import friendsReducer from '../components/Friends/friendsSlice'
-import notificationsReducer from '../components/Notifications/notificationsSlice'
-import matchmakingReducer from '../pages/Home/components/Play/matchmakingSlice'
+import friendsReducer from './friendsSlice'
+import notificationsReducer from './notificationsSlice'
+import matchmakingReducer from './matchmakingSlice'
 
 const defaultState = {
 	user: {},

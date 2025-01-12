@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
-import { getMatchmakingState } from '../../../../app/selectors'
-import { UsePlay, useCancelPlay } from './hooks'
+import { getMatchmakingState } from '../../../../reduxStore/selectors'
+import { UsePlay, useCancelPlay } from '../../../../hooks/matchmakingHooks'
 import './style.css'
 import { motion } from 'framer-motion'
 
@@ -12,7 +12,7 @@ const Play = () => {
 	return (
 		<motion.div
 			initial={{ opacity: 0 }}
-			whileInView={{
+			animate={{
 				opacity:
 					matchmakingState === 'connecting' || matchmakingState === 'pending' ? 0.5 : 1
 			}}

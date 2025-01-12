@@ -1,7 +1,9 @@
 import { useSelector } from 'react-redux'
-import { getFriends } from '../../../../app/selectors'
+import { getFriends } from '../../../reduxStore/selectors'
 import { useState } from 'react'
-import FriendDetails from '../FriendDetails'
+import { AnimatePresence, motion } from 'framer-motion'
+import FriendDetails from './FriendDetails'
+import FriendButton from './FriendButton'
 
 const See = ({ enableDetails = true, friend, setFriend }) => {
 	const friends = useSelector(getFriends)
@@ -15,16 +17,11 @@ const See = ({ enableDetails = true, friend, setFriend }) => {
 	return (
 		<>
 			<div className='friends-result-wrapper'>
-				{friends.map(friend => (
-					<button
-						key={friend.id}
-						className='friend-fetched shadowed c-pointer no-btn'
-						onClick={() => handleOpenDetails(friend)}
-					>
-						<span className='cartoon-short-txt'>{friend.username}</span>
-						<span className='cartoon2-txt'>{friend.money}</span>
-					</button>
-				))}
+				<AnimatePresence>
+					{friends.map(friend => (
+						<FriendButton friend={friend} key={friend.id} onClick={handleOpenDetails} />
+					))}
+				</AnimatePresence>
 			</div>
 			<FriendDetails
 				friend={friend}
@@ -33,6 +30,22 @@ const See = ({ enableDetails = true, friend, setFriend }) => {
 			/>
 		</>
 	)
+}
+
+const friendVariants = {
+	hidden: {
+		scaleX: 0,
+		scaleY: 0.5
+	},
+	visible: {
+		scaleX: 1,
+		scaleY: 1
+	},
+	exit: {
+		x: '100%',
+		scale: 0,
+		opacity: 0
+	}
 }
 
 export default See

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useRef, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUser } from './selectors'
+import { getUser } from '../reduxStore/selectors'
 
 const MercureContext = createContext(null)
 
@@ -13,33 +13,31 @@ export const MercureContextProvider = ({ children }) => {
 	const [topics, setTopics] = useState([])
 
 	useEffect(() => {
-		if (topics.length > 0) {
-			const url = new URL('http://localhost:2019/.well-known/mercure')
+		const url = new URL('http://localhost:2019/.well-known/mercure')
 
-			topics.forEach(topic => {
-				url.searchParams.append('topic', topic.topic)
+		topics.forEach(topic => {
+			url.searchParams.append('topic', topic.topic)
+		})
+
+		if (eventSourceRef.current) {
+			eventSourceRef.current.close()
+		}
+
+		eventSourceRef.current = new EventSource(url)
+
+		topics.forEach(topic => {
+			eventSourceRef.current.addEventListener('message', message => {
+				const parsedData = JSON.parse(message.data)
+				topic.handler({ parsedData, type: parsedData.type, dispatch, user })
 			})
+		})
 
-			if (eventSourceRef.current) {
-				eventSourceRef.current.close()
-			}
-
-			eventSourceRef.current = new EventSource(url)
-
-			topics.forEach(topic => {
-				eventSourceRef.current.addEventListener('message', message => {
-					const parsedData = JSON.parse(message.data)
-					topic.handler({ parsedData, type: parsedData.type, dispatch, user })
-				})
-			})
-
-			eventSourceRef.current.onerror = () => {
-				console.error('EventSource error, reconnecting...')
-				eventSourceRef.current.close()
-				setTimeout(() => {
-					eventSourceRef.current = new EventSource(url)
-				}, 3000)
-			}
+		eventSourceRef.current.onerror = () => {
+			console.error('EventSource error, reconnecting...')
+			eventSourceRef.current.close()
+			setTimeout(() => {
+				eventSourceRef.current = new EventSource(url)
+			}, 3000)
 		}
 
 		return () => {
@@ -65,8 +63,12 @@ export const MercureContextProvider = ({ children }) => {
 		})
 	}
 
+	const cleanupTopics = () => {
+		setTopics(() => [])
+	}
+
 	return (
-		<MercureContext.Provider value={{ addTopic, removeTopic }}>
+		<MercureContext.Provider value={{ addTopic, removeTopic, cleanupTopics }}>
 			{children}
 		</MercureContext.Provider>
 	)

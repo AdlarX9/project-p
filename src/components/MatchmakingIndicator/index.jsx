@@ -1,6 +1,6 @@
 import './style.css'
 import { useSelector } from 'react-redux'
-import { getMatchmakingState } from '../../app/selectors'
+import { getMatchmakingState } from '../../reduxStore/selectors'
 
 const MatchmakingIndicator = () => {
 	const matchmakingState = useSelector(getMatchmakingState)

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { saveStateFriends } from '../../app/store'
+import { saveStateFriends } from './store'
 
 const friendsSlice = createSlice({
 	name: 'user',

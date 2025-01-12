@@ -1,14 +1,15 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { logUser, logPersoInf, logUserOut } from '../app/userSlice'
-import { logFriendsOut, reduxLogFriends } from '../components/Friends/friendsSlice'
+import { logUser, logPersoInf, logUserOut } from '../reduxStore/userSlice'
+import { logFriendsOut, reduxLogFriends } from '../reduxStore/friendsSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getToken, getUser } from '../app/selectors'
+import { getToken, getUser } from '../reduxStore/selectors'
 import { useLocation } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
-import { logNotificationsOut } from '../components/Notifications/notificationsSlice'
-import { matchmakingNothing } from '../pages/Home/components/Play/matchmakingSlice'
+import { logNotificationsOut } from '../reduxStore/notificationsSlice'
+import { matchmakingNothing } from '../reduxStore/matchmakingSlice'
+import { useMercureContext } from '../contexts/MercureContext'
 
 const axiosLoginFromIdentifiers = async data => {
 	return axios
@@ -46,9 +47,11 @@ export const useLogin = () => {
 
 export const useLogout = () => {
 	const dispatch = useDispatch()
+	const { cleanupTopics } = useMercureContext()
 	const [, _, removeCookie] = useCookies(['refresh_token'])
 
 	const logout = () => {
+		cleanupTopics()
 		removeCookie('refresh_token', {
 			path: '/'
 		})
