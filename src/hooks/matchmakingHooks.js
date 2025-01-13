@@ -14,7 +14,7 @@ import { useMercureContext } from '../contexts/MercureContext'
 const axiosPlay = async token => {
 	return axios
 		.post(
-			process.env.REACT_APP_URL + '/api/queue/add',
+			process.env.REACT_APP_API_URL + '/api/queue/add',
 			{},
 			{
 				headers: {
@@ -32,7 +32,7 @@ const axiosPlay = async token => {
 const axiosPong = async user => {
 	return axios
 		.post(
-			process.env.REACT_APP_URL + '/api/queue/pong',
+			process.env.REACT_APP_API_URL + '/api/queue/pong',
 			{},
 			{
 				headers: {
@@ -55,7 +55,7 @@ const handleUpdate = ({ type, parsedData, dispatch, user }) => {
 			dispatch(matchmakingInQueue(parsedData.messageId))
 			break
 		case 'connecting':
-			dispatch(matchmakingConnecting())
+			dispatch(matchmakingConnecting(parsedData))
 			break
 		case 'ping':
 			axiosPong(user)
@@ -104,7 +104,7 @@ export const UsePlay = () => {
 
 const axiosCancelPlay = async (token, messageId) => {
 	return axios
-		.delete(process.env.REACT_APP_URL + '/api/queue/cancel_play', {
+		.delete(process.env.REACT_APP_API_URL + '/api/queue/cancel_play', {
 			headers: {
 				Authorization: token
 			},

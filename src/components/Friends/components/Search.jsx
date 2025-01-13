@@ -20,7 +20,7 @@ const Search = () => {
 			queryKey: ['searchUsers', username],
 			queryFn: async ({ pageParam = 1 }) => {
 				const response = await axios.get(
-					`${process.env.REACT_APP_URL}/api/friends/search?limit=10&page=${pageParam}&username=${username}`,
+					`${process.env.REACT_APP_API_URL}/api/friends/search?limit=10&page=${pageParam}&username=${username}`,
 					{
 						headers: { Authorization: token }
 					}

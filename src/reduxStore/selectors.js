@@ -11,3 +11,7 @@ export const getMatchmaking = state => state.matchmaking || { state: 'nothing', 
 export const getMatchmakingState = state => getMatchmaking(state).state || 'nothing'
 
 export const getMatchmakingId = state => getMatchmaking(state).id || null
+
+export const getMatchmakingRole = state => getMatchmaking(state).role || ''
+
+export const getSettings = state => state.settings || {}

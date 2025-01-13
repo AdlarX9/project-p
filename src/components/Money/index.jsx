@@ -18,7 +18,7 @@ const Money = () => {
 		queryKey: ['getThePercentage'],
 		queryFn: async () => {
 			return axios
-				.get(process.env.REACT_APP_URL + '/api/user/percentage', {
+				.get(process.env.REACT_APP_API_URL + '/api/user/percentage', {
 					headers: {
 						Authorization: user.token
 					}

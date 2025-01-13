@@ -13,7 +13,7 @@ import { useMercureContext } from '../contexts/MercureContext'
 
 const axiosLoginFromIdentifiers = async data => {
 	return axios
-		.post(process.env.REACT_APP_URL + '/api/login', data)
+		.post(process.env.REACT_APP_API_URL + '/api/login', data)
 		.then(response => response.data)
 		.catch(error => {
 			throw new Error(error.response.data.message || 'Error while trying to log in')
@@ -67,7 +67,7 @@ export const useLogout = () => {
 const axiosRenewAccessToken = async ({ refresh_token }) => {
 	return axios
 		.post(
-			process.env.REACT_APP_URL + '/api/token/refresh',
+			process.env.REACT_APP_API_URL + '/api/token/refresh',
 			{},
 			{
 				headers: {
@@ -105,7 +105,7 @@ export const useRenewToken = () => {
 
 const axiosMe = async token => {
 	return axios
-		.get(`${process.env.REACT_APP_URL}/api/user/me`, {
+		.get(`${process.env.REACT_APP_API_URL}/api/user/me`, {
 			headers: {
 				Authorization: token
 			}
@@ -149,7 +149,7 @@ export const useLogged = () => {
 
 const axiosSignup = async (data, login) => {
 	return axios
-		.post(process.env.REACT_APP_URL + '/api/public/signup', data)
+		.post(process.env.REACT_APP_API_URL + '/api/public/signup', data)
 		.then(response => response.data)
 		.catch(error => error)
 }
@@ -183,7 +183,7 @@ export const useSignup = () => {
 
 const axiosDelete = async token => {
 	return axios
-		.delete(process.env.REACT_APP_URL + '/api/user/me', {
+		.delete(process.env.REACT_APP_API_URL + '/api/user/me', {
 			headers: {
 				Authorization: token
 			}
@@ -215,7 +215,7 @@ export const useDelete = () => {
 
 const axiosTransfer = async ({ body, headers }) => {
 	return axios
-		.patch(process.env.REACT_APP_URL + '/api/user/transfer', body, { headers })
+		.patch(process.env.REACT_APP_API_URL + '/api/user/transfer', body, { headers })
 		.then(response => response.data)
 		.catch(error => {
 			throw new Error(error.response?.data?.message || error.message)

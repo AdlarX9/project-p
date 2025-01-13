@@ -7,6 +7,7 @@ import { ReactQueryDevtools, ReactQueryDevtoolsPanel } from '@tanstack/react-que
 
 import { store } from '../reduxStore/store'
 import { MercureContextProvider } from '../contexts/MercureContext'
+import { PeerContextProvider } from '../contexts/PeerContext'
 import { HomeContextProvider } from '../contexts/HomeContext'
 
 import Check from './Check'
@@ -33,25 +34,30 @@ const App = () => {
 			<Provider store={store}>
 				<QueryClientProvider client={queryClient}>
 					<MercureContextProvider>
-						<Router>
-							<Check />
-							<Notifications />
-							<Suspense fallback={<LoadingPage />}>
-								<HomeContextProvider>
-									<Routes>
-										<Route path='*' element={<Error />} />
-										<Route path='/' element={<Home />} />
-										<Route path='/settings' element={<Settings />} />
-										<Route path='/locker' element={<Locker />} />
-										<Route path='/shop' element={<Shop />} />
-										<Route path='/login' element={<Auth type='login' />} />
-										<Route path='/signup' element={<Auth type='signup' />} />
-									</Routes>
-								</HomeContextProvider>
-							</Suspense>
-							<Confirmation />
-							<MatchmakingIndicator />
-						</Router>
+						<PeerContextProvider>
+							<Router>
+								<Check />
+								<Notifications />
+								<Suspense fallback={<LoadingPage />}>
+									<HomeContextProvider>
+										<Routes>
+											<Route path='*' element={<Error />} />
+											<Route path='/' element={<Home />} />
+											<Route path='/settings' element={<Settings />} />
+											<Route path='/locker' element={<Locker />} />
+											<Route path='/shop' element={<Shop />} />
+											<Route path='/login' element={<Auth type='login' />} />
+											<Route
+												path='/signup'
+												element={<Auth type='signup' />}
+											/>
+										</Routes>
+									</HomeContextProvider>
+								</Suspense>
+								<Confirmation />
+								<MatchmakingIndicator />
+							</Router>
+						</PeerContextProvider>
 					</MercureContextProvider>
 					{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
 					<ReactQueryDevtools initialIsOpen={false} />

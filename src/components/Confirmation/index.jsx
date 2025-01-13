@@ -6,7 +6,7 @@ const confirmAction = {
 	current: () => Promise.resolve(true)
 }
 
-export function confirm(props) {
+export const confirm = props => {
 	return confirmAction.current(props)
 }
 
@@ -15,12 +15,13 @@ const Confirmation = () => {
 	const [props, setProps] = useState({})
 	const resolveRef = useRef(null)
 
-	confirmAction.current = props =>
-		new Promise(resolve => {
+	confirmAction.current = props => {
+		return new Promise(resolve => {
 			setProps(props)
 			setOpen(true)
 			resolveRef.current = resolve
 		})
+	}
 
 	const handleCancel = () => {
 		if (resolveRef.current) {

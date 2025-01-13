@@ -13,11 +13,14 @@ import { useMercureContext } from '../contexts/MercureContext'
 
 const axiosNotificationsGet = async token => {
 	try {
-		const response = await axios.get(process.env.REACT_APP_URL + '/api/user/getNotifications', {
-			headers: {
-				Authorization: token
+		const response = await axios.get(
+			process.env.REACT_APP_API_URL + '/api/user/getNotifications',
+			{
+				headers: {
+					Authorization: token
+				}
 			}
-		})
+		)
 		return { data: response.data, status: response.status }
 	} catch (error) {
 		return error
@@ -58,7 +61,7 @@ export const useSubscribeNotifications = () => {
 const axiosNotificationsDelete = async (token, notification) => {
 	try {
 		const response = await axios.delete(
-			`${process.env.REACT_APP_URL}/api/user/deleteNotification/${notification.id}`,
+			`${process.env.REACT_APP_API_URL}/api/user/deleteNotification/${notification.id}`,
 			{
 				headers: {
 					Authorization: token
@@ -96,7 +99,7 @@ export const useRemoveNotification = () => {
 const axiosEmptyNotifications = async token => {
 	try {
 		const response = await axios.delete(
-			process.env.REACT_APP_URL + '/api/user/emptyNotifications',
+			process.env.REACT_APP_API_URL + '/api/user/emptyNotifications',
 			{
 				headers: {
 					Authorization: token

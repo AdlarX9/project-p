@@ -25,10 +25,12 @@ const matchmakingSlice = createSlice({
 				state: 'inQueue'
 			}
 		},
-		matchmakingConnecting: prevState => {
+		matchmakingConnecting: (prevState, action) => {
 			return {
 				...prevState,
-				state: 'connecting'
+				state: 'connecting',
+				role: action.payload.role,
+				matchedUsername: action.payload.matchedUsername
 			}
 		},
 		matchmakingConnected: prevState => {

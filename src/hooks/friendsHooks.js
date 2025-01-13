@@ -7,7 +7,7 @@ import { getToken } from '../reduxStore/selectors'
 const axiosAddFriend = async ({ id, token }) => {
 	return axios
 		.post(
-			process.env.REACT_APP_URL + '/api/friends/add',
+			process.env.REACT_APP_API_URL + '/api/friends/add',
 			{ idFriend: id },
 			{
 				headers: {
@@ -44,7 +44,7 @@ export const useAddFriend = () => {
 
 const axiosRemoveFriend = async ({ friend, token }) => {
 	return axios
-		.delete(`${process.env.REACT_APP_URL}/api/friends/remove`, {
+		.delete(`${process.env.REACT_APP_API_URL}/api/friends/remove`, {
 			headers: { Authorization: token },
 			data: { idFriend: friend.id }
 		})
