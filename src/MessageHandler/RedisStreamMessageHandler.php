@@ -38,7 +38,7 @@ final class RedisStreamMessageHandler
 
         // Lire les utilisateurs en attente dans Redis
         $waitingUsers = $this->redis->xRead(['matchmaking_stream' => '0'], null, 100);
-        $this->logger->info("Données utilisateur : \n" . print_r($waitingUsers, true));
+        $this->logger->info(print_r($waitingUsers, true));
 
         // Vérifier si des utilisateurs sont disponibles pour une partie
         if (is_array($waitingUsers) && count($waitingUsers) > 0) {

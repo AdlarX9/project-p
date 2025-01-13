@@ -185,4 +185,21 @@ class UserController extends AbstractController
         $entityManager->flush();
         return new JsonResponse(['message' => 'All notifications deleted'], Response::HTTP_NO_CONTENT);
     }
+
+
+
+    #[Route('/peer/ask_id', name: 'peerAskId', methods: ['POST'])]
+    public function peerAskId(Request $request, PublisherInterface $publisher): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        Functions::usePeerIdCommunication($publisher, $data['peerUsername'], 'ask');
+        return new JsonResponse(['message' => 'Peer asked successfully!'], Response::HTTP_NO_CONTENT);
+    }
+
+
+    #[Route('/peer/send_id', name: 'peerSendId', methods: ['POST'])]
+    public function peerSendId(Request $request, PublisherInterface $publisher): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        Functions::usePeerIdCommunication($publisher, $data['peerUsername'], 'send', $data['id']);
+        return new JsonResponse(['message' => 'PeerId sent successfully!'], Response::HTTP_NO_CONTENT);
+    }
 }

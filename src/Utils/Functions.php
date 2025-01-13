@@ -7,7 +7,7 @@ use App\Entity\User;
 use Symfony\Component\Mercure\Update;
 
 class Functions {
-	public static function postNotification($publisher, $entityManager, $user, $title, $message): void {
+	public static function postNotification($mercurePublisher, $entityManager, $user, $title, $message): void {
         $currentDateTime = new \DateTime();
 
         $notification = new Notification();
@@ -28,27 +28,47 @@ class Functions {
         ];
         $jsonData = json_encode($data);
         $update = new Update("http://localhost:3000/" . $user->getUsername() . '/notifications', $jsonData);
-        $publisher($update);
+        $mercurePublisher($update);
 	}
 
-    public static function sendMatchmakingUpdate($mercureHub, $username, $message, $messageId = ''): void {
+    public static function sendMatchmakingUpdate($mercurePublisher, $username, $message, $messageId = '', $role = '', $matchedUsername = ''): void {
+        // $role = 'caller' ou 'receiver'
+
         $update = [
             'message' => $message,
             'type' => 'matchmakingUpdate',
-            'messageId' => $messageId
+            'messageId' => $messageId,
+            'role' => $role,
+            'matchedUsername' => $matchedUsername
         ];
+
         $jsonUpdate = json_encode($update);
         $update = new Update("http://localhost:3000/" . $username . '/matchmaking_update', $jsonUpdate);
-        $mercureHub($update);
+        $mercurePublisher($update);
 	}
 
-    public static function initializeGame(User $user1, User $user2, $mercureHub): bool {
-        // Envoyer les notifications de connexions
-        Functions::sendMatchmakingUpdate($mercureHub, $user1->getUsername(), 'connecting');
-        Functions::sendMatchmakingUpdate($mercureHub, $user2->getUsername(), 'connecting');
+    public static function usePeerIdCommunication($mercurePublisher, $username, $direction, $id = ''): void {
+        // $direction = 'ask' ou 'send'
 
-        // Créer une partie, les envoyer dedans, initialiser les connexions webrtc, signaler tout le bordel, etc...
-        // je sais pas comment faire
+        $update = [
+            'type' => $direction . 'Id'
+        ];
+
+        if (!empty($id)) {
+            $update['id'] = $id;
+        } elseif ($direction == 'send') {
+            return;
+        }
+
+        $jsonUpdate = json_encode($update);
+        $update = new Update("http://localhost:3000/" . $username . '/' . $direction . '_id', $jsonUpdate);
+        $mercurePublisher($update);
+	}
+
+    public static function initializeGame(User $user1, User $user2, $mercurePublisher): bool {
+        // Envoyer les notifications de connexions
+        Functions::sendMatchmakingUpdate($mercurePublisher, $user1->getUsername(), 'connecting', '', 'caller', $user2->getUsername());
+        Functions::sendMatchmakingUpdate($mercurePublisher, $user2->getUsername(), 'connecting', '', 'receiver', $user1->getUsername());
 
         return true;
     }

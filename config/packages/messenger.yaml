@@ -6,9 +6,9 @@ framework:
     messenger:
         transports:
             cache_redis:
-                dsn: 'redis://localhost:6379/matachmaking_stream'
+                dsn: 'redis://localhost:6379/messages'
                 options:
-                    stream: 'matachmaking_stream'
+                    stream: 'messages'
                     group: 'matchmaking_group'
                     delete_after_ack: false
                     delete_after_reject: false
