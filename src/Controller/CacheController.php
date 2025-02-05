@@ -21,13 +21,13 @@ class CacheController extends AbstractController
     private $cache;
     private $redis;
 
-    public function __construct(MessageBusInterface $bus, LoggerInterface $logger, CacheInterface $cache)
+    public function __construct(MessageBusInterface $bus, LoggerInterface $logger, CacheInterface $cacheRedis)
     {
         $this->bus = $bus;
         $this->logger = $logger;
-        $this->cache = $cache;
+        $this->cache = $cacheRedis;
         $this->redis = new Redis();
-        $this->redis->connect('127.0.0.1', 6379);
+        $this->redis->connect('redis', 6379);
     }
 
     #[Route("/add", "add_user_to_queue", methods: ["POST"])]
@@ -39,8 +39,7 @@ class CacheController extends AbstractController
             'money' => $user->getMoney(),
             'username' => $user->getUsername()
         ];
-        $this->bus->dispatch(new RedisStreamMessage($data));
-        // $process = new Process(['php', 'bin/console', 'messenger:consume', 'cache_redis', '--time-limit', '1800']);
+        $this->bus->dispatch(new RedisStreamMessage(data: $data));
 
         return new JsonResponse(['message' => 'added stream successfully'], Response::HTTP_OK, [], false);
     }
@@ -53,8 +52,9 @@ class CacheController extends AbstractController
         $user = $this->getUser();
 
         $this->cache->delete('pong_' . $user->getUsername());
-        $this->cache->get('pong_' . $user->getUsername(), function () use ($user): bool { return true; });
-        return new JsonResponse(['message' => 'pang'], Response::HTTP_OK, [], false);
+        $value = $this->cache->get('pong_' . $user->getUsername(), function (): bool { return true; });
+
+        return new JsonResponse(['pong_' . $user->getUsername() => $value], Response::HTTP_OK, [], false);
     }
 
 

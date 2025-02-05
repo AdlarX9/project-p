@@ -1,12 +1,8 @@
 framework:
-    cache:
-        app: 'cache.adapter.redis'
-        default_redis_provider: 'redis://localhost'
-
     messenger:
         transports:
             cache_redis:
-                dsn: 'redis://localhost:6379/messages'
+                dsn: 'redis://redis:6379/messages'
                 options:
                     stream: 'messages'
                     group: 'matchmaking_group'

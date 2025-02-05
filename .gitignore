@@ -3,7 +3,11 @@
 /composer.lock
 /symfony.lock
 /updates.db
-
+/certificate
+/dev.Caddyfile
+/caddy
+/compose.yaml
+/compose.override.yaml
 
 ###> symfony/framework-bundle ###
 /.env.local

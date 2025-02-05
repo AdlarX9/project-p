@@ -21,10 +21,10 @@ final class RedisStreamMessageHandler
     private $mercureHub;
     private $logger;
 
-    public function __construct(CacheInterface $cache, UserRepository $userRepository, PublisherInterface $mercureHub, LoggerInterface $logger) {
+    public function __construct(CacheInterface $cacheRedis, UserRepository $userRepository, PublisherInterface $mercureHub, LoggerInterface $logger) {
         $this->redis = new Redis();
-        $this->redis->connect('127.0.0.1', 6379);
-        $this->cache = $cache;
+        $this->redis->connect('redis', 6379);
+        $this->cache = $cacheRedis;
         $this->userRepository = $userRepository;
         $this->mercureHub = $mercureHub;
         $this->logger = $logger;
