@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { getMatchmakingId, getToken, getUser } from '../reduxStore/selectors'
 import {
+	matchmakingConnected,
 	matchmakingConnecting,
 	matchmakingInQueue,
 	matchmakingNothing,
@@ -10,6 +11,7 @@ import {
 } from '../reduxStore/matchmakingSlice'
 import { useEffect, useRef } from 'react'
 import { useMercureContext } from '../contexts/MercureContext'
+import { useNavigate } from 'react-router-dom'
 
 const axiosPlay = async token => {
 	return axios
@@ -137,4 +139,35 @@ export const useCancelPlay = () => {
 	}
 
 	return cancelPlay
+}
+
+export const useHandleConnected = receiverStream => {
+	const navigate = useNavigate()
+	const dispatch = useDispatch()
+
+	const handleConnection = async receiverAudioStream => {
+		dispatch(matchmakingConnected)
+		navigate('/game')
+		const outputId = await navigator.mediaDevices
+			.enumerateDevices()
+			.then(devices => {
+				devices.filter(devices => devices.kind === 'audiooutput')
+				if (devices.some(device => device.deviceId === 'default')) {
+					return 'default'
+				} else {
+					return devices[0].deviceId
+				}
+			})
+			.catch(error => {
+				console.error(error)
+				return null
+			})
+
+		const audioElement = new Audio()
+		audioElement.srcObject = receiverAudioStream
+		audioElement.setSinkId(outputId)
+		audioElement.play()
+	}
+
+	return handleConnection
 }

@@ -13,7 +13,7 @@ export const MercureContextProvider = ({ children }) => {
 	const [topics, setTopics] = useState({})
 
 	const initializeUrl = () => {
-		const url = new URL('http://localhost:2019/.well-known/mercure')
+		const url = new URL(process.env.REACT_APP_MERCURE_URL + '/.well-known/mercure')
 		Object.keys(topics).forEach(topic => {
 			url.searchParams.append('topic', topic)
 		})
@@ -25,6 +25,7 @@ export const MercureContextProvider = ({ children }) => {
 			const handler = topics[topic]
 			eventSourceRef.current.addEventListener('message', message => {
 				const parsedData = JSON.parse(message.data)
+				console.log(parsedData)
 				handler({ parsedData, type: parsedData.type, dispatch, user })
 			})
 		})
@@ -59,34 +60,28 @@ export const MercureContextProvider = ({ children }) => {
 		setTopics(prev => ({ ...prev, [topic]: handler }))
 	}
 
-	const waitIdAction = {
-		current: () => null
-	}
-
-	const addWaitingTopic = (topic, handler) => {
+	const addSingleUseTopic = (topic, handler) => {
 		const derivedHandler = data => {
 			handler(data)
 			removeTopic(topic)
 		}
+
 		addTopic(topic, derivedHandler)
 	}
 
-	const handleReceiveId = ({ parsedData, type }) => {
-		if (type !== 'send_id') {
-			return
+	const waitingActions = {}
+
+	const waitSomeSSE = (topic, handler) => {
+		const derivedHandler = data => {
+			handler(data)
+			waitingActions[topic].current(data.parsedData)
 		}
 
-		waitIdAction.current(parsedData.id)
-	}
+		addSingleUseTopic(topic, derivedHandler)
 
-	const waitForId = () => {
-		addWaitingTopic(
-			process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/' + 'send_id',
-			handleReceiveId
-		)
-
+		waitingActions[topic] = () => null
 		return new Promise(resolve => {
-			waitIdAction.current = resolve
+			waitingActions[topic].current = resolve
 		})
 	}
 
@@ -105,7 +100,7 @@ export const MercureContextProvider = ({ children }) => {
 	}
 
 	return (
-		<MercureContext.Provider value={{ waitForId, addTopic, removeTopic, cleanupTopics }}>
+		<MercureContext.Provider value={{ waitSomeSSE, addTopic, removeTopic, cleanupTopics }}>
 			{children}
 		</MercureContext.Provider>
 	)

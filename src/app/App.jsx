@@ -13,13 +13,14 @@ import { HomeContextProvider } from '../contexts/HomeContext'
 import Check from './Check'
 import Notifications from '../components/Notifications/'
 import Confirmation from '../components/Confirmation'
+import MatchmakingIndicator from '../components/MatchmakingIndicator'
 
 import Error from '../pages/Error/'
 import Settings from '../pages/Settings/'
 import Locker from '../pages/Locker/'
 import Shop from '../pages/Shop/'
 import LoadingPage from '../pages/LoadingPage/'
-import MatchmakingIndicator from '../components/MatchmakingIndicator'
+import Game from '../pages/Game'
 
 const Home = lazy(() => import('../pages/Home/'))
 const Auth = lazy(() => import('../pages/Auth/'))
@@ -33,9 +34,9 @@ const App = () => {
 		<CookiesProvider defaultSetOptions>
 			<Provider store={store}>
 				<QueryClientProvider client={queryClient}>
-					<MercureContextProvider>
-						<PeerContextProvider>
-							<Router>
+					<Router>
+						<MercureContextProvider>
+							<PeerContextProvider>
 								<Check />
 								<Notifications />
 								<Suspense fallback={<LoadingPage />}>
@@ -43,22 +44,23 @@ const App = () => {
 										<Routes>
 											<Route path='*' element={<Error />} />
 											<Route path='/' element={<Home />} />
-											<Route path='/settings' element={<Settings />} />
-											<Route path='/locker' element={<Locker />} />
-											<Route path='/shop' element={<Shop />} />
 											<Route path='/login' element={<Auth type='login' />} />
 											<Route
 												path='/signup'
 												element={<Auth type='signup' />}
 											/>
+											<Route path='/game' element={<Game />} />
+											<Route path='/settings' element={<Settings />} />
+											<Route path='/locker' element={<Locker />} />
+											<Route path='/shop' element={<Shop />} />
 										</Routes>
 									</HomeContextProvider>
 								</Suspense>
 								<Confirmation />
 								<MatchmakingIndicator />
-							</Router>
-						</PeerContextProvider>
-					</MercureContextProvider>
+							</PeerContextProvider>
+						</MercureContextProvider>
+					</Router>
 					{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
 					<ReactQueryDevtools initialIsOpen={false} />
 				</QueryClientProvider>

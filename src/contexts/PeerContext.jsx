@@ -2,7 +2,7 @@ import jsSHA from 'jssha'
 import Peer from 'peerjs'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { matchmakingConnected } from '../reduxStore/matchmakingSlice'
+import { matchmakingConnected, matchmakingNothing } from '../reduxStore/matchmakingSlice'
 import { useSelector } from 'react-redux'
 import { getMatchmaking, getMatchmakingState, getToken, getUser } from '../reduxStore/selectors'
 import axios from 'axios'
@@ -21,8 +21,7 @@ export const PeerContextProvider = ({ children }) => {
 	const matchmakingState = useSelector(getMatchmakingState)
 	const matchmaking = useSelector(getMatchmaking)
 	const peerRef = useRef(null)
-	const [peerId, setPeerId] = useState(null)
-	const { waitForId, addTopic } = useMercureContext()
+	const { waitSomeSSE, addTopic } = useMercureContext()
 
 	const generateTurnUsername = () => {
 		return Math.floor(Date.now() / 1000).toString()
@@ -54,33 +53,42 @@ export const PeerContextProvider = ({ children }) => {
 			})
 	}
 
+	const handleReceiveId = ({ parsedData, type }) => {
+		if (type !== 'sendId') {
+			return
+		}
+
+		console.log('just received id : ', parsedData.id)
+	}
+
+	const idBoxTopic = process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/' + 'send_id'
 	const getSomeId = async username => {
 		console.log('Sent request for peer id of ', username)
 		axiosId('ask', username, token)
-		return waitForId().then(id => {
-			console.log('Just received matched user id : ', id)
-			return id
-		})
+		return waitSomeSSE(idBoxTopic, handleReceiveId).then(({ id }) => id)
 	}
 
 	const deliverIdTopic = process.env.REACT_APP_CLIENT_URL + `/${user.username}/ask_id`
 
 	const deliverIdCommunication = ({ type }) => {
-		if (type === 'ask_id') {
-			axiosId('send', peerId, token, peerId)
-			console.log('Just sent your user id Sir.')
+		if (type === 'askId') {
+			axiosId('send', matchmaking.matchedUsername, token, peerRef.current.id)
+			console.log('Just sent  id', peerRef.current.id, 'to', matchmaking.matchedUsername)
 		}
 		return deliverIdTopic
 	}
 
 	const getAudio = async () => {
-		try {
-			const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-			return stream
-		} catch (err) {
-			console.error('Failed to get audio stream : ', err)
-			return -1
-		}
+		return navigator.mediaDevices
+			.getUserMedia({ audio: true })
+			.then(userMedia => {
+				console.log('input audio found :', userMedia)
+				return userMedia
+			})
+			.catch(error => {
+				console.error(error.message)
+				return null
+			})
 	}
 
 	// --- Functions dealing with the peerjs library ---
@@ -109,7 +117,6 @@ export const PeerContextProvider = ({ children }) => {
 
 		return new Promise(resolve => {
 			peerRef.current.on('open', id => {
-				setPeerId(id)
 				peerRef.current.off('open')
 				resolve(id)
 			})
@@ -117,20 +124,36 @@ export const PeerContextProvider = ({ children }) => {
 	}
 
 	const peerCall = receiverUsername => {
-		const receiverId = getSomeId(receiverUsername)
-		const audioStream = getAudio()
+		setTimeout(() => {
+			getSomeId(receiverUsername).then(receiverId => {
+				console.log('received matched user id :', receiverId)
 
-		const audioConnection = peerRef.current.call(receiverId, audioStream, {
-			metadata: {
-				id: peerRef.current.id,
-				username: user.username
-			}
-		})
+				getAudio()
+					.then(audioStream => {
+						console.log(audioStream)
 
-		audioConnection.on('stream', receiverAudioStream => {
-			// Handle the received audio stream, play it, etc..
-			dispatch(matchmakingConnected(receiverAudioStream))
-		})
+						if (!audioStream) {
+							matchmakingNothing()
+							return
+						}
+
+						const audioConnection = peerRef.current.call(receiverId, audioStream, {
+							metadata: {
+								id: peerRef.current.id,
+								username: user.username
+							}
+						})
+
+						audioConnection.on('stream', receiverAudioStream => {
+							dispatch(matchmakingConnected())
+						})
+					})
+					.catch(error => {
+						console.error(error)
+						matchmakingNothing()
+					})
+			})
+		}, 500)
 	}
 
 	const peerConnect = receiverUsername => {
@@ -198,12 +221,12 @@ export const PeerContextProvider = ({ children }) => {
 		setIsPeerInitializing(true)
 		initializePeer()
 			.then(id => {
-				console.log('Just received your id Sir : ', id)
+				console.log('your id :', id)
 				if (matchmaking.role === 'caller') {
 					console.log('you are a caller Sir, calling...')
 					peerCall(matchmaking.matchedUsername)
 				} else if (matchmaking.role === 'receiver') {
-					console.log('you are a receiver Sir, waiting request')
+					console.log('you are a receiver Sir, waiting for id and call if success.')
 					addTopic(deliverIdTopic, deliverIdCommunication)
 					waitForPeerCall()
 				}

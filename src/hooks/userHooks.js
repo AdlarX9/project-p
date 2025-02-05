@@ -16,6 +16,8 @@ const axiosLoginFromIdentifiers = async data => {
 		.post(process.env.REACT_APP_API_URL + '/api/login', data)
 		.then(response => response.data)
 		.catch(error => {
+			console.log(error)
+
 			throw new Error(error.response.data.message || 'Error while trying to log in')
 		})
 }
