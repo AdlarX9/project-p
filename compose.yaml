@@ -1,0 +1,225 @@
+name: 'Project-P'
+
+services:
+    reverse-proxy:
+        build:
+            context: ./
+            target: reverse-proxy
+        ports:
+            - 443:83
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080"]
+            interval: 1m30s
+            timeout: 10s
+            retries: 5
+            start_period: 30s
+        depends_on:
+            - symfony-api
+        develop:
+            watch:
+                - path: ./nginx.conf
+                  action: rebuild
+
+    mercure-hub:
+        image: dunglas/mercure
+        restart: unless-stopped
+        ports:
+            - "80:80"
+        environment:
+            MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_JWT_SECRET}
+            MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_JWT_SECRET}
+            MERCURE_PUBLISHER_JWT: "{\"mercure\": {\"publish\": [\"*\"]}}"
+            MERCURE_SUBSCRIBER_JWT: "{\"mercure\": {\"subscribe\": [\"*\"]}}"
+            MERCURE_PUBLISH_ALLOWED_ORIGINS: "*"
+            SERVER_NAME: ":80"
+            MERCURE_EXTRA_DIRECTIVES: |
+                anonymous 
+                publish_origins * 
+                cors_origins *
+                subscribe_allow_anonymous
+        healthcheck:
+            test: ["CMD", "curl", "-f", "https://localhost/healthz"]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+
+    redis:
+        image: bitnami/redis:latest
+        restart: always
+        ports:
+            - '6379:6379'
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping", "|", "grep", "PONG"]
+            interval: 5s
+            retries: 5
+            timeout: 60s
+            start_period: 30s
+
+    peerjs-server:
+        build:
+            context: ./
+            target: peerjs-server
+        restart: unless-stopped
+        ports:
+            - 9000:9000
+
+    coturn:
+        container_name: coturn
+        image: coturn/coturn
+        ports:
+            - "3478:3478"
+            - "3478:3478/udp"
+            - "5349:5349/udp"
+            - "5349:5349/udp"
+            - "2020:2020/udp"
+            # - "49152-65535:49152-65535/udp"
+        volumes:
+            - ./turnserver.conf:/etc/turnserver.conf:ro
+        environment:
+            - TURN_SECRET=${YOUR_SECRET}
+            - REALM=prive.pifpafdeluxe.fr
+        restart: unless-stopped
+        develop:
+            watch:
+                - path: ./turnserver.conf
+                  action: rebuild
+
+    postgres-database:
+        image: postgres:17-alpine
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        ports:
+            - "5432:5432"
+        healthcheck:
+            test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+        volumes:
+            - ./database_data:/var/lib/postgresql/data:rw
+        restart: always
+        deploy:
+            resources:
+                limits:
+                    cpus: "1.0"
+                    memory: "512M"
+                reservations:
+                    cpus: "0.5"
+                    memory: "256M"
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 2021:8080
+
+    symfony-api:
+        build:
+            context: ./
+            target: symfony-api
+        environment:
+            APP_ENV: ${APP_ENV}
+            APP_DEBUG: ${APP_DEBUG}
+            PHP_DATE_TIMEZONE: ${PHP_DATE_TIMEZONE:-UTC}
+            DATABASE_URL: ${DATABASE_URL}
+            MERCURE_URL: ${MERCURE_URL:-http://mercure-hub:2018/.well-known/mercure}
+            CORS_ORIGINS: ${CORS_ORIGINS}
+            XDEBUG_CONFIG: remote_host=docker.for.mac.localhost
+            PHP_IDE_CONFIG: serverName=localhost
+        volumes:
+            - ./:/usr/local/project-p/symfony-api:rw,cached
+            - ./backend/vendor:/usr/local/project-p/symfony-api/backend/vendor:cached
+            - ./backend/var:/usr/local/project-p/symfony-api/backend/var:cached
+        ports:
+            - "8000:9000"
+        depends_on:
+            postgres-database:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        restart: on-failure
+        develop:
+            watch:
+                - path: ./backend/config
+                  action: sync
+                  target: /usr/local/project-p/backend/config
+                - path: ./backend/src
+                  action: sync
+                  target: /usr/local/project-p/backend/src
+                - path: ./backend/composer.json
+                  action: rebuild
+                - path: ./.env
+                  action: rebuild
+
+    messenger-worker:
+        build:
+            context: ./
+            target: symfony-api
+        environment:
+            PHP_DATE_TIMEZONE: ${PHP_DATE_TIMEZONE:-UTC}
+        entrypoint: []
+        command: php bin/console messenger:consume cache_redis --limit=20 -vv
+        depends_on:
+            - symfony-api
+        develop:
+            watch:
+                - path: ./backend/src/MessageHandler
+                  action: rebuild
+                - path: ./backend/config
+                  action: sync
+                  target: /usr/local/project-p/backend/config
+                - path: ./backend/src
+                  action: sync
+                  target: /usr/local/project-p/backend/src
+                - path: ./backend/composer.json
+                  action: rebuild
+                - path: ./.env
+                  action: rebuild
+
+    blackfire:
+        image: blackfire/blackfire:2
+        ports:
+            - 8307:8307
+        environment:
+            BLACKFIRE_SERVER_ID: ${BLACKFIRE_SERVER_ID}
+            BLACKFIRE_SERVER_TOKEN: ${BLACKFIRE_SERVER_TOKEN}
+            BLACKFIRE_CLIENT_ID: ${BLACKFIRE_CLIENT_ID}
+            BLACKFIRE_CLIENT_TOKEN: ${BLACKFIRE_CLIENT_TOKEN}
+            BLACKFIRE_LOG_LEVEL: ${BLACKFIRE_LOG_LEVEL}
+            BLACKFIRE_AGENT_SOCKET: ${BLACKFIRE_AGENT_SOCKET}
+            BLACKFIRE_ENDPOINT: ${BLACKFIRE_ENDPOINT}
+            BLACKFIRE_DISABLE_LEGACY_PORT: 1
+
+    frontend:
+        build:
+            context: ./
+            target: frontend
+        volumes:
+            - .:/app:rwbui
+        ports:
+            - 3000:3000
+        develop:
+            watch:
+                - path: ./frontend/src
+                  action: sync
+                  target: /usr/local/project-p/frontend/src
+                - path: ./frontend/public
+                  action: sync
+                  target: /usr/local/project-p/frontend/public
+                - path: ./frontend/package.json
+                  action: rebuild
+                - path: ./.env
+                  action: rebuild
+
+volumes:
+    database_data:
+        driver: local
+
+    mercure_data:
+        driver: local
+    mercure_config:
+        driver: local

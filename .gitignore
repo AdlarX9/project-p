@@ -1,0 +1,6 @@
+certificate
+database_data
+mercure_config
+.env
+*/.DS_Store
+*/.vscode
