@@ -1,0 +1,13 @@
+framework:
+    messenger:
+        transports:
+            cache_redis:
+                dsn: 'redis://redis:6379/messages'
+                options:
+                    stream: 'messages'
+                    group: 'matchmaking_group'
+                    delete_after_ack: false
+                    delete_after_reject: false
+
+        routing:
+            App\Message\RedisStreamMessage: cache_redis
