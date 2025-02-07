@@ -1,0 +1,214 @@
+@font-face {
+	font-family: 'cartoon';
+	src: url('./assets/main.ttf');
+}
+
+@font-face {
+	font-family: 'cartoon-2';
+	src: url('./assets/sofadi.ttf');
+}
+
+* {
+	z-index: 1;
+}
+
+:root {
+	--yellow: rgb(240, 188, 0);
+	--gray: #555;
+	--red: #ff8181;
+	--green: #d4fdca;
+	--dark-blue: #1d71ba;
+	--blue: #6aa8e5;
+}
+
+body,
+html {
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	min-width: 500px;
+	min-height: 100vh;
+	user-select: none;
+	background: #33aed7;
+	z-index: 0;
+}
+
+.int-btn {
+	border-radius: 20px;
+	border: 4px black solid;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	position: relative;
+	cursor: pointer;
+	font-family: cartoon;
+	font-size: 50px;
+	font-weight: bold;
+	text-transform: uppercase;
+	box-shadow:
+		inset 0 0 0 5px rgba(0, 0, 0, 0.3),
+		0 0 0 8px rgba(0, 0, 0, 0.1),
+		0 0 0 3px rgba(0, 0, 0, 0.4);
+}
+
+.int-btn::before {
+	content: '';
+	display: block;
+	position: absolute;
+	background: #fff;
+	opacity: 0.35;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 15px;
+}
+
+.int-btn::after {
+	content: '';
+	display: block;
+	position: absolute;
+	background: #000;
+	opacity: 0.4;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 15px;
+}
+
+.flat-btn {
+	padding: 10px;
+	background: #cda8a8;
+	color: black;
+	border-radius: 20px;
+	border: 1px solid black;
+	transition: 100ms linear;
+	cursor: pointer;
+}
+
+.flat-btn:hover {
+	filter: brightness(1.2);
+}
+
+.no-btn {
+	color: black;
+	background: transparent;
+	border: none;
+	cursor: auto;
+}
+
+.cartoon-txt {
+	font-family: cartoon;
+	font-size: 50px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.cartoon-short-txt {
+	font-family: cartoon;
+	font-size: 30px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.cartoon2-txt {
+	font-family: cartoon-2;
+	font-size: 30px;
+	text-transform: none;
+}
+
+.ui-txt {
+	font-family: arial, sans-serif;
+	font-size: 1rem;
+}
+
+.skewed {
+	transform: skewX(-10deg);
+}
+
+.skewed span {
+	transform: skewX(10deg);
+}
+
+.shadowed {
+	border: 4px black solid;
+	box-shadow:
+		inset 0 0 0 5px rgba(0, 0, 0, 0.3),
+		0 0 0 8px rgba(0, 0, 0, 0.1),
+		0 0 0 3px rgba(0, 0, 0, 0.4);
+}
+
+.shadowed-simple {
+	border: 3px black solid;
+	box-shadow:
+		inset 0 0 0 4px rgba(0, 0, 0, 0.3),
+		0 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.show-box {
+	border: 2px solid red;
+}
+
+.show-box * {
+	border: 2px solid red;
+}
+
+.link {
+	border: none;
+	background: transparent;
+	font-size: 1.3rem;
+	color: rgb(175, 175, 175);
+	cursor: pointer;
+}
+
+.field {
+	margin-top: 10px;
+	padding: 20px;
+	border-radius: 20px;
+	font-size: 0.8em;
+	margin-bottom: 10px;
+	background: var(--green);
+}
+
+.c-pointer {
+	cursor: pointer;
+}
+
+.c-auto {
+	cursor: auto;
+}
+
+.c-auto {
+	cursor: auto;
+}
+
+.red {
+	color: red;
+}
+
+.blue {
+	color: rgb(26, 37, 108);
+}
+
+.black {
+	color: black;
+}
+
+.bg-red {
+	background: var(--red);
+}
+
+.bg-blue {
+	background: var(--blue);
+}
+
+.bg-green {
+	background: var(--green);
+}
+
+.bg-yellow {
+	background: var(--yellow);
+}
+
+.p-20 {
+	padding: 20px;
+}

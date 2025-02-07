@@ -1,0 +1,42 @@
+.home-wrapper {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.home-header {
+	margin: 30px;
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+}
+
+.money-friends {
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+	width: 40%;
+}
+
+.home-footer {
+	margin: 30px;
+	display: flex;
+	justify-content: space-between;
+	align-items: end;
+	z-index: 0;
+}
+
+.home-settings {
+	background: #555;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.home-settings img {
+	width: 200px;
+	height: 200px;
+}

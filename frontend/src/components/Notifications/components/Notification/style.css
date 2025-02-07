@@ -1,0 +1,15 @@
+.notification-wrapper {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+	margin: 20px 20px 0 0;
+	cursor: auto;
+	border-radius: 20px;
+	pointer-events: auto;
+}
+
+.notification-wrapper p {
+	padding: 0;
+	margin: 0;
+}
