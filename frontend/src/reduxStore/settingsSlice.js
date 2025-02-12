@@ -19,6 +19,5 @@ const settingsSlice = createSlice({
 	}
 })
 
-export const { logNotifications, receiveNotification, deleteNotification, logNotificationsOut } =
-	settingsSlice.actions
+export const { changeSetting, logSettingsOut } = settingsSlice.actions
 export default settingsSlice.reducer

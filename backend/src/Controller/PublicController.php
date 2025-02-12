@@ -36,6 +36,7 @@ class PublicController extends AbstractController
         $user->setPassword($hashedPassword);
 
         $user->setMoney("999");
+        $user->setSettings([]);
 
         // Valider l'utilisateur
         $errors = $validator->validate($user);

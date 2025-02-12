@@ -10,7 +10,8 @@ module.exports = {
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
-		filename: 'bundle.js'
+		filename: 'bundle.js',
+		publicPath: '/'
 	},
 	module: {
 		rules: [
@@ -62,18 +63,7 @@ module.exports = {
 				runtimeErrors: true
 			},
 			progress: true
-			// webSocketTransport: 'ws',
-			// webSocketURL: 'wss://prive.pifpafdeluxe.fr:3000/ws'
 		},
-		// proxy: {
-		// 	'/ws': {
-		// 		target: 'wss://prive.pifpafdeluxe.fr:3000',
-		// 		ws: true,
-		// 		changeOrigin: true,
-		// 		logLevel: 'info'
-		// 	}
-		// },
-		// webSocketServer: 'ws',
 		historyApiFallback: true,
 		https: true,
 		server: {

@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Conversation;
+use App\Entity\Message;
+use App\Repository\ConversationRepository;
+use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
 use App\Utils\Functions;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +22,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class FriendsController extends AbstractController
 {
 	#[Route('/search', name: 'search_for_friends', methods: ['GET'])]
-	public function search_for_friends(SerializerInterface $serializer, Request $request, UserRepository $userRepository) : JsonResponse {
+	public function searchForFriends(SerializerInterface $serializer, Request $request, UserRepository $userRepository) : JsonResponse {
 		$searchTerm = $request->query->get('username', '');
 		$page = $request->query->getInt('page', 1);
 		$limit = $request->query->getInt('limit', 3);
@@ -33,8 +37,9 @@ class FriendsController extends AbstractController
 
 
 	#[Route('/add', name: 'add_friend', methods: ['POST'])]
-	public function add_friend(
+	public function addFriend(
 			UserRepository $userRepository,
+			ConversationRepository $conversationRepository,
 			Request $request,
 			EntityManagerInterface $entityManager,
 			SerializerInterface $serializer,
@@ -44,28 +49,39 @@ class FriendsController extends AbstractController
 		$me = $this->getUser();
 		$content = $request->toArray();
 		$idFriend = $content['idFriend'];
-		
+
 		$newFriend = $userRepository->find($idFriend);
 		if (!$newFriend) {
 			return new JsonResponse(['status' => 'Friend not found'], Response::HTTP_NOT_FOUND);
 		}
 
+		// Ajouter un lien d'amitié entre les deux utilisateurs
 		$me->addFriend($newFriend);
 		$newFriend->addFriend($me);
 		$entityManager->persist($me);
 		$entityManager->persist($newFriend);
+
+		// Créer une nouvelle discussion
+		if ($conversationRepository->findConversationBetweenTwoUsers($me, $newFriend) == null) {
+			$conversation = new Conversation();
+			$conversation->addUser($me);
+			$conversation->addUser($newFriend);
+			$entityManager->persist($conversation);
+		}
+
 		$entityManager->flush();
 
 		$context = SerializationContext::create()->setGroups(['getFriend']);
 		$jsonFriend = $serializer->serialize($newFriend, 'json', $context);
 
 		Functions::postNotification($publisher, $entityManager, $me, 'friends', "You added {$newFriend->getUsername()} as a friend");
-		Functions::postNotification($publisher, $entityManager, $newFriend, 'friends', "{$me->getUsername()} added you as a friend");
+		Functions::postNotification($publisher, $entityManager, $newFriend, 'friends', "{$me->getUsername()} added you as a friend", 'addFriend', $newFriend->getUsername());
 		return new JsonResponse($jsonFriend, Response::HTTP_OK, [], true);
 	}
 
+
 	#[Route('/remove', name: 'remove_friend', methods: ['DELETE'])]
-	public function remove_friend(
+	public function removeFriend(
 		UserRepository $userRepository,
 		Request $request,
 		EntityManagerInterface $entityManager,
@@ -92,7 +108,112 @@ class FriendsController extends AbstractController
 		$entityManager->flush();
 
 		Functions::postNotification($publisher, $entityManager, $me, 'friends', "You removed {$friend->getUsername()} from your friends");
-		Functions::postNotification($publisher, $entityManager, $friend, 'friends', "{$me->getUsername()} removed you from his friends");
+		Functions::postNotification($publisher, $entityManager, $friend, 'friends', "{$me->getUsername()} removed you from his friends", 'removeFriend', $friend->getId());
 		return new JsonResponse($jsonFriend, Response::HTTP_OK, [], true);
+	}
+
+
+	#[Route('/get/{friendUsername}', name: 'get_friend_data', methods: ['GET'])]
+	public function getFriendData(
+		UserRepository $userRepository,
+		SerializerInterface $serializer,
+		$friendUsername
+	): JsonResponse {
+		$friend = $userRepository->getUserByUsername($friendUsername);
+		$context = SerializationContext::create()->setGroups(['getFriend']);
+		$jsonUser = $serializer->serialize($friend, 'json', $context);
+		return new JsonResponse($jsonUser, Response::HTTP_OK, [], true);
+	}
+
+
+	#[Route('/send_message/{friendUsername}', name: 'send_message', methods: ['POST'])]
+	public function sendMessage(
+		UserRepository $userRepository,
+		ConversationRepository $conversationRepository,
+		Request $request,
+		EntityManagerInterface $entityManager,
+		PublisherInterface $publisher,
+		$friendUsername
+	): JsonResponse {
+		$me = $this->getUser();
+		$messageContent = $request->toArray()['message'];
+		$friend = $userRepository->getUserByUsername($friendUsername);
+
+		if (!$friend) {
+			return new JsonResponse(['status' => 'Friend not found'], Response::HTTP_NOT_FOUND);
+		}
+
+		// Créer le nouveau message
+		$conversation = $conversationRepository->findConversationBetweenTwoUsers($me, $friend);
+		$newMessage = new Message();
+		$newMessage->setSender($me);
+		$newMessage->setConversation($conversation);
+		$newMessage->setContent($messageContent);
+		$newMessage->setTimestamp(new \DateTime('now', new \DateTimeZone('UTC')));
+
+		// Enregistrer le message dans la base de donnée
+		$entityManager->persist($newMessage);
+		$entityManager->flush();
+
+		// Communiquer avec le frontend
+		Functions::postNotification($publisher, $entityManager, $friend, $me->getUsername(), $messageContent, 'receiveMessage', [$me->getUsername()]);
+		return new JsonResponse(['status' => 'Message sent'], Response::HTTP_OK, [], false);
+	}
+
+
+	#[Route('/delete_message/{messageId}', name: 'delete_message', methods: ['DELETE'])]
+	public function deleteMessage(
+		MessageRepository $messageRepository,
+		EntityManagerInterface $entityManager,
+		PublisherInterface $publisher,
+		$messageId
+	): JsonResponse {
+		$me = $this->getUser();
+		$message = $messageRepository->findById($messageId);
+		$conversation = $message->getConversation();
+
+		$users = $conversation->getUsers();
+
+		foreach($users as $user) {
+			if ($user->getId() != $me->getId()) {
+				Functions::postNotification($publisher, $entityManager, $user, $me->getUsername(), $me->getUsername() . ' deleted its own message', 'deleteMessage', [$message->getId()]);
+			}
+		}
+
+		$entityManager->remove($message);
+		$entityManager->flush();
+
+		return new JsonResponse(['status' => 'Message deleted'], Response::HTTP_OK, [], false);
+	}
+
+
+	#[Route('/get_conversation/{friendUsername}', name: 'get_conversation', methods: ['GET'])]
+	public function getConversation(
+		UserRepository $userRepository,
+		ConversationRepository $conversationRepository,
+		SerializerInterface $serializer,
+		Request $request,
+		$friendUsername
+	): JsonResponse {
+		$me = $this->getUser();
+		$friend = $userRepository->getUserByUsername($friendUsername);
+
+
+		if (!$friend) {
+			return new JsonResponse(['status' => 'Friend not found'], Response::HTTP_NOT_FOUND);
+		}
+
+		$conversation = $conversationRepository->findConversationBetweenTwoUsers($me, $friend);
+		if (!$conversation) {
+			return new JsonResponse(['status' => 'Conversation not found'], Response::HTTP_NOT_FOUND);
+		}
+
+		$page = $request->query->getInt('page', 1);
+		$limit = $request->query->getInt('limit', 10);
+		$messages = $conversation->getMessagesWithPagination($page, $limit);
+
+        $context = SerializationContext::create()->setGroups(['getMessage']);
+		$jsonMessages = $serializer->serialize($messages, 'json', $context);
+		return new JsonResponse($jsonMessages, Response::HTTP_OK, [], true);
 	}
 }

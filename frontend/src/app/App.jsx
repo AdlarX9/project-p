@@ -21,6 +21,7 @@ import Locker from '../pages/Locker/'
 import Shop from '../pages/Shop/'
 import LoadingPage from '../pages/LoadingPage/'
 import Game from '../pages/Game'
+import Chat from '../pages/Chat'
 
 const Home = lazy(() => import('../pages/Home/'))
 const Auth = lazy(() => import('../pages/Auth/'))
@@ -53,6 +54,7 @@ const App = () => {
 											<Route path='/settings' element={<Settings />} />
 											<Route path='/locker' element={<Locker />} />
 											<Route path='/shop' element={<Shop />} />
+											<Route path='/chat/:username' element={<Chat />} />
 										</Routes>
 									</HomeContextProvider>
 								</Suspense>

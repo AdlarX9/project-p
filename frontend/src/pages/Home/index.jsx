@@ -19,7 +19,7 @@ const Home = () => {
 					<Friends />
 				</div>
 			</header>
-			<Background />
+			{/* <Background /> */}
 			<footer className='home-footer'>
 				<motion.button
 					initial={{ opacity: 0 }}

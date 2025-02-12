@@ -11,7 +11,6 @@ import AuthMessage from './AuthMessage'
 const LogIn = () => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
-	const [hidden, setHidden] = useState(true)
 
 	const { signup, isPending, isError, error, data } = useSignup()
 	const navigate = useNavigate()

@@ -7,7 +7,7 @@ use App\Entity\User;
 use Symfony\Component\Mercure\Update;
 
 class Functions {
-	public static function postNotification($mercurePublisher, $entityManager, $user, $title, $message): void {
+	public static function postNotification($mercurePublisher, $entityManager, $user, $title, $message, $action = '', $target = ''): void {
         $currentDateTime = new \DateTime();
 
         $notification = new Notification();
@@ -24,7 +24,9 @@ class Functions {
             'title' => $title,
             'timestamp' => $dateString,
             'id' => $notification->getId(),
-            'type' => 'notification'
+            'type' => 'notification',
+            'action' => $action,
+            'target' => $target
         ];
         $jsonData = json_encode($data);
         $update = new Update("http://localhost:3000/" . $user->getUsername() . '/notifications', $jsonData);

@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux'
 import { getFriends } from '../../../../reduxStore/selectors'
 import { useRemoveFriend } from '../../../../hooks/friendsHooks'
 import { confirm } from '../../../Confirmation'
+import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 const FriendDetails = ({ friend, open, setOpen }) => {
 	const [isFriend, setIsFriend] = useState(false)
@@ -44,17 +46,30 @@ const FriendDetails = ({ friend, open, setOpen }) => {
 				<span className='cartoon2-txt'>{friend.money}</span>
 			</div>
 			<div className='friend-details-actions'>
-				<button
+				<motion.button
 					onClick={() => handleAddFriend(friend.id)}
-					className={`link ${!isFriend ? 'c-pointer' : ''}`}
+					className={`link ${!isFriend ? 'c-pointer' : 'c-auto'}`}
 					disabled={isFriend}
+					style={!isFriend && { color: 'var(--blue)' }}
 				>
 					{isFriend ? 'Is a friend' : 'Add as a friend'}
-				</button>
+				</motion.button>
 				{isFriend ? (
-					<button onClick={() => handleRemoveFriend()} className={'link red c-pointer'}>
-						Remove this friend
-					</button>
+					<>
+						<Link
+							to={'/chat/' + friend.username}
+							className='no-btn link'
+							style={{ color: 'var(--yellow)' }}
+						>
+							Discuss
+						</Link>
+						<button
+							onClick={() => handleRemoveFriend()}
+							className={'link red c-pointer'}
+						>
+							Remove this friend
+						</button>
+					</>
 				) : (
 					<></>
 				)}

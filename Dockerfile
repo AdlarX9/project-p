@@ -31,8 +31,8 @@ CMD ["nginx", "-g", "daemon off;"]
 FROM node:20 AS peerjs-server
 WORKDIR /usr/local/project-p/peerjs-server
 RUN npm install peer -g
-EXPOSE 9000
-CMD peerjs --port 2021 --key peerjs --path /peer-server --allow-discovery --cors "http://localhost:3000 http://127.0.0.1:3000 http://192.168.0.210:3000"
+EXPOSE 2021
+CMD peerjs --port 2021 --key peerjs --path /peer-server --allow-discovery --cors "https://prive.pifpafdeluxe.fr"
 
 
 # Coturn config
@@ -127,11 +127,5 @@ CMD ["php", "-S", "0.0.0.0:9000", "-t", "public"]
 FROM node:20 AS frontend
 WORKDIR /usr/local/project-p/frontend
 RUN npm install -g pnpm
-COPY ./frontend/package.json ./
-RUN pnpm install
-COPY ./.env ./frontend/webpack.config.js ./frontend/.babelrc ./
-COPY ./frontend/public ./public
-COPY ./frontend/src ./src
-COPY ./certificate ./certificate
 EXPOSE 3000
 CMD npx webpack serve

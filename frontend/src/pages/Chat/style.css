@@ -1,0 +1,51 @@
+.chat-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: end;
+	height: 100dvh;
+	gap: 40px;
+}
+
+.chat-back-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.chat-title {
+	position: absolute;
+	top: 0;
+}
+
+.chat-wiewer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: end;
+	width: 75%;
+	gap: 30px;
+}
+
+.chatter-label {
+	margin: 0;
+	padding: 0;
+}
+
+.chat-message {
+	width: 100%;
+	margin: 0;
+}
+
+.chat-message-content {
+	margin: 0;
+}
+
+.chat-input-wrapper {
+	width: 80%;
+	margin-bottom: 50px;
+}
+
+.chat-input {
+	width: 100%;
+}

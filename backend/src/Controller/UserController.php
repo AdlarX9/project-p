@@ -202,4 +202,12 @@ class UserController extends AbstractController
         Functions::usePeerIdCommunication($publisher, $data['peerUsername'], 'send', $data['id']);
         return new JsonResponse(['message' => 'PeerId sent successfully!'], Response::HTTP_NO_CONTENT);
     }
+
+
+    #[Route('/peer/switch_chat', name: 'switchChat', methods: ['POST'])]
+    public function switchChat(Request $request, PublisherInterface $publisher): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        Functions::sendMatchmakingUpdate($publisher, $data['peerUsername'], 'send', $data['id']);
+        return new JsonResponse(['message' => 'PeerId sent successfully!'], Response::HTTP_NO_CONTENT);
+    }
 }

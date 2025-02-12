@@ -37,16 +37,18 @@ export const MercureContextProvider = ({ children }) => {
 		}
 
 		const url = initializeUrl()
-		eventSourceRef.current = new EventSource(url)
-		setupEventHandlers()
+		if (Object.keys(topics)?.length > 0) {
+			eventSourceRef.current = new EventSource(url)
+			setupEventHandlers()
 
-		// Redémarrage ne cas d'erreur
-		eventSourceRef.current.onerror = () => {
-			console.error('EventSource error, reconnecting...')
-			eventSourceRef.current.close()
-			setTimeout(() => {
-				eventSourceRef.current = new EventSource(url)
-			}, 3000)
+			// Redémarrage ne cas d'erreur
+			eventSourceRef.current.onerror = err => {
+				console.log(err)
+				eventSourceRef.current.close()
+				setTimeout(() => {
+					eventSourceRef.current = new EventSource(url)
+				}, 3000)
+			}
 		}
 
 		return () => {

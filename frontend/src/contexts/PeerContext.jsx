@@ -128,39 +128,42 @@ export const PeerContextProvider = ({ children }) => {
 			getSomeId(receiverUsername).then(receiverId => {
 				console.log('received matched user id :', receiverId)
 
-				getAudio()
-					.then(audioStream => {
-						console.log(audioStream)
+				getAudio().then(audioStream => {
+					console.log('audio stream', audioStream)
 
-						if (!audioStream) {
-							matchmakingNothing()
-							return
+					if (!audioStream) {
+						peerConnect(receiverId, true)
+					}
+
+					const audioConnection = peerRef.current.call(receiverId, audioStream, {
+						metadata: {
+							id: peerRef.current.id,
+							username: user.username
 						}
-
-						const audioConnection = peerRef.current.call(receiverId, audioStream, {
-							metadata: {
-								id: peerRef.current.id,
-								username: user.username
-							}
-						})
-
-						audioConnection.on('stream', receiverAudioStream => {
-							dispatch(matchmakingConnected())
-						})
 					})
-					.catch(error => {
-						console.error(error)
-						matchmakingNothing()
+
+					audioConnection.on('stream', receiverAudioStream => {
+						console.log('connected !')
+
+						dispatch(matchmakingConnected())
+						console.log(receiverAudioStream)
 					})
+				})
 			})
 		}, 500)
 	}
 
-	const peerConnect = receiverUsername => {
-		const receiverId = getSomeId(receiverUsername)
+	const peerConnect = (receiver, hasId = false) => {
+		let receiverId
+		if (hasId) {
+			receiverId = getSomeId(receiver)
+		} else {
+			receiverId = receiver
+		}
+
 		const dataConnection = peerRef.current.connect(receiverId)
 		dataConnection.on('open', () => {
-			console.log('data connection established with : ', receiverUsername)
+			console.log('data connection established with : ', receiver)
 			dataConnection.an('data', data => {
 				console.log('received data from peer connect', data)
 			})

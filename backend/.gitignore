@@ -18,6 +18,7 @@
 /public/bundles/
 /var/
 /vendor/
+/migrations/
 ###< symfony/framework-bundle ###
 
 ###> lexik/jwt-authentication-bundle ###

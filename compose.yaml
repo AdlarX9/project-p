@@ -63,7 +63,7 @@ services:
             target: peerjs-server
         restart: unless-stopped
         ports:
-            - 9000:9000
+            - 2021:2021
 
     coturn:
         container_name: coturn
@@ -115,7 +115,7 @@ services:
         image: adminer
         restart: always
         ports:
-            - 2021:8080
+            - 8079:8080
 
     symfony-api:
         build:
@@ -165,6 +165,7 @@ services:
         command: php bin/console messenger:consume cache_redis --limit=20 -vv
         depends_on:
             - symfony-api
+        restart: always
         develop:
             watch:
                 - path: ./backend/src/MessageHandler
@@ -198,13 +199,17 @@ services:
         build:
             context: ./
             target: frontend
-        volumes:
-            - .:/app:rwbui
         ports:
-            - 3000:3000
+            - "3000:3000"
+        working_dir: /usr/local/project-p/frontend
+        volumes:
+            - ./frontend:/usr/local/project-p/frontend
+            - ./certificate:/usr/local/project-p/frontend/certificate:ro
+            - .env:/usr/local/project-p/frontend/.env
+        command: npx webpack serve
         develop:
             watch:
-                - path: ./frontend/src
+                - path: ./frontend/src/app
                   action: sync
                   target: /usr/local/project-p/frontend/src
                 - path: ./frontend/public

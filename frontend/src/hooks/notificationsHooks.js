@@ -10,6 +10,7 @@ import {
 	receiveNotification
 } from '../reduxStore/notificationsSlice'
 import { useMercureContext } from '../contexts/MercureContext'
+import { reduxAddFriend, reduxRemoveFriend } from '../reduxStore/friendsSlice'
 
 const axiosNotificationsGet = async token => {
 	try {
@@ -27,9 +28,33 @@ const axiosNotificationsGet = async token => {
 	}
 }
 
-const handleNotification = ({ type, parsedData, dispatch }) => {
+const axiosGetFriend = async (token, friendUsername) => {
+	return axios
+		.get(process.env.REACT_APP_API_URL + '/api/friends/get/' + friendUsername, {
+			headers: { Authorization: token }
+		})
+		.then(response => response.data)
+		.catch(err => {
+			throw new Error(err.message)
+		})
+}
+
+const handleNotification = ({ type, parsedData, dispatch, user }) => {
 	if (type !== 'notification') {
 		return
+	}
+
+	switch (parsedData?.action) {
+		case 'addFriend':
+			axiosGetFriend(user.token, parsedData.target).then(data => {
+				dispatch(reduxAddFriend(data))
+			})
+			break
+		case 'removeFriend':
+			dispatch(reduxRemoveFriend(parsedData.target))
+			break
+		case 'receiveMessage':
+			break
 	}
 
 	dispatch(receiveNotification(parsedData))

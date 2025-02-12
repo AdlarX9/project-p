@@ -149,7 +149,7 @@ export const useLogged = () => {
 	return { isLogged, ...query }
 }
 
-const axiosSignup = async (data, login) => {
+const axiosSignup = async data => {
 	return axios
 		.post(process.env.REACT_APP_API_URL + '/api/public/signup', data)
 		.then(response => response.data)
@@ -158,23 +158,19 @@ const axiosSignup = async (data, login) => {
 
 export const useSignup = () => {
 	const dispatch = useDispatch()
-	const { login } = useLogin()
 
 	const mutation = useMutation({
-		mutationFn: axiosSignup,
+		mutationFn: data => axiosSignup(data),
 		onSuccess: data => {
-			dispatch(login(data.token))
+			dispatch(logUser(data.token))
 		}
 	})
 
 	const signup = (username, password) => {
-		mutation.mutate(
-			{
-				username: username,
-				password: password
-			},
-			login
-		)
+		mutation.mutate({
+			username: username,
+			password: password
+		})
 	}
 
 	return {

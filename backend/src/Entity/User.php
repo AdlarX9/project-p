@@ -20,11 +20,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getUser', 'getFriend'])]
+    #[Groups(['getUser', 'getFriend', 'getMessage'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['getUser', 'getFriend'])]
+    #[Groups(['getUser', 'getFriend', 'getMessage'])]
     private ?string $username = null;
 
     /**
@@ -57,10 +57,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'target', orphanRemoval: true)]
     private Collection $notifications;
 
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender', orphanRemoval: true)]
+    private Collection $sent_messages;
+
+    /**
+     * @var Collection<int, Conversation>
+     */
+    #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'users')]
+    private Collection $conversations;
+
+    #[ORM\Column]
+    private array $settings = [];
+
     public function __construct()
     {
         $this->friends = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->sent_messages = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -199,6 +217,75 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $notification->setTarget(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getSentMessages(): Collection
+    {
+        return $this->sent_messages;
+    }
+
+    public function addSentMessage(Message $sentMessage): static
+    {
+        if (!$this->sent_messages->contains($sentMessage)) {
+            $this->sent_messages->add($sentMessage);
+            $sentMessage->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSentMessage(Message $sentMessage): static
+    {
+        if ($this->sent_messages->removeElement($sentMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($sentMessage->getSender() === $this) {
+                $sentMessage->setSender(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): static
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations->add($conversation);
+            $conversation->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): static
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getSettings(): array
+    {
+        return $this->settings;
+    }
+
+    public function setSettings(array $settings): static
+    {
+        $this->settings = $settings;
 
         return $this;
     }
