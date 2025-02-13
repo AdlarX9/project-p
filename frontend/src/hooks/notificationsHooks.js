@@ -39,7 +39,7 @@ const axiosGetFriend = async (token, friendUsername) => {
 		})
 }
 
-const handleNotification = ({ type, parsedData, dispatch, user }) => {
+const handleNotification = ({ type, parsedData, dispatch, user, removeNotification }) => {
 	if (type !== 'notification') {
 		return
 	}
@@ -54,6 +54,16 @@ const handleNotification = ({ type, parsedData, dispatch, user }) => {
 			dispatch(reduxRemoveFriend(parsedData.target))
 			break
 		case 'receiveMessage':
+			if (window.location.pathname === '/chat/' + parsedData.target[0]) {
+				removeNotification(parsedData)
+				return
+			}
+			break
+		case 'deleteMessage':
+			if (window.location.pathname === '/chat/' + parsedData.target[0]) {
+				removeNotification(parsedData)
+				return
+			}
 			break
 	}
 
@@ -65,7 +75,7 @@ export const useSubscribeNotifications = () => {
 	const dispatch = useDispatch()
 	const { addTopic } = useMercureContext()
 
-	const { data } = useQuery({
+	const { data, refetch } = useQuery({
 		queryKey: ['notificationSubscribe'],
 		queryFn: () => axiosNotificationsGet(token),
 		enabled: !!token,
@@ -80,7 +90,7 @@ export const useSubscribeNotifications = () => {
 		}
 	}, [data])
 
-	return data
+	return { data, refetch }
 }
 
 const axiosNotificationsDelete = async (token, notification) => {

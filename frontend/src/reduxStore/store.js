@@ -12,7 +12,8 @@ const defaultState = {
 	matchmaking: { state: 'nothing', id: null },
 	settings: {
 		communicationPrefer: 'call' // call | text
-	}
+	},
+	messages: []
 }
 
 export const saveStateUser = reduxState => {

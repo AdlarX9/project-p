@@ -1,23 +1,52 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import './style.css'
 import { motion } from 'framer-motion'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Back from '../../components/Back'
 import { useSelector } from 'react-redux'
-import { getFriends } from '../../reduxStore/selectors'
+import { getFriends, getUser } from '../../reduxStore/selectors'
 import ChatViewer from './components/ChatViewer'
 import ChatInput from './components/ChatInput'
+import { useMercureContext } from '../../contexts/MercureContext'
 
 const Chat = () => {
+	const user = useSelector(getUser)
 	const friends = useSelector(getFriends)
 	const navigate = useNavigate()
+	const [messages, setMessages] = useState([])
 	const { username } = useParams()
+	const { addTopic, removeTopic } = useMercureContext()
+
+	const receiveMessage = ({ type, parsedData }) => {
+		if (type !== 'messageUpdate') {
+			return
+		}
+
+		if (parsedData.action === 'receive') {
+			setMessages(prevMessages => [...prevMessages, parsedData.message])
+		} else if (parsedData.action === 'delete') {
+			setMessages(prevMessages =>
+				prevMessages.filter(message => message.id !== parsedData.message.id)
+			)
+		}
+	}
 
 	useEffect(() => {
 		if (!friends.find(friend => friend.username === username)) {
 			navigate('/')
 		}
-	})
+
+		addTopic(
+			process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/chat/' + username,
+			receiveMessage
+		)
+
+		return () => {
+			removeTopic(
+				process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/chat/' + username
+			)
+		}
+	}, [username])
 
 	return (
 		<section className='chat-wrapper'>
@@ -31,8 +60,8 @@ const Chat = () => {
 			>
 				Chat with {username}
 			</motion.h1>
-			<ChatViewer friendUsername={username} />
-			<ChatInput friendUsername={username} />
+			<ChatViewer friendUsername={username} messages={messages} setMessages={setMessages} />
+			<ChatInput friendUsername={username} messages={messages} setMessages={setMessages} />
 		</section>
 	)
 }

@@ -74,4 +74,18 @@ class Functions {
 
         return true;
     }
+
+    public static function sendMessageUpdate($mercurePublisher, $user, $message, $action): void  {
+        // $action = 'receive' ou 'delete'
+
+        $data = [
+            'message' => $message,
+            'action' => $action,
+            'type' => 'messageUpdate'
+        ];
+
+        $jsonData = json_encode($data);
+        $update = new Update("http://localhost:3000/" . $user->getUsername() . '/chat' . '/' . $message['sender']['username'], $jsonData);
+        $mercurePublisher($update);
+	}
 }

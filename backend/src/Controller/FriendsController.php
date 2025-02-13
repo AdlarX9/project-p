@@ -133,6 +133,7 @@ class FriendsController extends AbstractController
 		Request $request,
 		EntityManagerInterface $entityManager,
 		PublisherInterface $publisher,
+		SerializerInterface $serializer,
 		$friendUsername
 	): JsonResponse {
 		$me = $this->getUser();
@@ -150,14 +151,19 @@ class FriendsController extends AbstractController
 		$newMessage->setConversation($conversation);
 		$newMessage->setContent($messageContent);
 		$newMessage->setTimestamp(new \DateTime('now', new \DateTimeZone('UTC')));
+		$newMessage->setSeen(false);
 
 		// Enregistrer le message dans la base de donnée
 		$entityManager->persist($newMessage);
 		$entityManager->flush();
 
+		$context = SerializationContext::create()->setGroups(['getMessage']);
+		$jsonMessage = $serializer->serialize($newMessage, 'json', $context);
+
 		// Communiquer avec le frontend
 		Functions::postNotification($publisher, $entityManager, $friend, $me->getUsername(), $messageContent, 'receiveMessage', [$me->getUsername()]);
-		return new JsonResponse(['status' => 'Message sent'], Response::HTTP_OK, [], false);
+		Functions::sendMessageUpdate($publisher, $friend, json_decode($jsonMessage, true), 'receive');
+		return new JsonResponse($jsonMessage, Response::HTTP_OK, [], true);
 	}
 
 
@@ -166,22 +172,31 @@ class FriendsController extends AbstractController
 		MessageRepository $messageRepository,
 		EntityManagerInterface $entityManager,
 		PublisherInterface $publisher,
+		SerializerInterface $serializer,
 		$messageId
 	): JsonResponse {
 		$me = $this->getUser();
 		$message = $messageRepository->findById($messageId);
+		$context = SerializationContext::create()->setGroups(['getMessage']);
+		$jsonMessage = $serializer->serialize($message, 'json', $context);
+
+		if ($message->getSender()->getId() != $me->getId()) {
+			return new JsonResponse(['message' => 'You are not the author of this message'], Response::HTTP_FORBIDDEN);
+		}
+
 		$conversation = $message->getConversation();
 
 		$users = $conversation->getUsers();
 
-		foreach($users as $user) {
-			if ($user->getId() != $me->getId()) {
-				Functions::postNotification($publisher, $entityManager, $user, $me->getUsername(), $me->getUsername() . ' deleted its own message', 'deleteMessage', [$message->getId()]);
-			}
-		}
-
 		$entityManager->remove($message);
 		$entityManager->flush();
+
+		foreach($users as $user) {
+			if ($user->getId() != $me->getId()) {
+				Functions::postNotification($publisher, $entityManager, $user, $me->getUsername(), $me->getUsername() . ' deleted its own message', 'deleteMessage', [$me->getUsername()]);
+				Functions::sendMessageUpdate($publisher, $user, json_decode($jsonMessage, true), 'delete');
+			}
+		}
 
 		return new JsonResponse(['status' => 'Message deleted'], Response::HTTP_OK, [], false);
 	}
@@ -215,5 +230,63 @@ class FriendsController extends AbstractController
         $context = SerializationContext::create()->setGroups(['getMessage']);
 		$jsonMessages = $serializer->serialize($messages, 'json', $context);
 		return new JsonResponse($jsonMessages, Response::HTTP_OK, [], true);
+	}
+
+
+	#[Route('/saw_message/{messageId}', name: 'saw_message', methods: ['PUT'])]
+	public function sawMessage(
+        MessageRepository $messageRepository,
+        EntityManagerInterface $entityManager,
+        $messageId
+    ): JsonResponse {
+        $me = $this->getUser();
+        $message = $messageRepository->findById($messageId);
+
+        if ($message->getSender()->getId() == $me->getId()) {
+            return new JsonResponse(['message' => 'You already have seen your own message. Or have you?'], Response::HTTP_FORBIDDEN);
+        }
+
+        $message->setSeen(true);
+        $entityManager->persist($message);
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Okay, you know this message now.'], Response::HTTP_OK, [], true);
+    }
+
+
+	#[Route('/saw_conversation/{friendUsername}', name: 'saw_conversation', methods: ['PUT'])]
+	public function sawConversation(
+		UserRepository $userRepository,
+		ConversationRepository $conversationRepository,
+        EntityManagerInterface $entityManager,
+		Request $request,
+		$friendUsername
+	): JsonResponse {
+		$me = $this->getUser();
+		$friend = $userRepository->getUserByUsername($friendUsername);
+
+		if (!$friend) {
+			return new JsonResponse(['status' => 'Friend not found'], Response::HTTP_NOT_FOUND);
+		}
+
+		$conversation = $conversationRepository->findConversationBetweenTwoUsers($me, $friend);
+		if (!$conversation) {
+			return new JsonResponse(['status' => 'Conversation not found'], Response::HTTP_NOT_FOUND);
+		}
+
+		$page = $request->query->getInt('page', 1);
+		$limit = $request->query->getInt('limit', 10);
+		$messages = $conversation->getMessagesWithPagination($page, $limit);
+
+		foreach($messages as $message) {
+			if ($friend->getId() == $message->getSender()->getId() || !$message->getSeen()) {
+				$message->setSeen(true);
+				$entityManager->persist($message);
+			}
+		}
+
+        $entityManager->flush();
+
+		return new JsonResponse(['message' => 'Okay, you know everything about this conversation now.'], Response::HTTP_OK, [], true);
 	}
 }

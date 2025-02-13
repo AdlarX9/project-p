@@ -5,13 +5,20 @@ import { motion } from 'framer-motion'
 import { getNotifications } from '../../reduxStore/selectors'
 import Notification from './components/Notification'
 import { AnimatePresence } from 'framer-motion'
+import { useLogged } from '../../hooks/userHooks'
+import { useEffect } from 'react'
 
 const AnimatedNotification = motion.create(Notification)
 
 const Notifications = () => {
-	useSubscribeNotifications()
+	const { refetch } = useSubscribeNotifications()
+	const { isLogged } = useLogged()
 	const { emptyNotifications } = useEmptyNotifications()
 	const notifications = useSelector(getNotifications)
+
+	useEffect(() => {
+		refetch()
+	}, [isLogged])
 
 	return (
 		<motion.div

@@ -1,13 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { useGetConversation } from '../../../hooks/messageHooks'
+import { useDeleteMessage, useGetConversation } from '../../../hooks/messageHooks'
 import Loader from '../../../components/Loader'
 import { useSelector } from 'react-redux'
 import { getUser } from '../../../reduxStore/selectors'
+import { confirm } from '../../../components/Confirmation'
 
-const ChatViewer = ({ friendUsername }) => {
+const ChatViewer = ({ friendUsername, messages, setMessages }) => {
 	const user = useSelector(getUser)
-	const [messages, setMessages] = useState([])
+	const { deleteMessage } = useDeleteMessage()
 	const { isLoading, data, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
 		useGetConversation(friendUsername)
 
@@ -21,6 +22,19 @@ const ChatViewer = ({ friendUsername }) => {
 			])
 		}
 	}, [data])
+
+	const handleDelete = async message => {
+		confirm({ message: 'Are you sure you want to delete this message?' })
+			.then(() => {
+				deleteMessage(message.id)
+				setMessages(messages =>
+					messages.filter(randomMessage => randomMessage.id !== message.id)
+				)
+			})
+			.catch(err => {
+				throw new Error(err.message)
+			})
+	}
 
 	return (
 		<motion.section
@@ -41,16 +55,27 @@ const ChatViewer = ({ friendUsername }) => {
 						exit='hidden'
 						layout
 					>
-						<motion.p
-							className='cartoon-short-txt chatter-label'
+						<motion.div
+							className='chat-label-wrapper'
 							style={
 								message.sender.username !== user.username && {
-									justifySelf: 'end'
+									flexDirection: 'row-reverse'
 								}
 							}
 						>
-							{message.sender.username === user.username ? 'you' : friendUsername}
-						</motion.p>
+							<p className='cartoon-short-txt chatter-label'>
+								{message.sender.username === user.username ? 'you' : friendUsername}
+							</p>
+							{message.sender.id === user.id && (
+								<motion.button
+									className='link'
+									style={{ color: 'red' }}
+									onClick={() => handleDelete(message)}
+								>
+									delete
+								</motion.button>
+							)}
+						</motion.div>
 						<motion.p
 							className='shadowed-simple p-20 br-20 bg-green cartoon2-txt chat-message-content'
 							style={

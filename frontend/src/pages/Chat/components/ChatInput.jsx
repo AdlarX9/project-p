@@ -1,9 +1,17 @@
 import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { useSendMessage } from '../../../hooks/messageHooks'
 
-const ChatInput = ({ friendUsername }) => {
+const ChatInput = ({ friendUsername, setMessages }) => {
+	const { sendMessage } = useSendMessage()
+	const [message, setMessage] = useState('')
+
 	const handleSubmit = e => {
 		e.preventDefault()
-		// Send the message
+		sendMessage(friendUsername, message).then(message => {
+			setMessages(messages => [...messages, message])
+		})
+		setMessage('')
 	}
 
 	return (
@@ -13,7 +21,9 @@ const ChatInput = ({ friendUsername }) => {
 				animate={{ opacity: 1 }}
 				className='chat-input shadowed cartoon2-txt bg-blue p-20 br-20'
 				placeholder='Write...'
-			></motion.input>
+				value={message}
+				onChange={e => setMessage(e.target.value)}
+			/>
 		</form>
 	)
 }

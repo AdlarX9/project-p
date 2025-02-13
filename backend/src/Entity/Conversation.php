@@ -79,10 +79,13 @@ class Conversation
             return new ArrayCollection([]);
         }
 
-        $offset = ($page - 1) * $limit;
-        $messages = $this->messages->slice($offset, $limit);
+        $messagesArray = $this->messages->toArray(); 
+        $messagesArray = array_reverse($messagesArray);
 
-        return new ArrayCollection($messages);
+        $offset = ($page - 1) * $limit;
+        $messages = array_slice($messagesArray, $offset, $limit);
+
+        return new ArrayCollection(array_reverse($messages));
     }
 
     public function addMessage(Message $message): static

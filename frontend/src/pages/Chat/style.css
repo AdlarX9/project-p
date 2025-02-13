@@ -25,6 +25,14 @@
 	justify-content: end;
 	width: 75%;
 	gap: 30px;
+	max-height: 80%;
+}
+
+.chat-label-wrapper {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	align-items: center;
 }
 
 .chatter-label {

@@ -37,6 +37,10 @@ class Message
     #[Groups(['getMessage'])]
     private ?\DateTimeInterface $timestamp = null;
 
+    #[ORM\Column]
+    #[Groups(['getMessage'])]
+    private ?bool $seen = null;
+
     public function __construct()
     {
         $this->receiver = new ArrayCollection();
@@ -91,6 +95,18 @@ class Message
     public function setTimestamp(\DateTimeInterface $timestamp): static
     {
         $this->timestamp = $timestamp;
+
+        return $this;
+    }
+
+    public function isSeen(): ?bool
+    {
+        return $this->seen;
+    }
+
+    public function setSeen(bool $seen): static
+    {
+        $this->seen = $seen;
 
         return $this;
     }

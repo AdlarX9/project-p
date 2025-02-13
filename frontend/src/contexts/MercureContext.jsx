@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useRef, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser } from '../reduxStore/selectors'
+import { useRemoveNotification } from '../hooks/notificationsHooks'
 
 const MercureContext = createContext(null)
 
@@ -10,6 +11,7 @@ export const MercureContextProvider = ({ children }) => {
 	const eventSourceRef = useRef(null)
 	const dispatch = useDispatch()
 	const user = useSelector(getUser)
+	const removeNotification = useRemoveNotification()
 	const [topics, setTopics] = useState({})
 
 	const initializeUrl = () => {
@@ -26,7 +28,7 @@ export const MercureContextProvider = ({ children }) => {
 			eventSourceRef.current.addEventListener('message', message => {
 				const parsedData = JSON.parse(message.data)
 				console.log(parsedData)
-				handler({ parsedData, type: parsedData.type, dispatch, user })
+				handler({ parsedData, type: parsedData.type, dispatch, user, removeNotification })
 			})
 		})
 	}
