@@ -47,7 +47,7 @@ const scaleVariants = {
 
 const positionVariants = {
 	initial: {
-		x: '110%'
+		x: '120%'
 	},
 	displayed: {
 		x: 0

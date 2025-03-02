@@ -10,12 +10,12 @@
 .field-wrapper {
 	display: flex;
 	flex-direction: column;
-	margin-top: 40px;
+	margin-top: 4rem;
 }
 
 .field-label {
 	font-size: 0.7em;
-	margin-right: 200px;
+	margin-right: 20rem;
 	font-weight: 100;
 }
 
@@ -30,17 +30,17 @@
 
 .toggle-hide img {
 	position: absolute;
-	height: 70px;
+	height: 7rem;
 	width: auto;
 	top: 50%;
-	right: 35px;
+	right: 3.5rem;
 	transform: translateY(-50%);
 	cursor: pointer;
 }
 
 .auth-submit-btn {
-	margin-top: 50px;
-	padding: 20px;
+	margin-top: 5rem;
+	padding: 2rem;
 	display: flex;
 	align-self: center;
 	background: #ff8181;
@@ -60,7 +60,7 @@
 .auth-loader {
 	align-self: center;
 	position: absolute;
-	top: calc(100% + 40px);
+	top: calc(100% + 4rem);
 }
 
 .auth-link {

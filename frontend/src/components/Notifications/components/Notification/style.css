@@ -2,10 +2,10 @@
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	padding: 20px;
-	margin: 20px 20px 0 0;
+	padding: 2rem;
+	margin: 2rem 2rem 0 0;
 	cursor: auto;
-	border-radius: 20px;
+	border-radius: 2rem;
 	pointer-events: auto;
 }
 

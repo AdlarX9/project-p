@@ -16,9 +16,9 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	padding: 20px;
-	margin: 20px;
-	border-radius: 10px;
+	padding: 2rem;
+	margin: 2rem;
+	border-radius: 1rem;
 	pointer-events: all;
 	cursor: pointer;
 }

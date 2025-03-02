@@ -19,6 +19,7 @@
 	--green: #d4fdca;
 	--dark-blue: #1d71ba;
 	--blue: #6aa8e5;
+	font-size: clamp(5px, min(1svh, 1vw), 15px);
 }
 
 body,
@@ -26,29 +27,29 @@ html {
 	margin: 0;
 	padding: 0;
 	width: 100vw;
-	min-width: 500px;
-	min-height: 100vh;
+	height: 100svh;
 	user-select: none;
 	background: #33aed7;
 	z-index: 0;
+	overflow: hidden;
 }
 
 .int-btn {
-	border-radius: 20px;
-	border: 4px black solid;
+	border-radius: 2rem;
+	border: .4rem black solid;
 	overflow: hidden;
 	display: flex;
 	justify-content: center;
 	position: relative;
 	cursor: pointer;
 	font-family: cartoon;
-	font-size: 50px;
+	font-size: 5rem;
 	font-weight: bold;
 	text-transform: uppercase;
 	box-shadow:
-		inset 0 0 0 5px rgba(0, 0, 0, 0.3),
-		0 0 0 8px rgba(0, 0, 0, 0.1),
-		0 0 0 3px rgba(0, 0, 0, 0.4);
+		inset 0 0 0 .5rem rgba(0, 0, 0, 0.3),
+		0 0 0 .8rem rgba(0, 0, 0, 0.1),
+		0 0 0 .3rem rgba(0, 0, 0, 0.4);
 }
 
 .int-btn::before {
@@ -60,7 +61,7 @@ html {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 15px;
+	height: 1.5rem;
 }
 
 .int-btn::after {
@@ -72,15 +73,15 @@ html {
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	height: 15px;
+	height: 1.5rem;
 }
 
 .flat-btn {
-	padding: 10px;
+	padding: 1rem;
 	background: #cda8a8;
 	color: black;
-	border-radius: 20px;
-	border: 1px solid black;
+	border-radius: 2rem;
+	border: .1rem solid black;
 	transition: 100ms linear;
 	cursor: pointer;
 }
@@ -98,21 +99,21 @@ html {
 
 .cartoon-txt {
 	font-family: cartoon;
-	font-size: 50px;
+	font-size: 5rem;
 	font-weight: bold;
 	text-transform: uppercase;
 }
 
 .cartoon-short-txt {
 	font-family: cartoon;
-	font-size: 30px;
+	font-size: 3rem;
 	font-weight: 600;
 	text-transform: uppercase;
 }
 
 .cartoon2-txt {
 	font-family: cartoon-2;
-	font-size: 30px;
+	font-size: 3rem;
 	text-transform: none;
 }
 
@@ -130,42 +131,42 @@ html {
 }
 
 .shadowed {
-	border: 4px black solid;
+	border: .4rem black solid;
 	box-shadow:
-		inset 0 0 0 5px rgba(0, 0, 0, 0.3),
-		0 0 0 8px rgba(0, 0, 0, 0.1),
-		0 0 0 3px rgba(0, 0, 0, 0.4);
+		inset 0 0 0 .5rem rgba(0, 0, 0, 0.3),
+		0 0 0 .8rem rgba(0, 0, 0, 0.1),
+		0 0 0 .3rem rgba(0, 0, 0, 0.4);
 }
 
 .shadowed-simple {
-	border: 3px black solid;
+	border: .3rem black solid;
 	box-shadow:
-		inset 0 0 0 4px rgba(0, 0, 0, 0.3),
-		0 0 0 4px rgba(0, 0, 0, 0.1);
+		inset 0 0 0 .4rem rgba(0, 0, 0, 0.3),
+		0 0 0 .4rem rgba(0, 0, 0, 0.1);
 }
 
 .show-box {
-	border: 2px solid red;
+	border: .2rem solid red;
 }
 
 .show-box * {
-	border: 2px solid red;
+	border: .2rem solid red;
 }
 
 .link {
 	border: none;
 	background: transparent;
-	font-size: 1.3rem;
+	font-size: 2rem;
 	color: rgb(175, 175, 175);
 	cursor: pointer;
 }
 
 .field {
-	margin-top: 10px;
-	padding: 20px;
-	border-radius: 20px;
+	margin-top: 1rem;
+	padding: 2rem;
+	border-radius: 2rem;
 	font-size: 0.8em;
-	margin-bottom: 10px;
+	margin-bottom: 1rem;
 	background: var(--green);
 }
 
@@ -210,9 +211,9 @@ html {
 }
 
 .p-20 {
-	padding: 20px;
+	padding: 2rem;
 }
 
 .br-20 {
-	border-radius: 20px;
+	border-radius: 2rem;
 }

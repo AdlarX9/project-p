@@ -1,13 +1,13 @@
 .home-wrapper {
 	width: 100vw;
-	height: 100vh;
+	height: 100svh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 }
 
 .home-header {
-	margin: 30px;
+	margin: 3rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: start;
@@ -21,7 +21,7 @@
 }
 
 .home-footer {
-	margin: 30px;
+	margin: 3rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: end;
@@ -37,6 +37,15 @@
 }
 
 .home-settings img {
-	width: 200px;
-	height: 200px;
+	width: 20rem;
+	height: 20rem;
+}
+
+
+@media screen and (max-width: 460px) {
+	.money-friends {
+		flex-direction: column;
+		align-items: end;
+		gap: 3rem;
+	}
 }

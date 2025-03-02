@@ -3,8 +3,8 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: end;
-	height: 100dvh;
-	gap: 40px;
+	height: 100svh;
+	gap: 4rem;
 }
 
 .chat-back-wrapper {
@@ -24,7 +24,7 @@
 	align-items: center;
 	justify-content: end;
 	width: 75%;
-	gap: 30px;
+	gap: 3rem;
 	max-height: 80%;
 }
 
@@ -51,7 +51,7 @@
 
 .chat-input-wrapper {
 	width: 80%;
-	margin-bottom: 50px;
+	margin-bottom: 5rem;
 }
 
 .chat-input {
