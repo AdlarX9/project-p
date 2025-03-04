@@ -14,7 +14,7 @@
 	flex-direction: column;
 	position: relative;
 	height: 100%;
-	width: 30rem;
+	width: 40rem;
 }
 
 .friends-popup-header {
@@ -65,4 +65,16 @@
 
 .friends-result-btn {
 	margin-top: 2rem;
+}
+
+.search-form {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.search-input-field {
+	width: 80%;
+	padding: 2rem;
+	align-self: center;
 }

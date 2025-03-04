@@ -1,0 +1,11 @@
+.profile-wrapper {
+	width: 100vw;
+	height: 100svh;
+}
+
+.profile-popup-button {
+	position: absolute;
+	top: 3rem;
+	left: calc(100% - 25rem);
+	padding: 2rem;
+}

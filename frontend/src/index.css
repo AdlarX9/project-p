@@ -31,7 +31,6 @@ html {
 	user-select: none;
 	background: #33aed7;
 	z-index: 0;
-	overflow: hidden;
 }
 
 .int-btn {
@@ -168,6 +167,7 @@ html {
 	font-size: 0.8em;
 	margin-bottom: 1rem;
 	background: var(--green);
+	width: 100%;
 }
 
 .c-pointer {
@@ -216,4 +216,10 @@ html {
 
 .br-20 {
 	border-radius: 2rem;
+}
+
+.back-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
 }

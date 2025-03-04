@@ -1,3 +1,4 @@
+import '../style.css'
 import { useSelector } from 'react-redux'
 import { getFriends } from '../../../reduxStore/selectors'
 import { useState } from 'react'
@@ -30,22 +31,6 @@ const See = ({ enableDetails = true, friend, setFriend }) => {
 			/>
 		</>
 	)
-}
-
-const friendVariants = {
-	hidden: {
-		scaleX: 0,
-		scaleY: 0.5
-	},
-	visible: {
-		scaleX: 1,
-		scaleY: 1
-	},
-	exit: {
-		x: '100%',
-		scale: 0,
-		opacity: 0
-	}
 }
 
 export default See

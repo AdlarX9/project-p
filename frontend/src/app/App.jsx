@@ -17,7 +17,8 @@ import MatchmakingIndicator from '../components/MatchmakingIndicator'
 
 import Error from '../pages/Error/'
 import Settings from '../pages/Settings/'
-import Locker from '../pages/Locker/'
+import Profile from '../pages/Profile/'
+import BankAccount from '../pages/BankAccount/'
 import Shop from '../pages/Shop/'
 import LoadingPage from '../pages/LoadingPage/'
 import Game from '../pages/Game'
@@ -52,7 +53,8 @@ const App = () => {
 											/>
 											<Route path='/game' element={<Game />} />
 											<Route path='/settings' element={<Settings />} />
-											<Route path='/locker' element={<Locker />} />
+											<Route path='/profile' element={<Profile />} />
+											<Route path='/bankaccount' element={<BankAccount />} />
 											<Route path='/shop' element={<Shop />} />
 											<Route path='/chat/:username' element={<Chat />} />
 										</Routes>

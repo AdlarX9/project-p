@@ -64,11 +64,11 @@ const Search = () => {
 
 	return (
 		<>
-			<form>
+			<form className='search-form'>
 				<motion.input
 					initial={{ x: '100%', opacity: 0, scaleY: 0 }}
 					animate={{ x: 0, opacity: 1, scaleY: 1 }}
-					className='field shadowed'
+					className='field shadowed search-input-field'
 					type='text'
 					placeholder='Ajouter un ami'
 					value={username}

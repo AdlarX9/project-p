@@ -12,6 +12,7 @@ const FriendButton = forwardRef(({ onClick, friend }, ref) => {
 			onClick={() => onClick(friend)}
 			layout
 			ref={ref}
+			style={{ backgroundColor: 'var(--blue)' }}
 		>
 			<span className='cartoon-short-txt'>{friend.username}</span>
 			<span className='cartoon2-txt'>{friend.money}</span>

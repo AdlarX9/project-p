@@ -14,18 +14,17 @@
 }
 
 .field-label {
-	font-size: 0.7em;
-	margin-right: 20rem;
+	font-size: 4rem;
 	font-weight: 100;
+}
+
+.auth-field {
+	width: 50rem;
 }
 
 .password-wrapper {
 	display: flex;
 	position: relative;
-}
-
-.password-field {
-	width: 100%;
 }
 
 .toggle-hide img {

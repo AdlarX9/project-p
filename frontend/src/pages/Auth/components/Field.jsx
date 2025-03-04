@@ -13,7 +13,7 @@ const Field = ({ label, type, autoComplete, value, setValue, extraClassName, but
 			</label>
 			<div className={extraClassName === 'password-field' ? 'password-wrapper' : ''}>
 				<input
-					className={'field shadowed ' + extraClassName}
+					className={'field auth-field shadowed ' + extraClassName}
 					label={label}
 					autoComplete={autoComplete}
 					type={type}

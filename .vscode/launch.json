@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/Alexis/Documents/Code/C-C++/three-in-the-terminal/three-in-the-terminal",
+      "program": "/Users/Alexis/Documents/Code/C-C++/three-in-the-terminal/three-in-the-terminal/build/Debug/outDebug"
+    }
+  ]
+}

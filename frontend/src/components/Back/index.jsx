@@ -6,14 +6,14 @@ import { motion } from 'framer-motion'
 
 const MotionLink = motion.create(Link)
 
-const Back = () => {
+const Back = ({ className }) => {
 	return (
 		<MotionLink
 			variants={linkVariants}
 			initial='hidden'
 			animate='visible'
 			whileHover='hover'
-			className='back-btn int-btn'
+			className={'back-btn int-btn ' + className}
 			to='/'
 		>
 			<img src={back} alt='back' draggable='false' />

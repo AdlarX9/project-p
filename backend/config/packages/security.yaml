@@ -45,6 +45,8 @@ security:
         - { path: ^/api/user, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/friend, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/queue, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/bank, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/settings, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 

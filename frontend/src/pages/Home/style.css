@@ -44,7 +44,7 @@
 
 @media screen and (max-width: 460px) {
 	.money-friends {
-		flex-direction: column;
+		flex-direction: column-reverse;
 		align-items: end;
 		gap: 3rem;
 	}
