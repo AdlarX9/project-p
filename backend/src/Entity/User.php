@@ -72,6 +72,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $settings = [];
 
+    #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private ?Locker $locker = null;
+
     public function __construct()
     {
         $this->friends = new ArrayCollection();
@@ -286,6 +289,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSettings(array $settings): static
     {
         $this->settings = $settings;
+
+        return $this;
+    }
+
+    public function getLocker(): ?Locker
+    {
+        return $this->locker;
+    }
+
+    public function setLocker(Locker $locker): static
+    {
+        // set the owning side of the relation if necessary
+        if ($locker->getOwner() !== $this) {
+            $locker->setOwner($this);
+        }
+
+        $this->locker = $locker;
 
         return $this;
     }

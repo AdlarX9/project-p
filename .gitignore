@@ -3,5 +3,5 @@ database_data
 mercure_config
 .env
 .DS_Store
-*/.DS_Store
-*/.vscode
+*.DS_Store
+*.vscode

@@ -6,7 +6,16 @@ module.exports = {
 	entry: './src/index.js',
 	mode: 'development',
 	resolve: {
-		extensions: ['.js', '.jsx']
+		extensions: ['.js', '.jsx'],
+		alias: {
+			'@features': path.resolve(__dirname, 'src/features'),
+			'@redux': path.resolve(__dirname, 'src/redux'),
+			'@components': path.resolve(__dirname, 'src/components'),
+			'@app': path.resolve(__dirname, 'src/app'),
+			'@contexts': path.resolve(__dirname, 'src/contexts'),
+			'@pages': path.resolve(__dirname, 'src/pages'),
+			'@assets': path.resolve(__dirname, 'src/assets')
+		}
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),

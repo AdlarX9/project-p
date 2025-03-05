@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useRef, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUser } from '../reduxStore/selectors'
-import { useRemoveNotification } from '../hooks/notificationsHooks'
+import { getUser } from '@redux/selectors'
+import { useRemoveNotification } from '@features/notifications'
 
 const MercureContext = createContext(null)
 

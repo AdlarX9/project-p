@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\NotificationRepository;
 use App\Repository\UserRepository;
 use App\Utils\Functions;
 use Doctrine\ORM\EntityManagerInterface;

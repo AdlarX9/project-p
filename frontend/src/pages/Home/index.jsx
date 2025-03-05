@@ -1,19 +1,20 @@
 import './style.css'
 import settings from '../../assets/settings.png'
 
-import Friends from '../../components/Friends/'
-import Profile from './components/Profile'
-import Background from './components/Background'
-import Play from './components/Play'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import Money from '../../components/Money'
+
+import { Friends } from '@features/friends/'
+import { Money } from '@features/bank'
+import { Play } from '@features/matchmaking'
+import { ProfileButton } from '@features/user'
+// import Background from './components/Background'
 
 const Home = () => {
 	return (
 		<section className='home-wrapper'>
 			<header className='home-header'>
-				<Profile />
+				<ProfileButton />
 				<div className='money-friends'>
 					<Money />
 					<Friends />

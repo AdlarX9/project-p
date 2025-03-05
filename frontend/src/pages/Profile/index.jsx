@@ -1,11 +1,11 @@
 import './style.css'
-import Back from '../../components/Back'
+import Back from '@components/Back'
 import { motion } from 'framer-motion'
 import { useSelector } from 'react-redux'
-import { getUser } from '../../reduxStore/selectors'
-import PopUp from '../../components/PopUp'
+import { getUser } from '@redux/selectors'
+import PopUp from '@components/PopUp'
 import { useState } from 'react'
-import ProfilePopup from './components/ProfilePopup'
+import { ProfilePopup } from '@features/user'
 
 const Profile = () => {
 	const [open, setOpen] = useState(false)

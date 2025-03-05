@@ -2,11 +2,11 @@ import jsSHA from 'jssha'
 import Peer from 'peerjs'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { matchmakingConnected, matchmakingNothing } from '../reduxStore/matchmakingSlice'
+import { matchmakingConnected } from '@features/matchmaking'
 import { useSelector } from 'react-redux'
-import { getMatchmaking, getMatchmakingState, getToken, getUser } from '../reduxStore/selectors'
+import { getMatchmaking, getMatchmakingState, getToken, getUser } from '@redux/selectors'
 import axios from 'axios'
-import { useMercureContext } from './MercureContext'
+import { useMercureContext } from '@contexts/MercureContext'
 
 const PeerContext = createContext(null)
 

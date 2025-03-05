@@ -19,6 +19,7 @@
 	--green: #d4fdca;
 	--dark-blue: #1d71ba;
 	--blue: #6aa8e5;
+	--light-blue: #33aed7;
 	font-size: clamp(5px, min(1svh, 1vw), 15px);
 }
 
@@ -29,13 +30,13 @@ html {
 	width: 100vw;
 	height: 100svh;
 	user-select: none;
-	background: #33aed7;
+	background: var(--light-blue);
 	z-index: 0;
 }
 
 .int-btn {
 	border-radius: 2rem;
-	border: .4rem black solid;
+	border: 0.4rem black solid;
 	overflow: hidden;
 	display: flex;
 	justify-content: center;
@@ -46,9 +47,9 @@ html {
 	font-weight: bold;
 	text-transform: uppercase;
 	box-shadow:
-		inset 0 0 0 .5rem rgba(0, 0, 0, 0.3),
-		0 0 0 .8rem rgba(0, 0, 0, 0.1),
-		0 0 0 .3rem rgba(0, 0, 0, 0.4);
+		inset 0 0 0 0.5rem rgba(0, 0, 0, 0.3),
+		0 0 0 0.8rem rgba(0, 0, 0, 0.1),
+		0 0 0 0.3rem rgba(0, 0, 0, 0.4);
 }
 
 .int-btn::before {
@@ -80,7 +81,7 @@ html {
 	background: #cda8a8;
 	color: black;
 	border-radius: 2rem;
-	border: .1rem solid black;
+	border: 0.1rem solid black;
 	transition: 100ms linear;
 	cursor: pointer;
 }
@@ -130,26 +131,26 @@ html {
 }
 
 .shadowed {
-	border: .4rem black solid;
+	border: 0.4rem black solid;
 	box-shadow:
-		inset 0 0 0 .5rem rgba(0, 0, 0, 0.3),
-		0 0 0 .8rem rgba(0, 0, 0, 0.1),
-		0 0 0 .3rem rgba(0, 0, 0, 0.4);
+		inset 0 0 0 0.5rem rgba(0, 0, 0, 0.3),
+		0 0 0 0.8rem rgba(0, 0, 0, 0.1),
+		0 0 0 0.3rem rgba(0, 0, 0, 0.4);
 }
 
 .shadowed-simple {
-	border: .3rem black solid;
+	border: 0.3rem black solid;
 	box-shadow:
-		inset 0 0 0 .4rem rgba(0, 0, 0, 0.3),
-		0 0 0 .4rem rgba(0, 0, 0, 0.1);
+		inset 0 0 0 0.4rem rgba(0, 0, 0, 0.3),
+		0 0 0 0.4rem rgba(0, 0, 0, 0.1);
 }
 
 .show-box {
-	border: .2rem solid red;
+	border: 0.2rem solid red;
 }
 
 .show-box * {
-	border: .2rem solid red;
+	border: 0.2rem solid red;
 }
 
 .link {

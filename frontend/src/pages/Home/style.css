@@ -41,7 +41,6 @@
 	height: 20rem;
 }
 
-
 @media screen and (max-width: 460px) {
 	.money-friends {
 		flex-direction: column-reverse;

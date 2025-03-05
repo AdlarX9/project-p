@@ -47,6 +47,7 @@
 
 .auth-error {
 	align-self: center;
+	width: 50rem;
 	padding: 0;
 	margin: 0;
 	font-size: 0.6em;

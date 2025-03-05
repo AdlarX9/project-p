@@ -1,9 +1,8 @@
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { logPersoInf } from '../reduxStore/userSlice'
-import { useLogged, useLogout, useRenewToken } from '../hooks/userHooks'
-import { reduxLogFriends } from '../reduxStore/friendsSlice'
+import { useLogged, useLogout, useRenewToken, logPersoInf } from '@features/user'
+import { reduxLogFriends } from '@features/friends'
 
 const Check = () => {
 	const dispatch = useDispatch()

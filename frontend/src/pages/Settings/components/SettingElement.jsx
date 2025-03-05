@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSettings } from '../../../reduxStore/selectors'
-import { changeSetting } from '../../../reduxStore/settingsSlice'
+
+import { getSettings } from '@redux/selectors'
+import { changeSetting } from '@features/settings'
 
 const SettingElement = ({ action, title, type, value }) => {
 	const dispatch = useDispatch()

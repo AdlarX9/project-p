@@ -5,27 +5,27 @@ import { CookiesProvider } from 'react-cookie'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools, ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 
-import { store } from '../reduxStore/store'
-import { MercureContextProvider } from '../contexts/MercureContext'
-import { PeerContextProvider } from '../contexts/PeerContext'
-import { HomeContextProvider } from '../contexts/HomeContext'
+import { store } from '@redux/store'
+import { MercureContextProvider } from '@contexts/MercureContext'
+import { PeerContextProvider } from '@contexts/PeerContext'
+import { HomeContextProvider } from '@contexts/HomeContext'
 
 import Check from './Check'
-import Notifications from '../components/Notifications/'
-import Confirmation from '../components/Confirmation'
-import MatchmakingIndicator from '../components/MatchmakingIndicator'
+import { Notifications } from '@features/notifications'
+import Confirmation from '@components/Confirmation'
+import { MatchmakingIndicator } from '@features/matchmaking'
 
-import Error from '../pages/Error/'
-import Settings from '../pages/Settings/'
-import Profile from '../pages/Profile/'
-import BankAccount from '../pages/BankAccount/'
-import Shop from '../pages/Shop/'
-import LoadingPage from '../pages/LoadingPage/'
-import Game from '../pages/Game'
-import Chat from '../pages/Chat'
+import Error from '@pages/Error/'
+import Settings from '@pages/Settings/'
+import Profile from '@pages/Profile/'
+import BankAccount from '@pages/BankAccount/'
+import Shop from '@pages/Shop/'
+import LoadingPage from '@pages/LoadingPage/'
+import Game from '@pages/Game'
+import Chat from '@pages/Chat'
 
-const Home = lazy(() => import('../pages/Home/'))
-const Auth = lazy(() => import('../pages/Auth/'))
+const Home = lazy(() => import('@pages/Home/'))
+const Auth = lazy(() => import('@pages/Auth/'))
 
 const queryClient = new QueryClient()
 

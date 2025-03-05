@@ -1,5 +1,5 @@
-import { useGetPercentage } from '../../hooks/bankHooks'
-import TransfersMenu from './components/TransfersMenu'
+import { useGetPercentage } from '@features/bank'
+import { TransfersMenu } from '@features/bank'
 import Back from '../../components/Back'
 import './style.css'
 

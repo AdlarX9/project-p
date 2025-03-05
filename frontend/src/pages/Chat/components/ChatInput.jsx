@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { useSendMessage } from '../../../hooks/messageHooks'
+import { useSendMessage } from '@features/messages'
 
 const ChatInput = ({ friendUsername, setMessages }) => {
 	const { sendMessage } = useSendMessage()

@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
-import { useDeleteMessage, useGetConversation } from '../../../hooks/messageHooks'
+import { useEffect } from 'react'
+import { useDeleteMessage, useGetConversation } from '@features/messages'
 import Loader from '../../../components/Loader'
 import { useSelector } from 'react-redux'
-import { getUser } from '../../../reduxStore/selectors'
+import { getUser } from '@redux/selectors'
 import { confirm } from '../../../components/Confirmation'
 
 const ChatViewer = ({ friendUsername, messages, setMessages }) => {
