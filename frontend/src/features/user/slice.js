@@ -5,7 +5,7 @@ const userSlice = createSlice({
 	name: 'user',
 	initialState: {},
 	reducers: {
-		logUser: (currentState, action) => {
+		logUser: (_, action) => {
 			const user = {
 				token: 'bearer ' + action.payload
 			}
@@ -34,8 +34,6 @@ const userSlice = createSlice({
 				user: {},
 				notifications: []
 			}
-			console.log('logging out')
-
 			saveStateUser(state.user)
 			return state.user
 		}

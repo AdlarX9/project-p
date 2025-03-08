@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Repository\NotificationRepository;
-use App\Repository\UserRepository;
 use App\Utils\Functions;
 use Doctrine\ORM\EntityManagerInterface;
+use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
@@ -37,6 +37,30 @@ class UserController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
         return new JsonResponse(['message' => 'Utilisateur supprimé avec succès!'], Response::HTTP_NO_CONTENT);
+    }
+
+
+
+    #[Route('/logout', name: 'logout', methods: ['DELETE'])]
+    public function logout(
+        RefreshTokenManagerInterface $refreshTokenManager,
+        Request $request
+    ): JsonResponse {
+        $refreshToken = $request->toArray()['refresh_token'];
+
+        if (!$refreshToken) {
+            return new JsonResponse(['message' => 'No refresh token provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $storedToken = $refreshTokenManager->get($refreshToken);
+
+        if (!$storedToken || !$storedToken->isValid()) {
+            return new JsonResponse(['message' => 'invalid refresh token'], Response::HTTP_NOT_FOUND);
+        }
+
+        $refreshTokenManager->delete($storedToken);
+
+        return new JsonResponse(['message' => 'Déconnexion réussie'], Response::HTTP_NO_CONTENT);
     }
 
 

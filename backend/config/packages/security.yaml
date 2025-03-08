@@ -26,11 +26,22 @@ security:
                 check_path: /api/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        
+        refresh:
+            pattern:  ^/api/token/refresh
+            stateless: true
 
         api:
             pattern: ^/api
             stateless: true
-            jwt: ~ 
+            jwt: ~
+            entry_point: jwt
+            refresh_jwt:
+                check_path: /api/token/refresh
+            json_login:
+                check_path: /api/login # or, if you have defined a route for your login path, the route name you used
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -47,8 +58,8 @@ security:
         - { path: ^/api/queue, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/bank, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/settings, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

@@ -7,7 +7,7 @@ const UsernameField = ({ username, setUsername }) => {
 			setValue={setUsername}
 			label='username'
 			autoComplete='username'
-			type='username'
+			type='text'
 		/>
 	)
 }

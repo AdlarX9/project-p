@@ -10,4 +10,5 @@ api_login_check:
 
 gesdinet_jwt_refresh_token:
     path: /api/token/refresh
+    controller: App\Controller\PublicController::refresh
     methods: ['GET', 'POST']

@@ -9,7 +9,13 @@ const Auth = ({ type }) => {
 
 	return (
 		<>
-			{isLogged ? <Back /> : <></>}
+			{isLogged ? (
+				<div className='back-wrapper'>
+					<Back />
+				</div>
+			) : (
+				<></>
+			)}
 			{type === 'login' ? <LogIn /> : <SignUp />}
 		</>
 	)

@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux'
 import { getUser } from '@redux/selectors'
 
 const ProfilePopup = () => {
-	const logout = useLogout()
 	const navigate = useNavigate()
-	const { deleteAccount } = useDelete()
 	const user = useSelector(getUser)
+	const { logout } = useLogout()
+	const { deleteAccount } = useDelete()
 
 	const handleDelete = () => {
 		confirm({

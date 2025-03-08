@@ -33,7 +33,7 @@
 	},
 	"settings": {
 		"react": {
-		"version": "detect"
+			"version": "detect"
 		}
 	},
 	"ignorePatterns": ["node_modules/", "dist/", "build/"]

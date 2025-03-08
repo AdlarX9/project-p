@@ -1,24 +1,22 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 
-import { getToken, getUser } from '@redux/selectors'
+import { getToken } from '@redux/selectors'
 import { useMercureContext } from '@contexts/MercureContext'
-import { logUser, logUserOut } from '@features/user'
-import { logFriendsOut } from '@features/friends'
+import { logUser, logUserOut, logPersoInf } from '@features/user'
+import { logFriendsOut, reduxLogFriends } from '@features/friends'
 import { logNotificationsOut } from '@features/notifications'
 import { matchmakingNothing } from '@features/matchmaking'
 
-const axiosLoginFromIdentifiers = async data => {
+const axiosLogin = async data => {
 	return axios
 		.post(process.env.REACT_APP_API_URL + '/api/login', data)
 		.then(response => response.data)
 		.catch(error => {
-			console.log(error)
-
 			throw new Error(error.response.data.message || 'Error while trying to log in')
 		})
 }
@@ -28,11 +26,12 @@ export const useLogin = () => {
 	const [_, setCookie, __] = useCookies(['refresh_token'])
 
 	const mutation = useMutation({
-		mutationFn: axiosLoginFromIdentifiers,
+		mutationFn: axiosLogin,
 		onSuccess: data => {
 			setCookie('refresh_token', data.refresh_token, {
 				path: '/',
-				maxAge: 31_536_000
+				maxAge: 31_536_000,
+				secure: true
 			})
 			dispatch(logUser(data.token))
 		}
@@ -48,13 +47,35 @@ export const useLogin = () => {
 	}
 }
 
+const axiosLogout = async ({ refresh_token, token }) => {
+	return axios
+		.delete(process.env.REACT_APP_API_URL + '/api/user/logout', {
+			headers: {
+				Authorization: token
+			},
+			data: { refresh_token }
+		})
+		.then(data => data.data)
+		.catch(error => {
+			console.log(error)
+			throw new Error(error.response.data.message)
+		})
+}
+
 export const useLogout = () => {
 	const dispatch = useDispatch()
+	const token = useSelector(getToken)
 	const { cleanupTopics } = useMercureContext()
-	const [, _, removeCookie] = useCookies(['refresh_token'])
+	const [cookies, _, removeCookie] = useCookies(['refresh_token'])
+
+	const mutation = useMutation({
+		mutationKey: ['logout'],
+		mutationFn: ({ token, refresh_token }) => axiosLogout({ refresh_token, token })
+	})
 
 	const logout = () => {
 		cleanupTopics()
+		mutation.mutate({ token, refresh_token: cookies?.refresh_token })
 		removeCookie('refresh_token', {
 			path: '/'
 		})
@@ -64,19 +85,17 @@ export const useLogout = () => {
 		dispatch(matchmakingNothing())
 	}
 
-	return logout
+	return { logout }
 }
 
 const axiosRenewAccessToken = async ({ refresh_token }) => {
 	return axios
 		.post(
 			process.env.REACT_APP_API_URL + '/api/token/refresh',
-			{},
 			{
-				headers: {
-					Authorization: `Bearer ${refresh_token}`
-				}
-			}
+				refresh_token
+			},
+			{}
 		)
 		.then(response => response.data)
 		.catch(error => {
@@ -87,26 +106,35 @@ const axiosRenewAccessToken = async ({ refresh_token }) => {
 export const useRenewToken = () => {
 	const dispatch = useDispatch()
 	const [cookies, setCookie, _] = useCookies(['refresh_token'])
+	const { logout } = useLogout()
+	const { pathname } = useLocation()
+	const navigate = useNavigate()
 
 	const mutation = useMutation({
 		mutationFn: axiosRenewAccessToken,
 		onSuccess: data => {
-			setCookie('refresh_token', data.refresh_token, {
-				path: '/',
-				maxAge: 31_536_000
-			})
 			dispatch(logUser(data.token))
+		},
+		onError: () => {
+			if (pathname !== '/signup' && pathname !== '/login') {
+				navigate('/login')
+				logout()
+			}
 		}
 	})
 
 	return {
 		renewToken: async () => {
-			mutation.mutate(cookies.refresh_token)
+			mutation.mutate({ refresh_token: cookies.refresh_token })
 		}
 	}
 }
 
 const axiosMe = async token => {
+	if (!token) {
+		return { data: null, code: 401 }
+	}
+
 	return axios
 		.get(`${process.env.REACT_APP_API_URL}/api/user/me`, {
 			headers: {
@@ -122,32 +150,37 @@ const axiosMe = async token => {
 
 export const useLogged = () => {
 	const token = useSelector(getToken)
-	const [isLogged, setIsLogged] = useState(true)
-	const user = useSelector(getUser)
+	const dispatch = useDispatch()
 	const { pathname } = useLocation()
+	const queryClient = useQueryClient()
+	const [isLogged, setIsLogged] = useState(!!token)
 
-	const query = useQuery({
+	const { data, isPending, isFetching, refetch } = useQuery({
 		queryKey: ['user'],
 		queryFn: () => axiosMe(token),
-		enabled: !!token,
-		retry: 3
+		retry: 3,
+		refetchOnWindowFocus: true
 	})
 
 	useEffect(() => {
-		if (query.data?.code === 401 || !user?.token) {
-			setIsLogged(false)
-		} else {
-			setIsLogged(true)
-		}
-	}, [query.data, user])
+		refetch()
+	}, [token])
 
 	useEffect(() => {
-		if (pathname === '/') {
-			query.refetch()
+		if (data?.code === 200) {
+			dispatch(logPersoInf(data.data))
+			dispatch(reduxLogFriends(data.data))
+			setIsLogged(true)
+		} else if (!isPending) {
+			setIsLogged(false)
 		}
-	}, [pathname])
+	}, [data, isPending])
 
-	return { isLogged, ...query }
+	useEffect(() => {
+		queryClient.invalidateQueries(['user']) // Force la mise à jour au lieu de refetch
+	}, [pathname, queryClient])
+
+	return { isLogged, isFetching, refetch, data }
 }
 
 const axiosSignup = async data => {
