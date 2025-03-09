@@ -7,8 +7,9 @@ import { motion } from 'framer-motion'
 import { Friends } from '@features/friends/'
 import { Money } from '@features/bank'
 import { Play } from '@features/matchmaking'
-import { ProfileButton } from '@features/user'
-// import Background from './components/Background'
+import { ProfileButton } from '@features/authentication'
+import { Avatar } from '@features/profile'
+import { ShopButton } from '@features/shop'
 
 const Home = () => {
 	return (
@@ -20,7 +21,9 @@ const Home = () => {
 					<Friends />
 				</div>
 			</header>
-			{/* <Background /> */}
+			<section className='avatar-wrapper'>
+				<Avatar />
+			</section>
 			<footer className='home-footer'>
 				<motion.button
 					initial={{ opacity: 0 }}
@@ -32,7 +35,12 @@ const Home = () => {
 						<img src={settings} alt='settings' draggable='false' />
 					</Link>
 				</motion.button>
-				<Play />
+				<div className='shop-play-buttons'>
+					<div className='home-shop-button-wrapper'>
+						<ShopButton />
+					</div>
+					<Play />
+				</div>
 			</footer>
 		</section>
 	)

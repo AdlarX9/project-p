@@ -1,6 +1,6 @@
 import '../style.css'
 import { useEffect, useState } from 'react'
-import { useLogged, useSignup } from '@features/user'
+import { useLogged, useSignup } from '@features/authentication'
 import Loader from '../../../components/Loader'
 import { useNavigate } from 'react-router-dom'
 import UsernameField from './UsernameField'

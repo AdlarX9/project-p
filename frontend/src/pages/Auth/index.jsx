@@ -1,5 +1,5 @@
 import Back from '../../components/Back'
-import { useLogged } from '@features/user'
+import { useLogged } from '@features/authentication'
 import './style.css'
 import LogIn from './components/LogIn'
 import SignUp from './components/SignUp'

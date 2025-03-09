@@ -1,7 +1,7 @@
 import './style.css'
 import { motion } from 'framer-motion'
-import Back from '../../components/Back'
-import SettingElement from './components/SettingElement'
+import Back from '@components/Back'
+import { SettingsDisplayer } from '@features/settings'
 
 const Settings = () => {
 	return (
@@ -16,11 +16,7 @@ const Settings = () => {
 			>
 				Settings
 			</motion.h1>
-			<div className='setting-element-wrapper'>
-				{settings.map(element => {
-					return <SettingElement key={element.title} {...element} />
-				})}
-			</div>
+			<SettingsDisplayer />
 		</section>
 	)
 }

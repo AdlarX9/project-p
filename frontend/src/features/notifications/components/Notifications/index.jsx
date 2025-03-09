@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { getNotifications } from '@redux/selectors'
 import Notification from '../Notification'
 import { AnimatePresence } from 'framer-motion'
-import { useLogged } from '@features/user'
+import { useLogged } from '@features/authentication'
 import { useEffect } from 'react'
 
 const AnimatedNotification = motion.create(Notification)

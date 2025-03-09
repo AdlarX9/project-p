@@ -1,7 +1,7 @@
 import '../style.css'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLogin } from '@features/user'
+import { useLogin } from '@features/authentication'
 import Loader from '../../../components/Loader'
 
 import PasswordField from './PasswordField'

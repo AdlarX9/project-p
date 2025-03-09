@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { getToken, getUser } from '@redux/selectors'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { logPersoInf } from '@features/user'
+import { logPersoInf } from '@features/authentication'
 import { reduxLogFriends } from '@features/messages'
 import { useEffect } from 'react'
 

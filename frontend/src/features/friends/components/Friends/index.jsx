@@ -5,8 +5,8 @@ import seeing from '@assets/loupe.png'
 import PopUp from '@components/PopUp'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import Search from './components/Search'
-import See from './components/See'
+import SearchFriends from '../SearchFriends'
+import SeeFriends from '../SeeFriends'
 
 const Friends = () => {
 	const [open, setOpen] = useState(false)
@@ -40,7 +40,11 @@ const Friends = () => {
 						</button>
 					</header>
 
-					{isSeeking ? <Search /> : <See friend={friend} setFriend={setFriend} />}
+					{isSeeking ? (
+						<SearchFriends />
+					) : (
+						<SeeFriends friend={friend} setFriend={setFriend} />
+					)}
 				</div>
 			</PopUp>
 		</>

@@ -52,17 +52,6 @@
 	width: 0;
 }
 
-.friend-fetched {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 90%;
-	padding: 1rem;
-	margin-top: 1rem;
-	border-radius: 1.5rem;
-	background: var(--blue);
-}
-
 .friends-result-btn {
 	margin-top: 2rem;
 }

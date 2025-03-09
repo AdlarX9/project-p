@@ -20,10 +20,22 @@
 	width: 40%;
 }
 
+.shop-play-buttons {
+	display: flex;
+	flex-direction: column;
+}
+
+.home-shop-button-wrapper {
+	align-self: end;
+	justify-self: end;
+	margin: 4rem;
+}
+
 .home-footer {
-	margin: 3rem;
+	padding: 3rem;
 	display: flex;
 	justify-content: space-between;
+	justify-self: end;
 	align-items: end;
 	z-index: 0;
 }
@@ -39,6 +51,16 @@
 .home-settings img {
 	width: 20rem;
 	height: 20rem;
+}
+
+.avatar-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	overflow: hidden;
 }
 
 @media screen and (max-width: 460px) {

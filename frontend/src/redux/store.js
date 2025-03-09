@@ -1,9 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { userReducer } from '@features/user'
+import { userReducer } from '@features/authentication'
 import { friendsReducer } from '@features/friends'
 import { notificationsReducer } from '@features/notifications'
 import { matchmakingReducer } from '@features/matchmaking'
 import { settingsReducer } from '@features/settings'
+import { profileReducer } from '@features/profile'
 
 const defaultState = {
 	user: {},
@@ -13,7 +14,8 @@ const defaultState = {
 	settings: {
 		communicationPrefer: 'call' // call | text
 	},
-	messages: []
+	messages: [],
+	profile: {}
 }
 
 export const saveStateUser = reduxState => {
@@ -67,7 +69,8 @@ const loadState = () => {
 			friends: JSON.parse(friends),
 			notifications: JSON.parse(notifications),
 			matchmaking: 'nothing',
-			settings: JSON.parse(settings)
+			settings: JSON.parse(settings),
+			profile: {}
 		}
 		if (serializedState?.friends === null || serializedState?.user === null) {
 			return defaultState
@@ -87,7 +90,8 @@ export const store = configureStore({
 		friends: friendsReducer,
 		notifications: notificationsReducer,
 		matchmaking: matchmakingReducer,
-		settings: settingsReducer
+		settings: settingsReducer,
+		profile: profileReducer
 	}),
 	devTools: true
 })

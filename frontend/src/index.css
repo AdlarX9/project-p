@@ -20,6 +20,7 @@
 	--dark-blue: #1d71ba;
 	--blue: #6aa8e5;
 	--light-blue: #33aed7;
+	--active-green: rgb(111, 217, 72);
 	font-size: clamp(5px, min(1svh, 1vw), 15px);
 }
 
@@ -156,7 +157,7 @@ html {
 .link {
 	border: none;
 	background: transparent;
-	font-size: 2rem;
+	font-size: 2.5rem;
 	color: rgb(175, 175, 175);
 	cursor: pointer;
 }
@@ -209,6 +210,10 @@ html {
 
 .bg-yellow {
 	background: var(--yellow);
+}
+
+.bg-active-green  {
+	background: var(--active-green);
 }
 
 .p-20 {

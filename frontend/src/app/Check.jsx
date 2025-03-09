@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLogged, useRenewToken } from '@features/user'
+import { useLogged, useRenewToken } from '@features/authentication'
 
 const Check = () => {
 	const { isLogged } = useLogged()

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { getUser } from '@redux/selectors'
 import PopUp from '@components/PopUp'
 import { useState } from 'react'
-import { ProfilePopup } from '@features/user'
+import { ProfilePopup } from '@features/authentication'
 
 const Profile = () => {
 	const [open, setOpen] = useState(false)

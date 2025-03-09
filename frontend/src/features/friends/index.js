@@ -1,5 +1,5 @@
 import Friends from './components/Friends'
-import SeeFriends from './components/Friends/components/See'
+import SeeFriends from './components/SeeFriends'
 
 export { Friends, SeeFriends }
 export * from './hooks'
