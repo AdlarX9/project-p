@@ -1,5 +1,5 @@
 import './style.css'
-import profile from '../../../../assets/profile.png'
+import profile from '@assets/profile.png'
 import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { getUser } from '@redux/selectors'

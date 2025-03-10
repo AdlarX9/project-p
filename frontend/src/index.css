@@ -21,6 +21,7 @@
 	--blue: #6aa8e5;
 	--light-blue: #33aed7;
 	--active-green: rgb(111, 217, 72);
+	--purple: rgb(87, 70, 131);
 	font-size: clamp(5px, min(1svh, 1vw), 15px);
 }
 
@@ -96,6 +97,18 @@ html {
 	background: transparent;
 	border: none;
 	cursor: auto;
+}
+
+.title-txt {
+	font-family: cartoon;
+	font-weight: bold;
+	text-transform: uppercase;
+	font-size: 8rem;
+	color: rgb(242, 242, 242);
+	text-shadow:
+		0 1rem black,
+		0.1rem 0.5rem black,
+		-0.1rem 0.5rem black;
 }
 
 .cartoon-txt {
@@ -212,7 +225,7 @@ html {
 	background: var(--yellow);
 }
 
-.bg-active-green  {
+.bg-active-green {
 	background: var(--active-green);
 }
 
@@ -222,6 +235,14 @@ html {
 
 .br-20 {
 	border-radius: 2rem;
+}
+
+.m-0 {
+	margin: 0;
+}
+
+.m-20 {
+	margin: 2rem;
 }
 
 .back-wrapper {

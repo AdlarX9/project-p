@@ -15,7 +15,7 @@ import { reduxAddFriend, reduxRemoveFriend } from '@features/friends'
 
 const axiosNotificationsGet = async token => {
 	return axios
-		.get(process.env.REACT_APP_API_URL + '/api/user/getNotifications', {
+		.get(process.env.REACT_APP_API_URL + '/api/notifications/getNotifications', {
 			headers: {
 				Authorization: token
 			}
@@ -92,7 +92,7 @@ export const useSubscribeNotifications = () => {
 const axiosNotificationsDelete = async (token, notification) => {
 	try {
 		const response = await axios.delete(
-			`${process.env.REACT_APP_API_URL}/api/user/deleteNotification/${notification.id}`,
+			`${process.env.REACT_APP_API_URL}/api/notifications/deleteNotification/${notification.id}`,
 			{
 				headers: {
 					Authorization: token
@@ -130,7 +130,7 @@ export const useRemoveNotification = () => {
 const axiosEmptyNotifications = async token => {
 	try {
 		const response = await axios.delete(
-			process.env.REACT_APP_API_URL + '/api/user/emptyNotifications',
+			process.env.REACT_APP_API_URL + '/api/notifications/emptyNotifications',
 			{
 				headers: {
 					Authorization: token

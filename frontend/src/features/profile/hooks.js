@@ -10,7 +10,10 @@ const axiosGetProfile = async token => {
 		.get(process.env.REACT_APP_API_URL + '/api/profile/get', {
 			headers: { Authorization: token }
 		})
-		.then(data => data.data)
+		.then(data => {
+			console.log(data / data)
+			return data.data
+		})
 		.catch(err => {
 			throw new Error(err.message)
 		})

@@ -1,0 +1,12 @@
+.shop-wrapper {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 2rem;
+	margin: auto;
+}
+
+@media screen and (max-width: 460px) {
+	.shop-wrapper {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}

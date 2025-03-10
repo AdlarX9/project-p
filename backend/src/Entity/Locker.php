@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\LockerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LockerRepository::class)]
 class Locker
@@ -11,6 +12,7 @@ class Locker
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['getProfile'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'locker', cascade: ['persist', 'remove'])]
@@ -18,9 +20,11 @@ class Locker
     private ?User $owner = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['getProfile'])]
     private ?string $color = null;
 
     #[ORM\Column]
+    #[Groups(['getProfile'])]
     private array $colors = [];
 
     public function getId(): ?int

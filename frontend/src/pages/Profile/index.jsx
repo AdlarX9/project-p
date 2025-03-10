@@ -5,11 +5,13 @@ import { useSelector } from 'react-redux'
 import { getUser } from '@redux/selectors'
 import PopUp from '@components/PopUp'
 import { useState } from 'react'
-import { ProfilePopup } from '@features/authentication'
+import { ProfilePopup } from '@features/profile'
+import { useGetProfile } from '../../features/profile/hooks'
 
 const Profile = () => {
 	const [open, setOpen] = useState(false)
 	const user = useSelector(getUser)
+	useGetProfile()
 
 	return (
 		<section className='profile-wrapper'>

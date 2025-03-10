@@ -73,7 +73,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $settings = [];
 
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    #[Groups(['getProfile'])]
     private ?Locker $locker = null;
+
+    /**
+     * @var Collection<int, Bank>
+     */
+    #[ORM\OneToMany(targetEntity: Bank::class, mappedBy: 'owner')]
+    private Collection $banks;
 
     public function __construct()
     {
@@ -82,6 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->messages = new ArrayCollection();
         $this->sent_messages = new ArrayCollection();
         $this->conversations = new ArrayCollection();
+        $this->banks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -306,6 +314,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->locker = $locker;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Bank>
+     */
+    public function getBanks(): Collection
+    {
+        return $this->banks;
+    }
+
+    public function addBank(Bank $bank): static
+    {
+        if (!$this->banks->contains($bank)) {
+            $this->banks->add($bank);
+            $bank->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBank(Bank $bank): static
+    {
+        if ($this->banks->removeElement($bank)) {
+            // set the owning side to null (unless already changed)
+            if ($bank->getOwner() === $this) {
+                $bank->setOwner(null);
+            }
+        }
 
         return $this;
     }

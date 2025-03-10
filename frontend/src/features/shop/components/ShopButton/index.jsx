@@ -15,7 +15,7 @@ const ShopButton = () => {
 			className='int-btn bg-active-green shop-button'
 			to='/shop'
 		>
-			<img src={Caddie} alt='caddie' />
+			<img src={Caddie} alt='caddie' draggable='false' />
 		</MotionLink>
 	)
 }

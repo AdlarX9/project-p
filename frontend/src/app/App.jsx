@@ -20,6 +20,7 @@ import Settings from '@pages/Settings/'
 import Profile from '@pages/Profile/'
 import BankAccount from '@pages/BankAccount/'
 import Shop from '@pages/Shop/'
+import ShopItem from '@pages/ShopItem/'
 import LoadingPage from '@pages/LoadingPage/'
 import Game from '@pages/Game'
 import Chat from '@pages/Chat'
@@ -56,6 +57,7 @@ const App = () => {
 											<Route path='/profile' element={<Profile />} />
 											<Route path='/bankaccount' element={<BankAccount />} />
 											<Route path='/shop' element={<Shop />} />
+											<Route path='/shop/item' element={<ShopItem />} />
 											<Route path='/chat/:username' element={<Chat />} />
 										</Routes>
 									</HomeContextProvider>

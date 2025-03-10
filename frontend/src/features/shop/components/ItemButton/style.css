@@ -1,0 +1,18 @@
+.shop-item-button {
+	width: 20rem;
+	height: 20rem;
+	border-radius: 2rem;
+	display: flex;
+	justify-content: start;
+	align-items: end;
+	padding: 2rem;
+}
+
+.shop-item-button p {
+	padding: 0;
+	margin: 0;
+	color: white;
+	background: #00000090;
+	padding: 1rem;
+	border-radius: 1rem;
+}

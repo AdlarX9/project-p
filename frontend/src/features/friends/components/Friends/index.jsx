@@ -36,6 +36,7 @@ const Friends = () => {
 							<img
 								src={isSeeking ? seeking : seeing}
 								alt={isSeeking ? 'btn-to-look' : 'btn-to-search'}
+								draggable='false'
 							/>
 						</button>
 					</header>

@@ -7,8 +7,7 @@ import { motion } from 'framer-motion'
 import { Friends } from '@features/friends/'
 import { Money } from '@features/bank'
 import { Play } from '@features/matchmaking'
-import { ProfileButton } from '@features/authentication'
-import { Avatar } from '@features/profile'
+import { Avatar, ProfileButton } from '@features/profile'
 import { ShopButton } from '@features/shop'
 
 const Home = () => {

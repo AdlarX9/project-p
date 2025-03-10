@@ -17,15 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/bank')]
 final class BankController extends AbstractController
 {
-    public function index(): JsonResponse
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/BankController.php',
-        ]);
-    }
-
-     #[Route('/transfer', name: 'transfer', methods: ['PATCH'])]
+    #[Route('/transfer', name: 'transfer', methods: ['PATCH'])]
     public function transfer(
         Request $request,
         UserRepository $userRepository,

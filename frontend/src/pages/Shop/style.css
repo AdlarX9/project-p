@@ -1,0 +1,17 @@
+.shop-page-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100svh;
+	background: var(--purple);
+}
+
+.shop-title {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	margin: 0;
+	padding: 3rem;
+}

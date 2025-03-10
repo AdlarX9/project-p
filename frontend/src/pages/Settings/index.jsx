@@ -12,7 +12,7 @@ const Settings = () => {
 			<motion.h1
 				initial={{ opacity: 0, x: '-100%' }}
 				animate={{ opacity: 1, x: '0%' }}
-				className='cartoon-txt'
+				className='title-txt m-20 p-20'
 			>
 				Settings
 			</motion.h1>

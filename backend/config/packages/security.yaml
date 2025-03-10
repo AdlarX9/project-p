@@ -58,6 +58,8 @@ security:
         - { path: ^/api/queue, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/bank, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/settings, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/notifications, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/matchmaking, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
 

@@ -23,6 +23,7 @@ const axiosLogin = async data => {
 
 export const useLogin = () => {
 	const dispatch = useDispatch()
+	const { cleanupTopics } = useMercureContext()
 	const [_, setCookie, __] = useCookies(['refresh_token'])
 
 	const mutation = useMutation({
@@ -30,7 +31,7 @@ export const useLogin = () => {
 		onSuccess: data => {
 			setCookie('refresh_token', data.refresh_token, {
 				path: '/',
-				maxAge: 31_536_000,
+				maxAge: 315_360_000, // 10 ans
 				secure: true
 			})
 			dispatch(logUser(data.token))
@@ -38,6 +39,7 @@ export const useLogin = () => {
 	})
 
 	const login = (username, password) => {
+		cleanupTopics()
 		mutation.mutate({ username, password })
 	}
 

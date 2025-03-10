@@ -3,18 +3,20 @@
 namespace App\Controller;
 
 use App\Message\RedisStreamMessage;
+use App\Utils\Functions;
 use Psr\Log\LoggerInterface;
-use Redis;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mercure\PublisherInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Cache\CacheInterface;
+use Redis;
 
-#[Route("/api/queue")]
-class CacheController extends AbstractController
+#[Route('/api/matchmaking')]
+final class MatchmakingController extends AbstractController
 {
     private $bus;
     private $logger;
@@ -68,5 +70,27 @@ class CacheController extends AbstractController
         $this->redis->xAck('matchmaking_stream', 'matchmaking_group', [$data['messageId']]);
         $this->redis->xDel('matchmaking_stream', [$data['messageId']]);
         return new JsonResponse(['message' => 'pang'], Response::HTTP_OK, [], false);
+    }
+    #[Route('/peer/ask_id', name: 'peerAskId', methods: ['POST'])]
+    public function peerAskId(Request $request, PublisherInterface $publisher): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        Functions::usePeerIdCommunication($publisher, $data['peerUsername'], 'ask');
+        return new JsonResponse(['message' => 'Peer asked successfully!'], Response::HTTP_NO_CONTENT);
+    }
+
+
+    #[Route('/peer/send_id', name: 'peerSendId', methods: ['POST'])]
+    public function peerSendId(Request $request, PublisherInterface $publisher): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        Functions::usePeerIdCommunication($publisher, $data['peerUsername'], 'send', $data['id']);
+        return new JsonResponse(['message' => 'PeerId sent successfully!'], Response::HTTP_NO_CONTENT);
+    }
+
+
+    #[Route('/peer/switch_chat', name: 'switchChat', methods: ['POST'])]
+    public function switchChat(Request $request, PublisherInterface $publisher): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        Functions::sendMatchmakingUpdate($publisher, $data['peerUsername'], 'send', $data['id']);
+        return new JsonResponse(['message' => 'PeerId sent successfully!'], Response::HTTP_NO_CONTENT);
     }
 }

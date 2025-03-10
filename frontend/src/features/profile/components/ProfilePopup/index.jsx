@@ -1,5 +1,5 @@
 import './style.css'
-import { useDelete, useLogout } from '../../hooks'
+import { useDelete, useLogout } from '@features/authentication'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { getUser } from '@redux/selectors'

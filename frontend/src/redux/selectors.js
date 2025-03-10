@@ -15,3 +15,5 @@ export const getMatchmakingId = state => getMatchmaking(state).id || null
 export const getMatchmakingRole = state => getMatchmaking(state).role || ''
 
 export const getSettings = state => state.settings || {}
+
+export const getProfile = state => state.profile || {}

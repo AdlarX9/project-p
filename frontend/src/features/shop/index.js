@@ -1,7 +1,6 @@
 import ShopButton from './components/ShopButton'
-import ItemButton from './components/ItemButton'
+import ShopWrapper from './components/ShopWrapper'
+import ItemDescription from './components/ItemDescription'
 
-export { ShopButton, ItemButton }
+export { ShopButton, ShopWrapper, ItemDescription }
 export * from './hooks'
-export * from './slice'
-export { default as shopReducer } from './slice'

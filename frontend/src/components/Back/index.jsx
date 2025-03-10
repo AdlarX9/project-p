@@ -1,23 +1,23 @@
 import './style.css'
 import back from '../../assets/back.png'
 
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
-const MotionLink = motion.create(Link)
-
 const Back = ({ className }) => {
+	const navigate = useNavigate()
+
 	return (
-		<MotionLink
+		<motion.button
 			variants={linkVariants}
 			initial='hidden'
 			animate='visible'
 			whileHover='hover'
 			className={'back-btn int-btn ' + className}
-			to='/'
+			onClick={() => navigate(-1)}
 		>
 			<img src={back} alt='back' draggable='false' />
-		</MotionLink>
+		</motion.button>
 	)
 }
 
