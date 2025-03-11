@@ -11,7 +11,6 @@ const axiosGetProfile = async token => {
 			headers: { Authorization: token }
 		})
 		.then(data => {
-			console.log(data / data)
 			return data.data
 		})
 		.catch(err => {

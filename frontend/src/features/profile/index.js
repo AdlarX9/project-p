@@ -1,6 +1,6 @@
 import Avatar from './components/Avatar'
 import ProfilePopup from './components/ProfilePopup'
-import ProfileButton from './components/Profile'
+import ProfileButton from './components/ProfileButton'
 
 export { ProfilePopup, ProfileButton, Avatar }
 export * from './hooks'

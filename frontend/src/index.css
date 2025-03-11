@@ -209,6 +209,10 @@ html {
 	color: black;
 }
 
+.white {
+	color: white;
+}
+
 .bg-red {
 	background: var(--red);
 }
@@ -227,6 +231,14 @@ html {
 
 .bg-active-green {
 	background: var(--active-green);
+}
+
+.bg-purple {
+	background: var(--purple);
+}
+
+.bg-gray {
+	background: var(--gray);
 }
 
 .p-20 {

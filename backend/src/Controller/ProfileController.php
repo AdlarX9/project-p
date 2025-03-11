@@ -18,8 +18,6 @@ final class ProfileController extends AbstractController
 
         $context = SerializationContext::create()->setGroups(['getProfile']);
 
-        $locker = $user->getLocker();
-
         $jsonProfile = $serializer->serialize($user, 'json', $context);
         return new JsonResponse($jsonProfile, Response::HTTP_OK, [], true);
     }

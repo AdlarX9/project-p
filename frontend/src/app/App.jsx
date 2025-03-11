@@ -17,7 +17,7 @@ import { MatchmakingIndicator } from '@features/matchmaking'
 
 import Error from '@pages/Error/'
 import Settings from '@pages/Settings/'
-import Profile from '@pages/Profile/'
+import Profile from '@pages/ProfilePage/'
 import BankAccount from '@pages/BankAccount/'
 import Shop from '@pages/Shop/'
 import ShopItem from '@pages/ShopItem/'

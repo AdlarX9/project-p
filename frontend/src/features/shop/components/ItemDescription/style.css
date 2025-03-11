@@ -1,6 +1,12 @@
 .item-description-wrapper {
-	display: grid;
-	grid-template-columns: 2fr, 1fr;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	width: 80vw;
 	height: 80svh;
+}
+
+.item-avatar-wrapper {
+	width: 50rem;
+	height: 50rem;
 }
