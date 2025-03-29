@@ -67,4 +67,14 @@ class Locker
 
         return $this;
     }
+
+    public function hasItem(array $item): bool
+    {
+        foreach ($this->colors as $color) {
+            if ($color['rarity'] === $item['rarity'] &&$color['content'] === $item['content']) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

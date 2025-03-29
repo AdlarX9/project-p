@@ -5,13 +5,11 @@ import { useSelector } from 'react-redux'
 import { getUser } from '@redux/selectors'
 import PopUp from '@components/PopUp'
 import { useState } from 'react'
-import { ProfilePopup } from '@features/profile'
-import { useGetProfile } from '../../features/profile/hooks'
+import { ProfilePopup, Avatar, LockerPreview } from '@features/profile'
 
 const Profile = () => {
 	const [open, setOpen] = useState(false)
 	const user = useSelector(getUser)
-	useGetProfile()
 
 	return (
 		<section className='profile-wrapper'>
@@ -23,11 +21,16 @@ const Profile = () => {
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				whileHover={{ scale: 1.05 }}
-				className='int-btn profile-popup-button bg-blue'
+				className='profile-popup-button bg-blue int-btn'
 				onClick={() => setOpen(true)}
 			>
 				<span>{user.username}</span>
 			</motion.button>
+
+			<main className='profile-page-main'>
+				<LockerPreview />
+				<Avatar />
+			</main>
 
 			<PopUp open={open} setOpen={setOpen} className='popup-profile'>
 				<ProfilePopup />

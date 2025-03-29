@@ -21,7 +21,7 @@ const Play = () => {
 			}}
 		>
 			<motion.button
-				className={'int-btn skewed play-btn '}
+				className={'no-link int-btn skewed play-btn'}
 				style={{
 					cursor:
 						matchmakingState === 'connecting' || matchmakingState === 'pending'

@@ -3,9 +3,18 @@
 	height: 20rem;
 	border-radius: 2rem;
 	display: flex;
-	justify-content: start;
-	align-items: end;
+	flex-direction: column;
+	justify-content: space-between !important;
+	align-items: center;
 	padding: 2rem;
+}
+
+.shop-item-button span {
+	color: var(--active-green);
+	padding: 1rem;
+	border-radius: 1rem;
+	margin: 0;
+	background: #01340d;
 }
 
 .shop-item-button p {

@@ -7,21 +7,28 @@ import { Link } from 'react-router-dom'
 
 const MotionLink = motion.create(Link)
 
-const Money = () => {
+const Money = ({ interactive = true }) => {
 	const user = useSelector(getUser)
+
+	let Wrapper
+	if (interactive) {
+		Wrapper = MotionLink
+	} else {
+		Wrapper = motion.div
+	}
 
 	return (
 		<>
-			<MotionLink
+			<Wrapper
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
-				whileHover={{ scale: 1.05 }}
-				className='money c-pointer'
+				whileHover={{ scale: interactive ? 1.05 : 1 }}
+				className={`no-link money ${interactive ? 'c-pointer' : 'c-auto'}`}
 				to='bankaccount'
 			>
 				<img src={money} alt='money' draggable='false' />
 				<span className='cartoon-txt'>{user.money}</span>
-			</MotionLink>
+			</Wrapper>
 		</>
 	)
 }

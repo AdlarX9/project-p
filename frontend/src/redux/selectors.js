@@ -17,3 +17,5 @@ export const getMatchmakingRole = state => getMatchmaking(state).role || ''
 export const getSettings = state => state.settings || {}
 
 export const getProfile = state => state.profile || {}
+
+export const getLocker = state => getProfile(state).locker || {}

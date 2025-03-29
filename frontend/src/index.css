@@ -99,6 +99,11 @@ html {
 	cursor: auto;
 }
 
+.no-link {
+	color: inherit;
+    text-decoration: none;
+}
+
 .title-txt {
 	font-family: cartoon;
 	font-weight: bold;

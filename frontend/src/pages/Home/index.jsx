@@ -30,7 +30,7 @@ const Home = () => {
 					whileHover={{ scale: 1.05 }}
 					className='int-btn home-settings'
 				>
-					<Link to='/settings'>
+					<Link to='/settings' className='no-link'>
 						<img src={settings} alt='settings' draggable='false' />
 					</Link>
 				</motion.button>

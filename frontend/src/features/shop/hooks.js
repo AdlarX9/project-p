@@ -1,7 +1,9 @@
 import axios from 'axios'
-import { useQuery } from '@tanstack/react-query'
-import { useSelector } from 'react-redux'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useDispatch, useSelector } from 'react-redux'
 import { getToken } from '@redux/selectors'
+import { useLogged } from '@features/authentication'
+import { addColor } from '@features/profile'
 
 const axiosGetShop = async token => {
 	return axios
@@ -26,4 +28,39 @@ export const useGetShop = () => {
 	})
 
 	return query
+}
+
+const axiosBuyItem = async (token, item) => {
+	return axios
+		.post(process.env.REACT_APP_API_URL + '/api/shop/buy_item', item, {
+			headers: { Authorization: token }
+		})
+		.then(response => {
+			return response.data
+		})
+		.catch(err => {
+			console.log(err)
+			throw new Error(err.message)
+		})
+}
+
+export const useBuyItem = () => {
+	const token = useSelector(getToken)
+	const { refetch } = useLogged()
+	const dispatch = useDispatch()
+
+	const mutation = useMutation({
+		mutationKey: 'buyItem',
+		mutationFn: item => axiosBuyItem(token, item),
+		onSuccess: item => {
+			refetch()
+			dispatch(addColor(item))
+		}
+	})
+
+	const buyItem = item => {
+		mutation.mutate(item)
+	}
+
+	return { buyItem, ...mutation }
 }

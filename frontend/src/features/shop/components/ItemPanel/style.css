@@ -1,3 +1,5 @@
-.item-panel {
+.item-panel-wrapper {
 	display: flex;
+	flex-direction: column;
+	padding: 5rem;
 }

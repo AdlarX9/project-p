@@ -57,7 +57,7 @@ const FriendDetails = ({ friend, open, setOpen }) => {
 					<>
 						<Link
 							to={'/chat/' + friend.username}
-							className='no-btn link'
+							className='no-link no-btn link'
 							style={{ color: 'var(--yellow)' }}
 						>
 							Discuss

@@ -46,8 +46,8 @@ const Avatar = ({ customColor = null }) => {
 						color={
 							customColor
 								? getThreeColor(customColor)
-								: profile.color
-									? getThreeColor(profile.color)
+								: profile?.locker?.color
+									? getThreeColor(profile.locker.color)
 									: 'hotpink'
 						}
 					/>

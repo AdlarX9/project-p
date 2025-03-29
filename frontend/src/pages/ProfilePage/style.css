@@ -1,11 +1,21 @@
 .profile-wrapper {
 	width: 100vw;
 	height: 100svh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .profile-popup-button {
-	position: absolute;
-	top: 3rem;
+	position: absolute !important;
 	left: calc(100% - 25rem);
+	top: 3rem;
 	padding: 2rem;
+}
+
+.profile-page-main {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr;
+	width: 80%;
 }

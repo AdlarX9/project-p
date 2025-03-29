@@ -15,3 +15,10 @@
 	margin: 0;
 	padding: 3rem;
 }
+
+.shop-money-wrapper {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 2rem;
+}

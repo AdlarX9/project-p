@@ -16,7 +16,7 @@ const Profile = () => {
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				whileHover={{ scale: 1.05 }}
-				className='int-btn profile'
+				className='no-link int-btn profile'
 				to='/profile'
 			>
 				<img src={profile} alt='profile' draggable='false' />

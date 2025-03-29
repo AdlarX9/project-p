@@ -9,9 +9,26 @@ const profileSlice = createSlice({
 			return profile
 		},
 
+		addColor: (currentState, action) => {
+			const color = action.payload
+			let newState = {}
+			if (currentState?.locker?.colors) {
+				const colors = [...currentState.locker.colors, color]
+				newState = {
+					...currentState,
+					locker: {
+						...currentState.locker,
+						colors
+					}
+				}
+			}
+
+			return newState
+		},
+
 		logProfileOut: () => ({})
 	}
 })
 
-export const { logProfile, logProfileOut } = profileSlice.actions
+export const { logProfile, logProfileOut, addColor } = profileSlice.actions
 export default profileSlice.reducer
