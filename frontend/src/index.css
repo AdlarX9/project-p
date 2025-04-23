@@ -101,7 +101,7 @@ html {
 
 .no-link {
 	color: inherit;
-    text-decoration: none;
+	text-decoration: none;
 }
 
 .title-txt {
@@ -200,6 +200,10 @@ html {
 
 .c-auto {
 	cursor: auto;
+}
+
+.c-inherit {
+	cursor: inherit;
 }
 
 .red {

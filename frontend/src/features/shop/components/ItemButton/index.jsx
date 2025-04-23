@@ -36,7 +36,7 @@ const classicWrapper = ({ children, item }) => {
 			initial='hidden'
 			animate='visible'
 			style={{ backgroundColor: '#' + item.content }}
-			className='int-btn shop-item-button c-auto'
+			className='int-btn shop-item-button c-inherit'
 		>
 			{children}
 		</motion.div>

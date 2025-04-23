@@ -67,8 +67,8 @@ const App = () => {
 							</PeerContextProvider>
 						</MercureContextProvider>
 					</Router>
-					{/* {isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
-					<ReactQueryDevtools initialIsOpen={false} /> */}
+					{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
+					<ReactQueryDevtools initialIsOpen={false} />
 				</QueryClientProvider>
 			</Provider>
 		</CookiesProvider>

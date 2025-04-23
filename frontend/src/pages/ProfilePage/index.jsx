@@ -28,8 +28,8 @@ const Profile = () => {
 			</motion.button>
 
 			<main className='profile-page-main'>
-				<LockerPreview />
 				<Avatar />
+				<LockerPreview />
 			</main>
 
 			<PopUp open={open} setOpen={setOpen} className='popup-profile'>
