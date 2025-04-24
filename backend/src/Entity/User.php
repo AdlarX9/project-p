@@ -92,6 +92,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->banks = new ArrayCollection();
     }
 
+    public function createLocker(): void {
+        if (!$this->locker) {
+            $this->locker = new Locker();
+            $this->locker->setOwner($this);
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;

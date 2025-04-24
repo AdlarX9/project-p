@@ -79,9 +79,9 @@ module.exports = {
 			type: 'https',
 			options: {
 				minVersion: 'TLSv1.1',
-				key: fs.readFileSync(path.join(__dirname, './certificate/privkey1.pem')),
-				cert: fs.readFileSync(path.join(__dirname, './certificate/fullchain1.pem')),
-				ca: fs.readFileSync(path.join(__dirname, './certificate/cert1.pem')),
+				key: fs.readFileSync(path.join(__dirname, './certificate/privkey.pem')),
+				cert: fs.readFileSync(path.join(__dirname, './certificate/fullchain.pem')),
+				ca: fs.readFileSync(path.join(__dirname, './certificate/cert.pem')),
 				requestCert: false
 			}
 		}

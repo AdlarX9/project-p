@@ -3,3 +3,25 @@
 	flex-direction: column;
 	align-items: center;
 }
+
+.colors-displayer {
+	display: grid;
+	direction: ltr;
+	gap: 1rem;
+	padding: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+	max-width: 80vw;
+	max-height: 70svh;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.colors-displayer::-webkit-scrollbar {
+	background: transparent;
+}
+
+.colors-displayer::-webkit-scrollbar-thumb {
+	background: rgb(49, 49, 49);
+	border-radius: 50rem;
+	cursor: grab;
+}

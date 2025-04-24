@@ -17,7 +17,7 @@ import { useMercureContext } from '@contexts/MercureContext'
 const axiosPlay = async token => {
 	return axios
 		.post(
-			process.env.REACT_APP_API_URL + '/api/matchmaking/add',
+			process.env.MAIN_URL + '/api/matchmaking/add',
 			{},
 			{
 				headers: {
@@ -35,7 +35,7 @@ const axiosPlay = async token => {
 const axiosPong = async user => {
 	return axios
 		.post(
-			process.env.REACT_APP_API_URL + '/api/matchmaking/pong',
+			process.env.MAIN_URL + '/api/matchmaking/pong',
 			{},
 			{
 				headers: {
@@ -76,7 +76,7 @@ export const UsePlay = () => {
 	const { addTopic } = useMercureContext()
 
 	const subscribeMathcmakingUpdate = () => {
-		const topic = process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/matchmaking_update'
+		const topic = process.env.MAIN_URL + '/' + user.username + '/matchmaking_update'
 		addTopic(topic, handleUpdate)
 	}
 
@@ -107,7 +107,7 @@ export const UsePlay = () => {
 
 const axiosCancelPlay = async (token, messageId) => {
 	return axios
-		.delete(process.env.REACT_APP_API_URL + '/api/matchmaking/cancel_play', {
+		.delete(process.env.MAIN_URL + '/api/matchmaking/cancel_play', {
 			headers: {
 				Authorization: token
 			},

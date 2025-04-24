@@ -1,13 +1,13 @@
 import axios from 'axios'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { getToken } from '@redux/selectors'
 import { useEffect } from 'react'
-import { logProfile } from './slice'
+import { logProfile, setMainColor } from './slice'
 
 const axiosGetProfile = async token => {
 	return axios
-		.get(process.env.REACT_APP_API_URL + '/api/profile/get', {
+		.get(process.env.MAIN_URL + '/api/profile/get', {
 			headers: { Authorization: token }
 		})
 		.then(data => {
@@ -35,4 +35,38 @@ export const useGetProfile = () => {
 	}, [data])
 
 	return { data }
+}
+
+const axiosSetColor = async (token, color) => {
+	return axios
+		.put(
+			process.env.MAIN_URL + '/api/profile/set_color',
+			{ color },
+			{ headers: { Authorization: token } }
+		)
+		.then(data => data.data)
+		.catch(err => {
+			throw new Error(err.message)
+		})
+}
+
+export const useSetColor = () => {
+	const dispatch = useDispatch()
+	const token = useSelector(getToken)
+
+	const mutation = useMutation({
+		mutationKey: 'setColor',
+		mutationFn: color => axiosSetColor(token, color)
+	})
+
+	const setColor = color => {
+		mutation
+			.mutateAsync(color)
+			.then(() => {
+				dispatch(setMainColor(color))
+			})
+			.catch(err => err)
+	}
+
+	return { setColor, ...mutation }
 }

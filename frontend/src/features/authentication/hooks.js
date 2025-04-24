@@ -14,7 +14,7 @@ import { matchmakingNothing } from '@features/matchmaking'
 
 const axiosLogin = async data => {
 	return axios
-		.post(process.env.REACT_APP_API_URL + '/api/login', data)
+		.post(process.env.MAIN_URL + '/api/login', data)
 		.then(response => response.data)
 		.catch(error => {
 			throw new Error(error.response.data.message || 'Error while trying to log in')
@@ -51,7 +51,7 @@ export const useLogin = () => {
 
 const axiosLogout = async ({ refresh_token, token }) => {
 	return axios
-		.delete(process.env.REACT_APP_API_URL + '/api/user/logout', {
+		.delete(process.env.MAIN_URL + '/api/user/logout', {
 			headers: {
 				Authorization: token
 			},
@@ -93,7 +93,7 @@ export const useLogout = () => {
 const axiosRenewAccessToken = async ({ refresh_token }) => {
 	return axios
 		.post(
-			process.env.REACT_APP_API_URL + '/api/token/refresh',
+			process.env.MAIN_URL + '/api/token/refresh',
 			{
 				refresh_token
 			},
@@ -138,7 +138,7 @@ const axiosMe = async token => {
 	}
 
 	return axios
-		.get(`${process.env.REACT_APP_API_URL}/api/user/me`, {
+		.get(`${process.env.MAIN_URL}/api/user/me`, {
 			headers: {
 				Authorization: token
 			}
@@ -187,7 +187,7 @@ export const useLogged = () => {
 
 const axiosSignup = async data => {
 	return axios
-		.post(process.env.REACT_APP_API_URL + '/api/public/signup', data)
+		.post(process.env.MAIN_URL + '/api/public/signup', data)
 		.then(response => response.data)
 		.catch(error => error)
 }
@@ -217,7 +217,7 @@ export const useSignup = () => {
 
 const axiosDelete = async token => {
 	return axios
-		.delete(process.env.REACT_APP_API_URL + '/api/user/me', {
+		.delete(process.env.MAIN_URL + '/api/user/me', {
 			headers: {
 				Authorization: token
 			}

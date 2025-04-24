@@ -4,8 +4,9 @@ import { Canvas } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
 import { motion } from 'framer-motion'
 import { useSelector } from 'react-redux'
-import { getProfile } from '@redux/selectors'
+import { getLocker } from '@redux/selectors'
 import * as THREE from 'three'
+import { switchColorContent } from '../..'
 /* eslint-disable react/no-unknown-property */
 
 const getThreeColor = color => {
@@ -15,7 +16,7 @@ const getThreeColor = color => {
 const Avatar = ({ customColor = null }) => {
 	const [onScreen, setOnScreen] = useState(false)
 	const camera = useRef()
-	const profile = useSelector(getProfile)
+	const locker = useSelector(getLocker)
 
 	useEffect(() => {
 		if (camera.current) {
@@ -46,8 +47,8 @@ const Avatar = ({ customColor = null }) => {
 						color={
 							customColor
 								? getThreeColor(customColor)
-								: profile?.locker?.color
-									? getThreeColor(profile.locker.color)
+								: locker?.color
+									? getThreeColor(switchColorContent(locker.color))
 									: 'hotpink'
 						}
 					/>

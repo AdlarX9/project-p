@@ -6,7 +6,7 @@ import { getToken } from '@redux/selectors'
 const axiosSendMessage = async (token, friendUsername, message) => {
 	return axios
 		.post(
-			process.env.REACT_APP_API_URL + '/api/friends/send_message/' + friendUsername,
+			process.env.MAIN_URL + '/api/friends/send_message/' + friendUsername,
 			{ message },
 			{ headers: { Authorization: token } }
 		)
@@ -33,7 +33,7 @@ export const useSendMessage = () => {
 
 const axiosDeleteMessage = async (token, messageId) => {
 	return axios
-		.delete(process.env.REACT_APP_API_URL + '/api/friends/delete_message/' + messageId, {
+		.delete(process.env.MAIN_URL + '/api/friends/delete_message/' + messageId, {
 			headers: { Authorization: token }
 		})
 		.then(response => response.data)
@@ -58,7 +58,7 @@ export const useDeleteMessage = () => {
 
 const axiosGetConversation = async (token, friendUsername, page) => {
 	return axios
-		.get(process.env.REACT_APP_API_URL + '/api/friends/get_conversation/' + friendUsername, {
+		.get(process.env.MAIN_URL + '/api/friends/get_conversation/' + friendUsername, {
 			headers: { Authorization: token },
 			data: { page, limit: 10 }
 		})
@@ -88,7 +88,7 @@ export const useGetConversation = friendUsername => {
 const axiosSeeMessage = async (token, messageId) => {
 	return axios
 		.put(
-			process.env.REACT_APP_API_URL + '/api/friends/see_message/' + messageId,
+			process.env.MAIN_URL + '/api/friends/see_message/' + messageId,
 			{},
 			{ headers: { Authorization: token } }
 		)
@@ -115,7 +115,7 @@ export const useSeeMessage = () => {
 const axiosSeeConversation = async (token, friendUsername) => {
 	return axios
 		.put(
-			process.env.REACT_APP_API_URL + '/api/friends/see_conversation/' + friendUsername,
+			process.env.MAIN_URL + '/api/friends/see_conversation/' + friendUsername,
 			{},
 			{ headers: { Authorization: token } }
 		)

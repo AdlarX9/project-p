@@ -15,7 +15,7 @@ import { reduxAddFriend, reduxRemoveFriend } from '@features/friends'
 
 const axiosNotificationsGet = async token => {
 	return axios
-		.get(process.env.REACT_APP_API_URL + '/api/notifications/getNotifications', {
+		.get(process.env.MAIN_URL + '/api/notifications/getNotifications', {
 			headers: {
 				Authorization: token
 			}
@@ -26,7 +26,7 @@ const axiosNotificationsGet = async token => {
 
 const axiosGetFriend = async (token, friendUsername) => {
 	return axios
-		.get(process.env.REACT_APP_API_URL + '/api/friends/get/' + friendUsername, {
+		.get(process.env.MAIN_URL + '/api/friends/get/' + friendUsername, {
 			headers: { Authorization: token }
 		})
 		.then(response => response.data)
@@ -78,7 +78,7 @@ export const useSubscribeNotifications = () => {
 		retry: 0
 	})
 
-	const topic = process.env.REACT_APP_CLIENT_URL + '/' + username + '/notifications'
+	const topic = process.env.MAIN_URL + '/' + username + '/notifications'
 	useEffect(() => {
 		if (data?.status == 200) {
 			dispatch(logNotifications(data.data))
@@ -92,7 +92,7 @@ export const useSubscribeNotifications = () => {
 const axiosNotificationsDelete = async (token, notification) => {
 	try {
 		const response = await axios.delete(
-			`${process.env.REACT_APP_API_URL}/api/notifications/deleteNotification/${notification.id}`,
+			`${process.env.MAIN_URL}/api/notifications/deleteNotification/${notification.id}`,
 			{
 				headers: {
 					Authorization: token
@@ -130,7 +130,7 @@ export const useRemoveNotification = () => {
 const axiosEmptyNotifications = async token => {
 	try {
 		const response = await axios.delete(
-			process.env.REACT_APP_API_URL + '/api/notifications/emptyNotifications',
+			process.env.MAIN_URL + '/api/notifications/emptyNotifications',
 			{
 				headers: {
 					Authorization: token

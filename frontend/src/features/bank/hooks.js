@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 
 const axiosTransfer = async ({ body, headers }) => {
 	return axios
-		.patch(process.env.REACT_APP_API_URL + '/api/bank/transfer', body, { headers })
+		.patch(process.env.MAIN_URL + '/api/bank/transfer', body, { headers })
 		.then(response => response.data)
 		.catch(error => {
 			throw new Error(error.response?.data?.message || error.message)
@@ -45,7 +45,7 @@ export const useTransfer = () => {
 
 const axiosGetPercentage = async token => {
 	return axios
-		.get(process.env.REACT_APP_API_URL + '/api/bank/percentage', {
+		.get(process.env.MAIN_URL + '/api/bank/percentage', {
 			headers: {
 				Authorization: token
 			}

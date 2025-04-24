@@ -7,7 +7,7 @@ import { getLocker } from '@redux/selectors'
 
 const MotionLink = motion.create(Link)
 
-const buttonWrapper = ({ children, item, to }) => {
+const buttonWrapper = ({ children, item, to, bordered }) => {
 	return (
 		<MotionLink
 			variants={variants}
@@ -15,7 +15,8 @@ const buttonWrapper = ({ children, item, to }) => {
 			animate='visible'
 			whileHover={{ scale: 1.03 }}
 			style={{
-				backgroundColor: '#' + item.content
+				backgroundColor: '#' + item.content,
+				borderColor: bordered && rarityData[item.rarity].color
 			}}
 			className='shop-item-button int-btn no-link'
 			to={
@@ -29,13 +30,16 @@ const buttonWrapper = ({ children, item, to }) => {
 	)
 }
 
-const classicWrapper = ({ children, item }) => {
+const classicWrapper = ({ children, item, bordered }) => {
 	return (
 		<motion.div
 			variants={variants}
 			initial='hidden'
 			animate='visible'
-			style={{ backgroundColor: '#' + item.content }}
+			style={{
+				backgroundColor: '#' + item.content,
+				borderColor: bordered && rarityData[item.rarity].color
+			}}
 			className='int-btn shop-item-button c-inherit'
 		>
 			{children}
@@ -43,7 +47,7 @@ const classicWrapper = ({ children, item }) => {
 	)
 }
 
-const ItemButton = ({ item, nonInteractive, to }) => {
+const ItemButton = ({ item, nonInteractive, to, bordered }) => {
 	const locker = useSelector(getLocker)
 
 	let Wrapper
@@ -53,7 +57,7 @@ const ItemButton = ({ item, nonInteractive, to }) => {
 		Wrapper = buttonWrapper
 	}
 	return (
-		<Wrapper item={item} to={to}>
+		<Wrapper item={item} to={to} bordered={bordered}>
 			<span
 				className='cartoon2-txt'
 				style={{
@@ -65,9 +69,16 @@ const ItemButton = ({ item, nonInteractive, to }) => {
 				{locker?.colors?.some(color => color.content === item.content) ? 'bought' : ''}
 			</span>
 			<p
+				className='cartoon-short-txt'
+				style={{ display: locker.color !== item.content && 'none' }}
+			>
+				Equipped
+			</p>
+			<p
 				className='cartoon2-txt'
 				style={{
 					backgroundColor: !nonInteractive && rarityData[item.rarity].color,
+					direction: 'ltr',
 					color: item.rarity == 4 && !nonInteractive && 'black'
 				}}
 			>

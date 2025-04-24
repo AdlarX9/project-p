@@ -21,7 +21,7 @@ const LockerPreview = () => {
 		<div className='shadowed bg-red br-20 p-20 cartoon-txt locker-preview-wrapper'>
 			<p className='title-txt m-0 p-20'>Locker</p>
 			<motion.button
-				className='c-pointer no-btn'
+				className='c-pointer no-btn p-20'
 				onClick={() => setOpen(true)}
 				animate={{ scale: 1 }}
 				whileHover={{ scale: 1.05 }}

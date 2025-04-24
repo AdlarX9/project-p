@@ -29,7 +29,7 @@ class Functions {
             'target' => $target
         ];
         $jsonData = json_encode($data);
-        $update = new Update("http://localhost:3000/" . $user->getUsername() . '/notifications', $jsonData);
+        $update = new Update($_ENV['MAIN_URL'] . '/' . $user->getUsername() . '/notifications', $jsonData);
         $mercurePublisher($update);
 	}
 
@@ -45,7 +45,7 @@ class Functions {
         ];
 
         $jsonUpdate = json_encode($update);
-        $update = new Update("http://localhost:3000/" . $username . '/matchmaking_update', $jsonUpdate);
+        $update = new Update($_ENV['MAIN_URL'] . '/' . $username . '/matchmaking_update', $jsonUpdate);
         $mercurePublisher($update);
 	}
 
@@ -63,7 +63,7 @@ class Functions {
         }
 
         $jsonUpdate = json_encode($update);
-        $update = new Update("http://localhost:3000/" . $username . '/' . $direction . '_id', $jsonUpdate);
+        $update = new Update($_ENV['MAIN_URL'] . '/' . $username . '/' . $direction . '_id', $jsonUpdate);
         $mercurePublisher($update);
 	}
 
@@ -85,7 +85,7 @@ class Functions {
         ];
 
         $jsonData = json_encode($data);
-        $update = new Update("http://localhost:3000/" . $user->getUsername() . '/chat' . '/' . $message['sender']['username'], $jsonData);
+        $update = new Update($_ENV['MAIN_URL'] . '/' . $user->getUsername() . '/chat' . '/' . $message['sender']['username'], $jsonData);
         $mercurePublisher($update);
 	}
 }

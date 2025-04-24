@@ -29,7 +29,7 @@ export const PeerContextProvider = ({ children }) => {
 
 	const generateTurnPassword = username => {
 		const shaObj = new jsSHA('SHA-1', 'TEXT')
-		shaObj.setHMACKey(process.env.REACT_APP_TURN_SECRET, 'TEXT')
+		shaObj.setHMACKey(process.env.TURN_SECRET, 'TEXT')
 		shaObj.update(username)
 		return shaObj.getHMAC('B64')
 	}
@@ -39,7 +39,7 @@ export const PeerContextProvider = ({ children }) => {
 	const axiosId = async (type, peerUsername, token, id = '') => {
 		return axios
 			.post(
-				process.env.REACT_APP_API_URL + `/api/user/peer/${type}_id`,
+				process.env.MAIN_URL + `/api/matchmaking/peer/${type}_id`,
 				{ peerUsername, id },
 				{
 					headers: {
@@ -61,14 +61,14 @@ export const PeerContextProvider = ({ children }) => {
 		console.log('just received id : ', parsedData.id)
 	}
 
-	const idBoxTopic = process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/' + 'send_id'
+	const idBoxTopic = process.env.MAIN_URL + '/' + user.username + '/' + 'send_id'
 	const getSomeId = async username => {
 		console.log('Sent request for peer id of ', username)
 		axiosId('ask', username, token)
 		return waitSomeSSE(idBoxTopic, handleReceiveId).then(({ id }) => id)
 	}
 
-	const deliverIdTopic = process.env.REACT_APP_CLIENT_URL + `/${user.username}/ask_id`
+	const deliverIdTopic = process.env.MAIN_URL + `/${user.username}/ask_id`
 
 	const deliverIdCommunication = ({ type }) => {
 		if (type === 'askId') {
@@ -100,17 +100,17 @@ export const PeerContextProvider = ({ children }) => {
 			config: {
 				iceServers: [
 					{
-						urls: process.env.REACT_APP_STUN_URL
+						urls: process.env.STUN_URL
 					},
 					{
-						urls: process.env.REACT_APP_TURN_URL,
+						urls: process.env.TURN_URL,
 						username: turnUsername,
 						credential: turnPassword
 					}
 				],
-				host: process.env.REACT_APP_PEER_SERVER_HOST,
-				port: process.env.REACT_APP_PEER_SERVER_PORT,
-				path: process.env.REACT_APP_PEER_SERVER_PATH,
+				host: process.env.DOMAIN_NAME,
+				port: process.env.PEER_SERVER_PORT,
+				path: process.env.PEER_SERVER_PATH,
 				secure: true
 			}
 		})

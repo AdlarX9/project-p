@@ -7,7 +7,7 @@ import { addColor } from '@features/profile'
 
 const axiosGetShop = async token => {
 	return axios
-		.get(process.env.REACT_APP_API_URL + '/api/shop/get_shop', {
+		.get(process.env.MAIN_URL + '/api/shop/get_shop', {
 			headers: { Authorization: token }
 		})
 		.then(response => response.data)
@@ -32,7 +32,7 @@ export const useGetShop = () => {
 
 const axiosBuyItem = async (token, item) => {
 	return axios
-		.post(process.env.REACT_APP_API_URL + '/api/shop/buy_item', item, {
+		.post(process.env.MAIN_URL + '/api/shop/buy_item', item, {
 			headers: { Authorization: token }
 		})
 		.then(response => {

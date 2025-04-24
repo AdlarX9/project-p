@@ -15,8 +15,8 @@
 
 .profile-page-main {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: minmax(1rem, 1fr) 1fr;
 	grid-template-rows: 1fr;
-	width: 80%;
+	max-width: 80vw;
 	direction: rtl;
 }

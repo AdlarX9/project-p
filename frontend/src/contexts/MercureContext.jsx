@@ -15,7 +15,7 @@ export const MercureContextProvider = ({ children }) => {
 	const [topics, setTopics] = useState({})
 
 	const initializeUrl = () => {
-		const url = new URL(process.env.REACT_APP_MERCURE_URL + '/.well-known/mercure')
+		const url = new URL(process.env.MAIN_URL + '/.well-known/mercure')
 		Object.keys(topics).forEach(topic => {
 			url.searchParams.append('topic', topic)
 		})

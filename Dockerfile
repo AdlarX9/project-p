@@ -21,10 +21,17 @@ RUN mkdir -p /etc/nginx/ssl
 RUN openssl dhparam -dsaparam -out /etc/nginx/ssl/dhparam4.pem 4096
 
 COPY ./certificate ./certificate
-COPY ./nginx.conf /etc/nginx/conf.d
+COPY ./nginx.conf ./nginx.sh ./
+RUN chmod +x ./nginx.sh
+
+# RUN if [ -d "./certificate" ]; then \
+#         export CERT_DIR="certificate"; \
+#     else \
+#         export VAR="mkcert"; \
+#     fi
 
 EXPOSE 83
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh", "./nginx.sh"]
 
 
 # Peer Server build
@@ -32,7 +39,7 @@ FROM node:20 AS peerjs-server
 WORKDIR /usr/local/project-p/peerjs-server
 RUN npm install peer -g
 EXPOSE 2021
-CMD peerjs --port 2021 --key peerjs --path /peer-server --allow-discovery --cors "https://prive.pifpafdeluxe.fr"
+CMD peerjs --port 2021 --key peerjs --path /peer-server --allow-discovery --cors ${DOMAIN_NAME}
 
 
 # Coturn config
