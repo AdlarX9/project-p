@@ -23,7 +23,7 @@ git clone https://github.com/AdlarX9/Project-P.git
 
 - Rendez-vous dans le répertoire racine du projet :
 ```
-cd project-p
+cd Project-P
 ```
 
 - Copiez le fichier d'environnement .env.sample et collez-le dans le fichier .env :

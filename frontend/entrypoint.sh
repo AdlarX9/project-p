@@ -6,7 +6,7 @@ if [ ! -f "chain.pem" ] || [ ! -f "privkey.pem" ] || [ ! -f "fullchain.pem" ]; t
     mkcert create-ca --cert chain.pem --key ca.pem
 	mkcert create-cert \
 		--ca-cert chain.pem \
-		--ca-key key.pem \
+		--ca-key ca.pem \
 		--cert fullchain.pem \
 		--key privkey.pem \
 		--domains $DOMAIN_NAME,
