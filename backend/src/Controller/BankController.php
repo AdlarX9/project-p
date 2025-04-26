@@ -40,6 +40,10 @@ final class BankController extends AbstractController
             return new JsonResponse(['error' => 'Amount must be greater than zero'], 400);
         }
 
+        if ($user->getId() === $idFriend) {
+            return new JsonResponse(['error' => 'You cannot transfer money to yourself'], 400);
+        }
+
         $friend = $userRepository->find($idFriend);
         if (!$friend) {
             return new JsonResponse(['error' => 'Friend not found'], 404);

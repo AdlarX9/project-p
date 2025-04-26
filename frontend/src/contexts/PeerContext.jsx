@@ -34,7 +34,7 @@ export const PeerContextProvider = ({ children }) => {
 		return shaObj.getHMAC('B64')
 	}
 
-	// --- API for exchange peer identifiers ---
+	// --- API to exchange peer identifiers ---
 
 	const axiosId = async (type, peerUsername, token, id = '') => {
 		return axios
@@ -128,27 +128,28 @@ export const PeerContextProvider = ({ children }) => {
 			getSomeId(receiverUsername).then(receiverId => {
 				console.log('received matched user id :', receiverId)
 
-				getAudio().then(audioStream => {
-					console.log('audio stream', audioStream)
+				getAudio()
+					.then(audioStream => {
+						console.log('audio stream', audioStream)
 
-					if (!audioStream) {
+						const audioConnection = peerRef.current.call(receiverId, audioStream, {
+							metadata: {
+								id: peerRef.current.id,
+								username: user.username
+							}
+						})
+
+						audioConnection.on('stream', receiverAudioStream => {
+							console.log('connected !')
+
+							dispatch(matchmakingConnected())
+							console.log(receiverAudioStream)
+						})
+					})
+					.catch(() => {
+						console.log('no audio stream found')
 						peerConnect(receiverId, true)
-					}
-
-					const audioConnection = peerRef.current.call(receiverId, audioStream, {
-						metadata: {
-							id: peerRef.current.id,
-							username: user.username
-						}
 					})
-
-					audioConnection.on('stream', receiverAudioStream => {
-						console.log('connected !')
-
-						dispatch(matchmakingConnected())
-						console.log(receiverAudioStream)
-					})
-				})
 			})
 		}, 500)
 	}
@@ -156,52 +157,64 @@ export const PeerContextProvider = ({ children }) => {
 	const peerConnect = (receiver, hasId = false) => {
 		let receiverId
 		if (hasId) {
-			receiverId = getSomeId(receiver)
-		} else {
 			receiverId = receiver
+		} else {
+			getSomeId(receiver).then(id => {
+				receiverId = id
+			})
+		}
+
+		while (!receiverId) {
+			setTimeout(() => {}, 200)
 		}
 
 		const dataConnection = peerRef.current.connect(receiverId)
 		dataConnection.on('open', () => {
 			console.log('data connection established with : ', receiver)
-			dataConnection.an('data', data => {
+			dataConnection.on('data', data => {
 				console.log('received data from peer connect', data)
 			})
 		})
 	}
 
-	const waitForPeerCall = () => {
-		peerRef.current.on('call', call => {
-			console.log(
-				'incoming call from : ',
-				call.metadata.username,
-				' of id ',
-				call.metadata.id
-			)
+	const waitForPeerCall = async () => {
+		return new Promise((resolve, reject) => {
+			peerRef.current.on('call', call => {
+				console.log(
+					'incoming call from : ',
+					call.metadata.username,
+					' of id ',
+					call.metadata.id
+				)
 
-			call.answer(getAudio())
+				getAudio()
+					.then(audioStream => {
+						call.answer(audioStream)
+						resolve(audioStream)
+					})
+					.catch(error => {
+						reject(error)
+						return
+					})
 
-			call.on('stream', senderAudioStream => {
-				console.log('received audio stream from : ', call.metadata.username)
-				// Handle the received audio stream, play it, etc..
-				dispatch(matchmakingConnected(senderAudioStream))
-			})
+				call.on('stream', senderAudioStream => {
+					console.log('received audio stream from : ', call.metadata.username)
+					// Handle the received audio stream, play it, etc..
+					dispatch(matchmakingConnected())
+				})
 
-			call.on('close', () => {
-				console.log('call ended')
-				call.off('stream')
+				call.on('close', () => {
+					console.log('call ended')
+					call.off('stream')
+				})
 			})
 		})
 	}
 
 	const waitForPeerConnect = () => {
-		peerRef.current.on('connection', receivedDdataConnection => {
-			console.log(
-				'incoming data connection from : ',
-				receivedDdataConnection.metadata.username
-			)
-			receivedDdataConnection.on('open', () => {
-				receivedDdataConnection.on('data', data => {
+		peerRef.current.on('connection', receivedDataConnection => {
+			receivedDataConnection.on('open', () => {
+				receivedDataConnection.on('data', data => {
 					console.log('received data from wait for peer connect', data)
 				})
 			})
@@ -231,7 +244,10 @@ export const PeerContextProvider = ({ children }) => {
 				} else if (matchmaking.role === 'receiver') {
 					console.log('you are a receiver Sir, waiting for id and call if success.')
 					addTopic(deliverIdTopic, deliverIdCommunication)
-					waitForPeerCall()
+					waitForPeerCall().catch(() => {
+						console.log('no audio stream found')
+					})
+					waitForPeerConnect()
 				}
 			})
 			.catch(error => {
