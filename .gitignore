@@ -1,4 +1,4 @@
-certificate
+*.pem
 database_data
 mercure_config
 .env

@@ -58,19 +58,30 @@ export const saveStateSettings = reduxState => {
 	}
 }
 
+export const saveStateProfile = reduxState => {
+	try {
+		const serializedState = JSON.stringify(reduxState)
+		localStorage.removeItem('reduxStateProfile')
+		localStorage.setItem('reduxStateProfile', serializedState)
+	} catch (e) {
+		console.error('Could not save state', e)
+	}
+}
+
 const loadState = () => {
 	try {
 		const user = localStorage.getItem('reduxStateUser')
 		const friends = localStorage.getItem('reduxStateFriends')
 		const notifications = localStorage.getItem('reduxStateNotifications')
 		const settings = localStorage.getItem('reduxStateSettings')
+		const profile = localStorage.getItem('reduxStateProfile')
 		const serializedState = {
 			user: JSON.parse(user),
 			friends: JSON.parse(friends),
 			notifications: JSON.parse(notifications),
 			matchmaking: 'nothing',
 			settings: JSON.parse(settings),
-			profile: {}
+			profile: JSON.parse(profile)
 		}
 		if (serializedState?.friends === null || serializedState?.user === null) {
 			return defaultState

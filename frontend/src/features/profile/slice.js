@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { saveStateProfile } from '@redux/store'
 
 const profileSlice = createSlice({
 	name: 'profile',
@@ -6,6 +7,7 @@ const profileSlice = createSlice({
 	reducers: {
 		logProfile: (currentState, action) => {
 			const profile = action.payload
+			saveStateProfile(profile)
 			return profile
 		},
 
@@ -23,6 +25,7 @@ const profileSlice = createSlice({
 				}
 			}
 
+			saveStateProfile(newState)
 			return newState
 		},
 
@@ -39,6 +42,7 @@ const profileSlice = createSlice({
 				}
 			}
 
+			saveStateProfile(newState)
 			return newState
 		},
 

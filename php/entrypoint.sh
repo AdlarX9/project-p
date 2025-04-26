@@ -17,6 +17,13 @@ if [ "$1" = "php-fpm" ] || [ "$1" = "bin/console" ] || [ "$1" = "php" ]; then
     # Installation des assets
     bin/console assets:install --no-interaction
 
+    # Création de la clé JWT si elle n'existe pas
+    if [ ! -f "config/jwt/private.pem" ] || [ ! -f "config/jwt/public.pem" ]; then
+        php bin/console lexik:jwt:generate-keypair
+    else
+        echo "JWT keys already exist, skipping generation."
+    fi
+
     bin/console doctrine:schema:update --force
 
     # Attente que PostgreSQL soit prêt

@@ -15,8 +15,13 @@ services:
             start_period: 30s
         depends_on:
             - symfony-api
+            - frontend
+            - mercure-hub
+            - peerjs-server
         env_file:
             - .env
+        volumes:
+            - ./certificate:/usr/local/project-p/reverse-proxy/certificate:ro
         develop:
             watch:
                 - path: ./nginx.conf
@@ -188,10 +193,10 @@ services:
         ports:
             - 8307:8307
         environment:
-            BLACKFIRE_SERVER_ID: ${BLACKFIRE_SERVER_ID}
-            BLACKFIRE_SERVER_TOKEN: ${BLACKFIRE_SERVER_TOKEN}
-            BLACKFIRE_CLIENT_ID: ${BLACKFIRE_CLIENT_ID}
-            BLACKFIRE_CLIENT_TOKEN: ${BLACKFIRE_CLIENT_TOKEN}
+            BLACKFIRE_SERVER_ID: ${BLACKFIRE_SERVER_ID:-secret}
+            BLACKFIRE_SERVER_TOKEN: ${BLACKFIRE_SERVER_TOKEN:-secret}
+            BLACKFIRE_CLIENT_ID: ${BLACKFIRE_CLIENT_ID:-secret}
+            BLACKFIRE_CLIENT_TOKEN: ${BLACKFIRE_CLIENT_TOKEN:-secret}
             BLACKFIRE_LOG_LEVEL: ${BLACKFIRE_LOG_LEVEL}
             BLACKFIRE_AGENT_SOCKET: ${BLACKFIRE_AGENT_SOCKET}
             BLACKFIRE_ENDPOINT: ${BLACKFIRE_ENDPOINT}
@@ -206,9 +211,8 @@ services:
         working_dir: /usr/local/project-p/frontend
         volumes:
             - ./frontend:/usr/local/project-p/frontend
-            - ./certificate:/usr/local/project-p/frontend/certificate:ro
+            - ./certificate:/usr/local/project-p/certificate:rw
             - .env:/usr/local/project-p/frontend/.env
-        command: npx webpack serve
         develop:
             watch:
                 - path: ./frontend/src/app

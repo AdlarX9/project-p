@@ -4,31 +4,22 @@ WORKDIR /usr/local/project-p/reverse-proxy
 RUN rm -f /etc/nginx/conf.d/default.conf
 
 # Générer le certificat avec mkcert
-# RUN apt-get update
-# RUN apt-get install -y curl
-# RUN apt-get install -y lsb-release
-# RUN apt-get install -y ca-certificates
-# RUN apt-get install -y gnupg2 --fix-missing
-# RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-# RUN apt-get install -y nodejs
-# RUN npm install -g mkcert
-# RUN mkcert create-ca
-# RUN mkcert create-cert --domains "localhost 127.0.0.1 192.168.0.210"
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install -y lsb-release
+RUN apt-get install -y ca-certificates
+RUN apt-get install -y gnupg2 --fix-missing
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install -g mkcert
+ENV DOMAIN_NAME=${DOMAIN_NAME}
 
 # Configurer SSL et génération de tickets
 RUN openssl rand -out /etc/nginx/ticket.key 48
 RUN mkdir -p /etc/nginx/ssl
 RUN openssl dhparam -dsaparam -out /etc/nginx/ssl/dhparam4.pem 4096
-
-COPY ./certificate ./certificate
 COPY ./nginx.conf ./nginx.sh ./
 RUN chmod +x ./nginx.sh
-
-# RUN if [ -d "./certificate" ]; then \
-#         export CERT_DIR="certificate"; \
-#     else \
-#         export VAR="mkcert"; \
-#     fi
 
 EXPOSE 83
 CMD ["sh", "./nginx.sh"]
@@ -133,6 +124,9 @@ CMD ["php", "-S", "0.0.0.0:9000", "-t", "public"]
 # Frontend config
 FROM node:20 AS frontend
 WORKDIR /usr/local/project-p/frontend
-RUN npm install -g pnpm
+RUN npm install -g pnpm mkcert
+ENV DOMAIN_NAME=${DOMAIN_NAME}
+COPY ./frontend/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 EXPOSE 3000
-CMD npx webpack serve
+CMD ["sh", "./entrypoint.sh"]
