@@ -1,70 +1,70 @@
 # Project P
 
-## Présentation
+## Overview
 
-*Project P* est une plateforme où le but est de **posséder le plus d'argent possible** par tous les moyens fournis.
+*Project P* is an interactive platform where your main goal is to **accumulate as much money as possible** using all available features.
 
-C'est une **interface web** encapsulé dans *Docker*, ce projet utilise *React* et toutes ses bibliothèques associées comme *React Cookie*, *React Three*, *React Tanstack Query* ou encore *React Router Dom*. Il y a aussi *Webpack*, *Framer Motion*, *Nginx*, *Symfony*, *Mercure*, *Redis* et *PostgreSQL*.
+Built as a **web application** fully containerized with *Docker*, it leverages *React* along with popular libraries such as *React Cookie*, *React Three*, *React Tanstack Query*, and *React Router Dom*. It also integrates *Webpack*, *Framer Motion*, *Nginx*, *Symfony*, *Mercure*, *Redis*, and *PostgreSQL*.
 
-Il vous est possible de **créer un compte**, **ajouter des amis** et **discuter** avec eux, leur faire des **virements bancaires** (monnaie virtuelle) et vous pouvez **acheter des items** dans la boutique afin de **personnaliser** votre avatar (un cube) !
+With *Project P*, you can **create an account**, **add friends**, **chat** with them, **transfer money** (virtual currency), and **purchase items** from the shop to **customize** your avatar — a cube!
 
-## Lancer le projet
+## Getting Started
 
-Ce projet utilise *Docker* et uniquement *Docker* pour être lancé.
+This project exclusively uses *Docker* to run.
 
-Il n'est pas déployé. Donc pour utiliser cette plateforme, veuillez suivre les instructions suivantes :
+Since it is not deployed yet, please follow these steps to run the platform locally:
 
-- Installez [*Docker*](https://www.docker.com/products/docker-desktop/) sur votre machine.
+1. Install [*Docker*](https://www.docker.com/products/docker-desktop/) and ensure it is running.
 
-- Ouvrez un *terminal* et clonez le projet sur votre machine :
-```
-git clone https://github.com/AdlarX9/Project-P.git
-```
+2. Open a terminal and clone the repository:
+   ```bash
+   git clone https://github.com/AdlarX9/project-p.git
+   ```
 
-- Rendez-vous dans le répertoire racine du projet :
-```
-cd Project-P
-```
+3. Navigate to the project directory:
+   ```bash
+   cd project-p
+   ```
 
-- Copiez le fichier d'environnement .env.sample et collez-le dans le fichier .env :
-```
-cp .env.sample .env
-```
+4. Copy the sample environment file and create a new `.env` file:
+   ```bash
+   cp .env.sample .env
+   ```
 
-- Lancez l'application avec Docker :
-```
-docker compose up
-```
+5. Start the application with Docker:
+   ```bash
+   docker compose up
+   ```
 
-- Attendez que tout se lance correctement et rendez-vous sur `https://localhost` (où tout autre adresse configurée dans le fichier `.env`) pour commencer à utiliser l'application.
+6. Once everything is up and running, open your browser and navigate to `https://localhost` (or the address specified in your `.env` file) to start using the application.
 
-Remarque : l'application générera plein de fichiers automatiquement nécessaires à son fonctionnement, merci de ne pas y toucher.
+> ⚠️ **Note:** The application will automatically generate several files necessary for its operation. Please do not modify or delete them.
 
-## Exemples
+## Screenshots
 
-> ![main](examples/main.png)
-> *La page principale*
+> ![Main Page](examples/main.png)  
+> *Main dashboard*
 
-> ![login](examples/login.png)
-> *Le formulaire pour se connecter à son compte*
+> ![Login](examples/login.png)  
+> *Login form*
 
-> ![friends](examples/friends.png)
-> *Le menu de gestation de ses amis*
+> ![Friends](examples/friends.png)  
+> *Friends management interface*
 
-> ![chat](examples/chat.png)
-> *L'interface du chat*
+> ![Chat](examples/chat.png)  
+> *Chat interface*
 
-> ![locker](examples/locker.png)
-> *Son casier*
+> ![Locker](examples/locker.png)  
+> *Personal locker*
 
-> ![shop](examples/shop.png)
-> *La boutique en ligne*
+> ![Shop](examples/shop.png)  
+> *Online shop*
 
-> ![view_item](examples/view_item.png)
-> *La prévisualisatoin d'un item dans la boutique*
+> ![Item Preview](examples/view_item.png)  
+> *Item preview in the shop*
 
-> ![settings](examples/settings.png)
-> *Le menu des réglages*
+> ![Settings](examples/settings.png)  
+> *Settings page*
 
-> ![transfer](examples/transfer.png)
-> *Le menu pour effectuer des virements bancaires*
+> ![Bank Transfer](examples/transfer.png)  
+> *Bank transfer page*
