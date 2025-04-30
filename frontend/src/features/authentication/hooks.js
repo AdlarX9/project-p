@@ -11,6 +11,7 @@ import { logUser, logUserOut, logPersoInf } from './slice'
 import { logFriendsOut, reduxLogFriends } from '@features/friends'
 import { logNotificationsOut } from '@features/notifications'
 import { matchmakingNothing } from '@features/matchmaking'
+import { logProfileOut } from '@features/profile'
 
 const axiosLogin = async data => {
 	return axios
@@ -85,6 +86,7 @@ export const useLogout = () => {
 		dispatch(logFriendsOut())
 		dispatch(logNotificationsOut())
 		dispatch(matchmakingNothing())
+		dispatch(logProfileOut())
 	}
 
 	return { logout }

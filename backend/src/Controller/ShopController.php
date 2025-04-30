@@ -35,12 +35,8 @@ final class ShopController extends AbstractController
             return new JsonResponse(['error' => 'Not enough money'], Response::HTTP_FORBIDDEN, [], false);
         }
 
+        $user->createLocker();
         $locker = $user->getLocker();
-        if ($locker == null) {
-            $locker = new Locker();
-            $locker->setOwner($user);
-            $user->setLocker($locker);
-        }
 
         if (!$user->getLocker()->hasItem($item)) {
             $user->setMoney($user->getMoney() - $shopManager->getPrice($item['rarity']));

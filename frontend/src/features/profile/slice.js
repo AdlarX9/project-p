@@ -46,7 +46,10 @@ const profileSlice = createSlice({
 			return newState
 		},
 
-		logProfileOut: () => ({})
+		logProfileOut: () => {
+			saveStateProfile({})
+			return {}
+		}
 	}
 })
 

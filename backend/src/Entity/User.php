@@ -96,6 +96,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->locker) {
             $this->locker = new Locker();
             $this->locker->setOwner($this);
+            $this->locker->setColor('cd2fac');
+            $this->locker->setColors([['content' => 'cd2fac', 'rarity' => 1, 'type' => 'color']]);
         }
     }
 
