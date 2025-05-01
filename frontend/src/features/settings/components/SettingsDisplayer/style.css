@@ -5,3 +5,7 @@
 	gap: 1rem;
 	margin-top: 3rem;
 }
+
+.settings-loader-wrapper {
+	align-self: center;
+}

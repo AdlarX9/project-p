@@ -18,7 +18,7 @@ ENV DOMAIN_NAME=${DOMAIN_NAME}
 RUN openssl rand -out /etc/nginx/ticket.key 48
 RUN mkdir -p /etc/nginx/ssl
 RUN openssl dhparam -dsaparam -out /etc/nginx/ssl/dhparam4.pem 4096
-COPY ./nginx.conf ./nginx.sh ./
+COPY ./nginx/nginx.conf ./nginx/nginx.sh ./
 RUN chmod +x ./nginx.sh
 
 EXPOSE 83

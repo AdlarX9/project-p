@@ -1,12 +1,18 @@
 import jsSHA from 'jssha'
 import Peer from 'peerjs'
+import axios from 'axios'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { matchmakingConnected } from '@features/matchmaking'
 import { useSelector } from 'react-redux'
-import { getMatchmaking, getMatchmakingState, getToken, getUser } from '@redux/selectors'
-import axios from 'axios'
 import { useMercureContext } from '@contexts/MercureContext'
+import {
+	getMatchmaking,
+	getMatchmakingState,
+	getToken,
+	getUser,
+	getSettings
+} from '@redux/selectors'
 
 const PeerContext = createContext(null)
 
@@ -18,9 +24,11 @@ export const PeerContextProvider = ({ children }) => {
 	const dispatch = useDispatch()
 	const user = useSelector(getUser)
 	const token = useSelector(getToken)
+	const settings = useSelector(getSettings)
 	const matchmakingState = useSelector(getMatchmakingState)
 	const matchmaking = useSelector(getMatchmaking)
 	const peerRef = useRef(null)
+	const audioRef = useRef(null)
 	const { waitSomeSSE, addTopic } = useMercureContext()
 
 	const generateTurnUsername = () => {
@@ -58,14 +66,34 @@ export const PeerContextProvider = ({ children }) => {
 			return
 		}
 
-		console.log('just received id : ', parsedData.id)
+		console.log('just received id: ', parsedData.id)
 	}
 
 	const idBoxTopic = process.env.MAIN_URL + '/' + user.username + '/' + 'send_id'
 	const getSomeId = async username => {
-		console.log('Sent request for peer id of ', username)
-		axiosId('ask', username, token)
-		return waitSomeSSE(idBoxTopic, handleReceiveId).then(({ id }) => id)
+		return new Promise((resolve, reject) => {
+			const intervalId = setInterval(() => {
+				console.log('Sent request for peer id of', username)
+				axiosId('ask', username, token)
+			}, 500)
+
+			const timeoutId = setTimeout(() => {
+				clearInterval(intervalId)
+				reject(new Error('Timeout while waiting for peer id'))
+			}, 10000) // Timeout après 10 secondes (par exemple)
+
+			waitSomeSSE(idBoxTopic, handleReceiveId)
+				.then(({ id }) => {
+					clearInterval(intervalId)
+					clearTimeout(timeoutId)
+					resolve(id)
+				})
+				.catch(err => {
+					clearInterval(intervalId)
+					clearTimeout(timeoutId)
+					reject(err)
+				})
+		})
 	}
 
 	const deliverIdTopic = process.env.MAIN_URL + `/${user.username}/ask_id`
@@ -78,17 +106,34 @@ export const PeerContextProvider = ({ children }) => {
 		return deliverIdTopic
 	}
 
+	const getSilentAudioStream = () => {
+		const audioContext = new AudioContext()
+		const oscillator = audioContext.createOscillator() // source sonore
+		const dst = audioContext.createMediaStreamDestination() // MediaStream
+
+		// Oscillateur : silence (gain à 0)
+		const gainNode = audioContext.createGain()
+		gainNode.gain.value = 0
+
+		oscillator.connect(gainNode)
+		gainNode.connect(dst)
+		oscillator.start()
+
+		return dst.stream // Ceci est un MediaStream audio
+	}
+
 	const getAudio = async () => {
-		return navigator.mediaDevices
-			.getUserMedia({ audio: true })
-			.then(userMedia => {
-				console.log('input audio found :', userMedia)
-				return userMedia
-			})
-			.catch(error => {
-				console.error(error.message)
-				return null
-			})
+		return new Promise(resolve => {
+			navigator.mediaDevices
+				.getUserMedia({ audio: true })
+				.then(userMedia => {
+					console.log('input audio found:', userMedia)
+					resolve(userMedia)
+				})
+				.catch(() => {
+					resolve(getSilentAudioStream())
+				})
+		})
 	}
 
 	// --- Functions dealing with the peerjs library ---
@@ -115,6 +160,10 @@ export const PeerContextProvider = ({ children }) => {
 			}
 		})
 
+		if (settings?.communicationPreference === 'call') {
+			audioRef.current = await getAudio()
+		}
+
 		return new Promise(resolve => {
 			peerRef.current.on('open', id => {
 				peerRef.current.off('open')
@@ -123,105 +172,76 @@ export const PeerContextProvider = ({ children }) => {
 		})
 	}
 
+	// Peer call
+
 	const peerCall = receiverUsername => {
-		setTimeout(() => {
-			getSomeId(receiverUsername).then(receiverId => {
-				console.log('received matched user id :', receiverId)
+		getSomeId(receiverUsername).then(receiverId => {
+			console.log('received matched user id:', receiverId)
 
-				getAudio()
-					.then(audioStream => {
-						console.log('audio stream', audioStream)
-
-						const audioConnection = peerRef.current.call(receiverId, audioStream, {
-							metadata: {
-								id: peerRef.current.id,
-								username: user.username
-							}
-						})
-
-						audioConnection.on('stream', receiverAudioStream => {
-							console.log('connected !')
-
-							dispatch(matchmakingConnected())
-							console.log(receiverAudioStream)
-						})
-					})
-					.catch(() => {
-						console.log('no audio stream found')
-						peerConnect(receiverId, true)
-					})
+			const audioConnection = peerRef.current.call(receiverId, audioRef.current, {
+				metadata: {
+					id: peerRef.current.id,
+					username: user.username
+				}
 			})
-		}, 500)
-	}
 
-	const peerConnect = (receiver, hasId = false) => {
-		let receiverId
-		if (hasId) {
-			receiverId = receiver
-		} else {
-			getSomeId(receiver).then(id => {
-				receiverId = id
-			})
-		}
-
-		while (!receiverId) {
-			setTimeout(() => {}, 200)
-		}
-
-		const dataConnection = peerRef.current.connect(receiverId)
-		dataConnection.on('open', () => {
-			console.log('data connection established with : ', receiver)
-			dataConnection.on('data', data => {
-				console.log('received data from peer connect', data)
-			})
+			handleCall(audioConnection)
 		})
 	}
 
-	const waitForPeerCall = async () => {
-		return new Promise((resolve, reject) => {
-			peerRef.current.on('call', call => {
-				console.log(
-					'incoming call from : ',
-					call.metadata.username,
-					' of id ',
-					call.metadata.id
-				)
+	const waitForPeerCall = () => {
+		peerRef.current.on('call', call => {
+			call.answer(audioRef.current)
+			handleCall(call)
+		})
+	}
 
-				getAudio()
-					.then(audioStream => {
-						call.answer(audioStream)
-						resolve(audioStream)
-					})
-					.catch(error => {
-						reject(error)
-						return
-					})
+	const handleCall = mediaConnection => {
+		mediaConnection.on('stream', audioStream => {
+			console.log('received audio stream from: ', mediaConnection.metadata.username)
+			console.log('audio stream: ', audioStream)
 
-				call.on('stream', senderAudioStream => {
-					console.log('received audio stream from : ', call.metadata.username)
-					// Handle the received audio stream, play it, etc..
-					dispatch(matchmakingConnected())
-				})
+			// Handle the received audio stream, play it, etc..
+			dispatch(matchmakingConnected())
+		})
 
-				call.on('close', () => {
-					console.log('call ended')
-					call.off('stream')
-				})
+		mediaConnection.on('close', () => {
+			console.log('call ended')
+			mediaConnection.off('stream')
+		})
+	}
+
+	// Peer connection
+
+	const peerConnect = receiverUsername => {
+		getSomeId(receiverUsername).then(receiverId => {
+			const dataConnection = peerRef.current.connect(receiverId, {
+				metadata: {
+					id: peerRef.current.id,
+					username: user.username
+				}
 			})
+			handleConnect(dataConnection)
 		})
 	}
 
 	const waitForPeerConnect = () => {
-		peerRef.current.on('connection', receivedDataConnection => {
-			receivedDataConnection.on('open', () => {
-				receivedDataConnection.on('data', data => {
-					console.log('received data from wait for peer connect', data)
-				})
+		peerRef.current.on('connection', dataConnection => {
+			handleConnect(dataConnection)
+		})
+	}
+
+	const handleConnect = dataConnection => {
+		dataConnection.on('open', () => {
+			dispatch(matchmakingConnected())
+			dataConnection.send('salut')
+			dataConnection.on('data', data => {
+				console.log('received data from peer connect: ', data)
 			})
 		})
 	}
 
-	// --- Truely initialize game ---
+	// --- Truly initialize game ---
 
 	// Script de l'initialisation de la partie
 	const [isPeerInitializing, setIsPeerInitializing] = useState(false)
@@ -237,17 +257,22 @@ export const PeerContextProvider = ({ children }) => {
 		setIsPeerInitializing(true)
 		initializePeer()
 			.then(id => {
-				console.log('your id :', id)
+				console.log('your id:', id)
 				if (matchmaking.role === 'caller') {
 					console.log('you are a caller Sir, calling...')
-					peerCall(matchmaking.matchedUsername)
+					if (settings?.communicationPreference === 'call') {
+						peerCall(matchmaking.matchedUsername)
+					} else {
+						peerConnect(matchmaking.matchedUsername)
+					}
 				} else if (matchmaking.role === 'receiver') {
 					console.log('you are a receiver Sir, waiting for id and call if success.')
 					addTopic(deliverIdTopic, deliverIdCommunication)
-					waitForPeerCall().catch(() => {
-						console.log('no audio stream found')
-					})
-					waitForPeerConnect()
+					if (settings?.communicationPreference === 'call') {
+						waitForPeerCall(matchmaking.matchedUsername)
+					} else {
+						waitForPeerConnect(matchmaking.matchedUsername)
+					}
 				}
 			})
 			.catch(error => {

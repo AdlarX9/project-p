@@ -24,7 +24,7 @@ services:
             - ./certificate:/usr/local/project-p/reverse-proxy/certificate:ro
         develop:
             watch:
-                - path: ./nginx.conf
+                - path: ./nginx/nginx.conf
                   action: rebuild
 
     mercure-hub:
@@ -83,14 +83,14 @@ services:
             - "2020:2020/udp"
             # - "49152-65535:49152-65535/udp"
         volumes:
-            - ./turnserver.conf:/etc/turnserver.conf:ro
+            - ./coturn/turnserver.conf:/etc/turnserver.conf:ro
         environment:
             - TURN_SECRET=${YOUR_SECRET}
             - REALM=prive.pifpafdeluxe.fr
         restart: unless-stopped
         develop:
             watch:
-                - path: ./turnserver.conf
+                - path: ./coturn/turnserver.conf
                   action: rebuild
 
     postgres-database:

@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { CookiesProvider } from 'react-cookie'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools, ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
+import eruda from 'eruda'
 
 import { store } from '@redux/store'
 import { MercureContextProvider } from '@contexts/MercureContext'
@@ -32,6 +33,10 @@ const queryClient = new QueryClient()
 
 const App = () => {
 	const [isOpen, setIsOpen] = React.useState(false)
+
+	if (process.env.APP_ENV === 'dev') {
+		eruda.init()
+	}
 
 	return (
 		<CookiesProvider defaultSetOptions>
@@ -67,8 +72,15 @@ const App = () => {
 							</PeerContextProvider>
 						</MercureContextProvider>
 					</Router>
-					{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
-					<ReactQueryDevtools initialIsOpen={false} />
+					{process.env.APP_ENV === 'dev' && (
+						<>
+							{isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
+							<ReactQueryDevtools
+								initialIsOpen={false}
+								buttonPosition='bottom-left'
+							/>
+						</>
+					)}
 				</QueryClientProvider>
 			</Provider>
 		</CookiesProvider>

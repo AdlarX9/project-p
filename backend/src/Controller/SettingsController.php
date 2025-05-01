@@ -33,7 +33,7 @@ final class SettingsController extends AbstractController
             $user->setSettings($settings);
             $entityManager->persist($user);
             $entityManager->flush();
-            return new JsonResponse(["message" => "setting deleted successfully"], Response::HTTP_NO_CONTENT);
+            return new JsonResponse([], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse(["message" => "setting not found"], Response::HTTP_NOT_FOUND);
         }
@@ -55,6 +55,6 @@ final class SettingsController extends AbstractController
 
         $entityManager->persist($user);
         $entityManager->flush();
-        return new JsonResponse(["message" => "settings updated successfully"], Response::HTTP_OK, [], false);
+        return new JsonResponse(["key" => $param, "value" => $value], Response::HTTP_OK, [], false);
     }
 }
