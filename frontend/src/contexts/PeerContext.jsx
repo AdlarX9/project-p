@@ -1,17 +1,21 @@
-import jsSHA from 'jssha'
 import Peer from 'peerjs'
 import axios from 'axios'
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import jsSHA from 'jssha'
 import { useDispatch } from 'react-redux'
-import { matchmakingConnected } from '@features/matchmaking'
 import { useSelector } from 'react-redux'
 import { useMercureContext } from '@contexts/MercureContext'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import {
-	getMatchmaking,
-	getMatchmakingState,
-	getToken,
+	useHandleConnected,
+	useHandleDisconnected,
+	matchmakingReceiveMessage
+} from '@features/matchmaking'
+import {
 	getUser,
-	getSettings
+	getToken,
+	getSettings,
+	getMatchmaking,
+	getMatchmakingState
 } from '@redux/selectors'
 
 const PeerContext = createContext(null)
@@ -21,15 +25,18 @@ export const usePeerContext = () => useContext(PeerContext)
 export const PeerContextProvider = ({ children }) => {
 	// --- Setting up some variables and util functions ---
 
+	const handleConnected = useHandleConnected()
+	const handleDisconnected = useHandleDisconnected()
 	const dispatch = useDispatch()
 	const user = useSelector(getUser)
 	const token = useSelector(getToken)
 	const settings = useSelector(getSettings)
 	const matchmakingState = useSelector(getMatchmakingState)
 	const matchmaking = useSelector(getMatchmaking)
+	const { waitSomeSSE, addTopic } = useMercureContext()
 	const peerRef = useRef(null)
 	const audioRef = useRef(null)
-	const { waitSomeSSE, addTopic } = useMercureContext()
+	const connectionRef = useRef(null)
 
 	const generateTurnUsername = () => {
 		return Math.floor(Date.now() / 1000).toString()
@@ -178,36 +185,33 @@ export const PeerContextProvider = ({ children }) => {
 		getSomeId(receiverUsername).then(receiverId => {
 			console.log('received matched user id:', receiverId)
 
-			const audioConnection = peerRef.current.call(receiverId, audioRef.current, {
+			connectionRef.current = peerRef.current.call(receiverId, audioRef.current, {
 				metadata: {
 					id: peerRef.current.id,
 					username: user.username
 				}
 			})
 
-			handleCall(audioConnection)
+			handleCall()
 		})
 	}
 
 	const waitForPeerCall = () => {
 		peerRef.current.on('call', call => {
-			call.answer(audioRef.current)
-			handleCall(call)
+			connectionRef.current = call
+			connectionRef.current.answer(audioRef.current)
+			handleCall()
 		})
 	}
 
-	const handleCall = mediaConnection => {
-		mediaConnection.on('stream', audioStream => {
-			console.log('received audio stream from: ', mediaConnection.metadata.username)
+	const handleCall = () => {
+		connectionRef.current.on('stream', audioStream => {
 			console.log('audio stream: ', audioStream)
-
-			// Handle the received audio stream, play it, etc..
-			dispatch(matchmakingConnected())
+			handleConnected(audioStream)
 		})
 
-		mediaConnection.on('close', () => {
-			console.log('call ended')
-			mediaConnection.off('stream')
+		connectionRef.current.on('close', () => {
+			closeConnection()
 		})
 	}
 
@@ -215,30 +219,57 @@ export const PeerContextProvider = ({ children }) => {
 
 	const peerConnect = receiverUsername => {
 		getSomeId(receiverUsername).then(receiverId => {
-			const dataConnection = peerRef.current.connect(receiverId, {
+			connectionRef.current = peerRef.current.connect(receiverId, {
 				metadata: {
 					id: peerRef.current.id,
 					username: user.username
 				}
 			})
-			handleConnect(dataConnection)
+			handleConnect()
 		})
 	}
 
 	const waitForPeerConnect = () => {
 		peerRef.current.on('connection', dataConnection => {
-			handleConnect(dataConnection)
+			connectionRef.current = dataConnection
+			handleConnect()
 		})
 	}
 
-	const handleConnect = dataConnection => {
-		dataConnection.on('open', () => {
-			dispatch(matchmakingConnected())
-			dataConnection.send('salut')
-			dataConnection.on('data', data => {
-				console.log('received data from peer connect: ', data)
+	const handleConnect = () => {
+		connectionRef.current.on('open', () => {
+			handleConnected()
+			connectionRef.current.send('salut')
+			connectionRef.current.on('data', data => {
+				dispatch(matchmakingReceiveMessage(data))
 			})
 		})
+
+		connectionRef.current.on('close', () => {
+			closeConnection()
+		})
+
+		connectionRef.current.on('error', err => {
+			throw new Error(err)
+		})
+	}
+
+	// Close connection
+	const closeConnection = () => {
+		if (connectionRef.current) {
+			connectionRef.current.off('open')
+			connectionRef.current.off('data')
+			connectionRef.current.off('close')
+			connectionRef.current.off('error')
+			connectionRef.current.off('stream')
+			connectionRef.current.close()
+			connectionRef.current = null
+		}
+		if (peerRef.current) {
+			peerRef.current.destroy()
+			peerRef.current = null
+		}
+		handleDisconnected()
 	}
 
 	// --- Truly initialize game ---
@@ -256,17 +287,14 @@ export const PeerContextProvider = ({ children }) => {
 
 		setIsPeerInitializing(true)
 		initializePeer()
-			.then(id => {
-				console.log('your id:', id)
+			.then(() => {
 				if (matchmaking.role === 'caller') {
-					console.log('you are a caller Sir, calling...')
 					if (settings?.communicationPreference === 'call') {
 						peerCall(matchmaking.matchedUsername)
 					} else {
 						peerConnect(matchmaking.matchedUsername)
 					}
 				} else if (matchmaking.role === 'receiver') {
-					console.log('you are a receiver Sir, waiting for id and call if success.')
 					addTopic(deliverIdTopic, deliverIdCommunication)
 					if (settings?.communicationPreference === 'call') {
 						waitForPeerCall(matchmaking.matchedUsername)
@@ -276,18 +304,12 @@ export const PeerContextProvider = ({ children }) => {
 				}
 			})
 			.catch(error => {
+				closeConnection()
 				console.error('Failed to initialize peer:', error)
 			})
 			.finally(() => {
 				setIsPeerInitializing(false)
 			})
-
-		return () => {
-			if (peerRef.current) {
-				peerRef.current.destroy()
-				peerRef.current = null
-			}
-		}
 	}, [matchmakingState])
 
 	return <PeerContext.Provider value={{ peer: peerRef.current }}>{children}</PeerContext.Provider>

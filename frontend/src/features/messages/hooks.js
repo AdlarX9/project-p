@@ -57,11 +57,16 @@ export const useDeleteMessage = () => {
 }
 
 const axiosGetConversation = async (token, friendUsername, page) => {
+	if (page == undefined) {
+		return []
+	}
+
 	return axios
-		.get(process.env.MAIN_URL + '/api/friends/get_conversation/' + friendUsername, {
-			headers: { Authorization: token },
-			data: { page, limit: 10 }
-		})
+		.post(
+			process.env.MAIN_URL + '/api/friends/get_conversation/' + friendUsername,
+			{ page, limit: 10 },
+			{ headers: { Authorization: token } }
+		)
 		.then(response => response.data)
 		.catch(err => {
 			throw new Error(err.message)

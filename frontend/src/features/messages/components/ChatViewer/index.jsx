@@ -1,27 +1,51 @@
+import './style.css'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDeleteMessage, useGetConversation } from '@features/messages'
-import Loader from '../../../components/Loader'
+import Loader from '@components/Loader'
+import { confirm } from '@components/Confirmation'
 import { useSelector } from 'react-redux'
 import { getUser } from '@redux/selectors'
-import { confirm } from '../../../components/Confirmation'
 
 const ChatViewer = ({ friendUsername, messages, setMessages }) => {
+	const [initialized, setInitialized] = useState(false)
 	const user = useSelector(getUser)
 	const { deleteMessage } = useDeleteMessage()
-	const { isLoading, data, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
+	const scrollableRef = useRef()
+	const { isLoading, data, fetchNextPage, hasNextPage, isFetchingNextPage } =
 		useGetConversation(friendUsername)
 
 	useEffect(() => {
-		if (data?.pages[0]) {
-			setMessages(messages => [
-				...messages,
-				...data.pages[0].filter(
-					newMessage => !messages.some(msg => msg.id === newMessage.id)
-				)
-			])
+		if (data?.pages[0] && data.pages?.length > 0) {
+			if (messages?.length === 0) {
+				setInitialized(false)
+			}
+			for (let i = 0; i < data.pages.length; i++) {
+				setMessages(messages => [
+					...data.pages[i].filter(
+						newMessage => !messages.some(msg => msg.id === newMessage.id)
+					),
+					...messages
+				])
+			}
 		}
 	}, [data])
+
+	useEffect(() => {
+		if (!initialized) {
+			scrollableRef.current.scrollTo({
+				top: scrollableRef.current.scrollHeight - scrollableRef.current.clientHeight
+			})
+			scrollableRef.current.addEventListener('scroll', handleScroll)
+			setInitialized(true)
+		}
+	}, [scrollableRef, messages, initialized])
+
+	const handleScroll = () => {
+		if (scrollableRef.current.scrollTop === 0 && hasNextPage && !isFetchingNextPage) {
+			fetchNextPage()
+		}
+	}
 
 	const handleDelete = async message => {
 		confirm({ message: 'Are you sure you want to delete this message?' })
@@ -38,12 +62,13 @@ const ChatViewer = ({ friendUsername, messages, setMessages }) => {
 
 	return (
 		<motion.section
-			className='chat-wiewer'
+			className='chat-wiewer br-20'
 			variants={wrapperVariants}
 			initial='hidden'
 			animate='visible'
+			ref={scrollableRef}
 		>
-			{isLoading && <Loader />}
+			{(isLoading || isFetchingNextPage) && <Loader />}
 			<AnimatePresence>
 				{messages.map((message, index) => (
 					<motion.div

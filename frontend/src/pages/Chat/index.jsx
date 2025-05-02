@@ -5,8 +5,7 @@ import { useEffect, useState } from 'react'
 import Back from '../../components/Back'
 import { useSelector } from 'react-redux'
 import { getFriends, getUser } from '@redux/selectors'
-import ChatViewer from './components/ChatViewer'
-import ChatInput from './components/ChatInput'
+import { ChatViewer, ChatInput } from '@features/messages'
 import { useMercureContext } from '../../contexts/MercureContext'
 
 const Chat = () => {
@@ -36,15 +35,10 @@ const Chat = () => {
 			navigate('/')
 		}
 
-		addTopic(
-			process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/chat/' + username,
-			receiveMessage
-		)
+		addTopic(process.env.MAIN_URL + '/' + user.username + '/chat/' + username, receiveMessage)
 
 		return () => {
-			removeTopic(
-				process.env.REACT_APP_CLIENT_URL + '/' + user.username + '/chat/' + username
-			)
+			removeTopic(process.env.MAIN_URL + '/' + user.username + '/chat/' + username)
 		}
 	}, [username])
 

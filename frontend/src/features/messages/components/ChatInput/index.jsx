@@ -1,3 +1,4 @@
+import './style.css'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useSendMessage } from '@features/messages'

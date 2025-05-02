@@ -39,7 +39,8 @@ final class MatchmakingController extends AbstractController
         $data = [
             'connection_time' => (new \DateTime())->format('Y-m-d\TH:i:sP'),
             'money' => $user->getMoney(),
-            'username' => $user->getUsername()
+            'username' => $user->getUsername(),
+            'communicationPreference' => $user->getSettings()['communicationPreference'] ?? 'text'
         ];
         $this->bus->dispatch(new RedisStreamMessage(data: $data));
 
@@ -71,6 +72,9 @@ final class MatchmakingController extends AbstractController
         $this->redis->xDel('matchmaking_stream', [$data['messageId']]);
         return new JsonResponse(['message' => 'pang'], Response::HTTP_OK, [], false);
     }
+
+
+
     #[Route('/peer/ask_id', name: 'peerAskId', methods: ['POST'])]
     public function peerAskId(Request $request, PublisherInterface $publisher): JsonResponse {
         $data = json_decode($request->getContent(), true);

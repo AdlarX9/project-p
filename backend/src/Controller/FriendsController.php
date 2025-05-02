@@ -202,7 +202,7 @@ class FriendsController extends AbstractController
 	}
 
 
-	#[Route('/get_conversation/{friendUsername}', name: 'get_conversation', methods: ['GET'])]
+	#[Route('/get_conversation/{friendUsername}', name: 'get_conversation', methods: ['POST'])]
 	public function getConversation(
 		UserRepository $userRepository,
 		ConversationRepository $conversationRepository,
@@ -223,8 +223,9 @@ class FriendsController extends AbstractController
 			return new JsonResponse(['status' => 'Conversation not found'], Response::HTTP_NOT_FOUND);
 		}
 
-		$page = $request->query->getInt('page', 1);
-		$limit = $request->query->getInt('limit', 10);
+		$data = $request->toArray();
+		$page = $data['page'];
+		$limit = $data['limit'];
 		$messages = $conversation->getMessagesWithPagination($page, $limit);
 
         $context = SerializationContext::create()->setGroups(['getMessage']);

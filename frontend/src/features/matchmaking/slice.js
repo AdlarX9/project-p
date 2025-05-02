@@ -13,18 +13,21 @@ const matchmakingSlice = createSlice({
 				state: 'nothing'
 			}
 		},
+
 		matchmakingPending: prevState => {
 			return {
 				...prevState,
 				state: 'pending'
 			}
 		},
+
 		matchmakingInQueue: (_, action) => {
 			return {
 				id: action.payload,
 				state: 'inQueue'
 			}
 		},
+
 		matchmakingConnecting: (prevState, action) => {
 			return {
 				...prevState,
@@ -33,10 +36,19 @@ const matchmakingSlice = createSlice({
 				matchedUsername: action.payload.matchedUsername
 			}
 		},
+
 		matchmakingConnected: prevState => {
 			return {
 				...prevState,
-				state: 'connected'
+				state: 'connected',
+				messages: []
+			}
+		},
+
+		matchmakingReceiveMessage: (prevState, action) => {
+			return {
+				...prevState,
+				messages: [...prevState.messages, action.payload]
 			}
 		}
 	}
@@ -47,6 +59,7 @@ export const {
 	matchmakingPending,
 	matchmakingInQueue,
 	matchmakingConnecting,
-	matchmakingConnected
+	matchmakingConnected,
+	matchmakingReceiveMessage
 } = matchmakingSlice.actions
 export default matchmakingSlice.reducer

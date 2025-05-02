@@ -129,7 +129,7 @@ export const useCancelPlay = () => {
 		mutationKey: 'cancelPlay',
 		mutationFn: () => axiosCancelPlay(token, messageId),
 		onSuccess: () => {
-			const topic = process.env.REACT_APP_CLIENT_URL + '/' + username + '/matchmaking_update'
+			const topic = process.env.MAIN_URL + '/' + username + '/matchmaking_update'
 			removeTopic(topic)
 			dispatch(matchmakingNothing())
 		}
@@ -142,13 +142,39 @@ export const useCancelPlay = () => {
 	return cancelPlay
 }
 
-export const useHandleConnected = receiverStream => {
+export const useHandleConnected = () => {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
-	const handleConnection = async receiverAudioStream => {
-		dispatch(matchmakingConnected)
+	const handleConnected = async (receiverAudioStream = null) => {
+		dispatch(matchmakingConnected())
 		navigate('/game')
+
+		if (!receiverAudioStream) {
+			return
+		}
+
+		// const audioContext = new AudioContext()
+		// const audioDestination = audioContext.createMediaStreamDestination()
+		// const audioSource = audioContext.createMediaStreamSource(receiverAudioStream)
+		// audioSource.connect(audioDestination)
+		// const audioStream = audioDestination.stream
+		// const audioTracks = audioStream.getAudioTracks()
+		// if (audioTracks.length === 0) {
+		// 	console.error('No audio tracks available')
+		// 	return
+		// }
+		// const audioTrack = audioTracks[0]
+		// const audioConstraints = {
+		// 	audio: {
+		// 		deviceId: audioTrack.getSettings().deviceId,
+		// 		echoCancellation: true,
+		// 		noiseSuppression: true,
+		// 		autoGainControl: true
+		// 	}
+		// }
+		// const stream = await navigator.mediaDevices.getUserMedia(audioConstraints)
+
 		const outputId = await navigator.mediaDevices
 			.enumerateDevices()
 			.then(devices => {
@@ -170,5 +196,17 @@ export const useHandleConnected = receiverStream => {
 		audioElement.play()
 	}
 
-	return handleConnection
+	return handleConnected
+}
+
+export const useHandleDisconnected = () => {
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
+
+	const handleDisconnected = () => {
+		navigate('/')
+		dispatch(matchmakingNothing())
+	}
+
+	return handleDisconnected
 }

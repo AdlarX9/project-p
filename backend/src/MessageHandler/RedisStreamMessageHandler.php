@@ -48,7 +48,7 @@ final class RedisStreamMessageHandler
         if (is_array($waitingUsers) && count($waitingUsers) > 0) {
             foreach ($waitingUsers['matchmaking_stream'] as $id => $data) {
                 // Condition de matching basée sur la différence d'argent
-                if (abs($data['money'] - $receivedData['money']) < $deltaMoney) {
+                if (abs($data['money'] - $receivedData['money']) < $deltaMoney && $data['username'] != $receivedData['username'] && $data['communicationPreference'] == $receivedData['communicationPreference']) {
                     $matchedUser = $this->userRepository->findOneBy(['username' => $data['username']]);
                     $matchedId = $id;
                     $this->logger->info('found matching user ' . $matchedUser->getUsername() . ' of timestamp ' . $data['connection_time']);
