@@ -85,6 +85,9 @@ final class RedisStreamMessageHandler
                     $this->logger->info('delete message ' . $matchedId . 'from redis matchmaking_stream');
                     Functions::initializeGame($receivedUser, $matchedUser, $this->mercureHub);
                     break;
+                } else if ($attempts == $maxAttempts) {
+                    $messageId = $this->redis->xAdd('matchmaking_stream', '*', $message->getData());
+                    Functions::sendMatchmakingUpdate($this->mercureHub, $receivedData['username'], 'in_queue', $messageId);
                 }
 
                 $attempts++;

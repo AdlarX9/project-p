@@ -271,3 +271,26 @@ html {
 	top: 0;
 	left: 0;
 }
+
+.scrollable {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	scrollbar-color: rgb(49, 49, 49) transparent;
+}
+
+.scrollable::-webkit-scrollbar {
+	background: transparent;
+	width: 1.5rem;
+	margin: 1rem;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+	background: rgb(49, 49, 49);
+	border-radius: 50rem;
+	width: 80%;
+	cursor: grab;
+}
+
+.scrollable::-webkit-scrollbar-thumb:active {
+	cursor: grabbing;
+}

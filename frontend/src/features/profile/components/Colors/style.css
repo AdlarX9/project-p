@@ -16,16 +16,3 @@
 	overflow-x: hidden;
 }
 
-.colors-displayer::-webkit-scrollbar {
-	background: transparent;
-}
-
-.colors-displayer::-webkit-scrollbar-thumb {
-	background: rgb(49, 49, 49);
-	border-radius: 50rem;
-	cursor: grab;
-}
-
-.colors-displayer::-webkit-scrollbar-thumb:active {
-	cursor: grabbing;
-}

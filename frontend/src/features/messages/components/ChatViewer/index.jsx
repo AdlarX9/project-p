@@ -62,7 +62,7 @@ const ChatViewer = ({ friendUsername, messages, setMessages }) => {
 
 	return (
 		<motion.section
-			className='chat-wiewer br-20'
+			className='scrollable chat-wiewer br-20'
 			variants={wrapperVariants}
 			initial='hidden'
 			animate='visible'

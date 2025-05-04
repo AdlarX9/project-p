@@ -15,7 +15,7 @@ const Colors = () => {
 	return (
 		<section className='locker-colors-wrapper'>
 			<h2 className='m-0'>Colors</h2>
-			<div className='colors-displayer'>
+			<div className='colors-displayer scrollable'>
 				{locker?.colors?.map((color, idx) => (
 					<button
 						key={idx}

@@ -79,7 +79,7 @@ const loadState = () => {
 			user: JSON.parse(user),
 			friends: JSON.parse(friends),
 			notifications: JSON.parse(notifications),
-			matchmaking: 'nothing',
+			matchmaking: { state: 'nothing', id: null },
 			settings: JSON.parse(settings),
 			profile: JSON.parse(profile)
 		}

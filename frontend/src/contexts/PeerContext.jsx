@@ -239,9 +239,11 @@ export const PeerContextProvider = ({ children }) => {
 	const handleConnect = () => {
 		connectionRef.current.on('open', () => {
 			handleConnected()
-			connectionRef.current.send('salut')
-			connectionRef.current.on('data', data => {
-				dispatch(matchmakingReceiveMessage(data))
+			sendMessage('Hello from ' + user.username + '!')
+			connectionRef.current.on('data', message => {
+				dispatch(
+					matchmakingReceiveMessage({ ...message, author: matchmaking.matchedUsername })
+				)
 			})
 		})
 
@@ -252,6 +254,14 @@ export const PeerContextProvider = ({ children }) => {
 		connectionRef.current.on('error', err => {
 			throw new Error(err)
 		})
+	}
+
+	const sendMessage = content => {
+		if (connectionRef.current && connectionRef.current.open) {
+			const message = { content }
+			connectionRef.current.send(message)
+			dispatch(matchmakingReceiveMessage({ ...message, author: user.username }))
+		}
 	}
 
 	// Close connection
@@ -312,5 +322,9 @@ export const PeerContextProvider = ({ children }) => {
 			})
 	}, [matchmakingState])
 
-	return <PeerContext.Provider value={{ peer: peerRef.current }}>{children}</PeerContext.Provider>
+	return (
+		<PeerContext.Provider value={{ peer: peerRef.current, sendMessage }}>
+			{children}
+		</PeerContext.Provider>
+	)
 }

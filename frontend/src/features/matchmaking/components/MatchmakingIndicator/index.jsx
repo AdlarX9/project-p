@@ -7,8 +7,7 @@ const MatchmakingIndicator = () => {
 	const messages = {
 		pending: 'Pending...',
 		connecting: 'Connecting...',
-		inQueue: 'In Queue...',
-		connected: 'Connected...'
+		inQueue: 'In Queue...'
 	}
 	const isValidState = Object.hasOwn(messages, matchmakingState)
 
