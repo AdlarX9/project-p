@@ -1,0 +1,37 @@
+.background-supervisor {
+	z-index: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100svh;
+	overflow: hidden;
+}
+
+.background-supervisor div {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.background-stars {
+	--pattern-dimensions: 10rem;
+	background-repeat: repeat;
+	background-size: var(--pattern-dimensions) var(--pattern-dimensions);
+	animation: moveStars 8s linear infinite;
+}
+
+@keyframes moveStars {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: var(--pattern-dimensions) 0;
+	}
+}
+
+.background-gradient {
+	background:
+		linear-gradient(to bottom, transparent 50%, #1a3c75 100%),
+		radial-gradient(circle at 50% 50%, transparent 60%, var(--background-star-color) 100%);
+}

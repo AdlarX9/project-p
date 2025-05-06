@@ -239,7 +239,6 @@ export const PeerContextProvider = ({ children }) => {
 	const handleConnect = () => {
 		connectionRef.current.on('open', () => {
 			handleConnected()
-			sendMessage('Hello from ' + user.username + '!')
 			connectionRef.current.on('data', message => {
 				dispatch(
 					matchmakingReceiveMessage({ ...message, author: matchmaking.matchedUsername })

@@ -1,10 +1,11 @@
 import './style.css'
-import Back from '@components/Back'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useSelector } from 'react-redux'
-import { getUser } from '@redux/selectors'
+import Back from '@components/Back'
 import PopUp from '@components/PopUp'
-import { useState } from 'react'
+import Background from '@components/Background'
+import { getUser } from '@redux/selectors'
 import { ProfilePopup, Avatar, LockerPreview } from '@features/profile'
 
 const Profile = () => {
@@ -13,6 +14,7 @@ const Profile = () => {
 
 	return (
 		<section className='profile-wrapper'>
+			<Background />
 			<div className='back-wrapper'>
 				<Back />
 			</div>

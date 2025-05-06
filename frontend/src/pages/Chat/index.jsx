@@ -3,6 +3,7 @@ import './style.css'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Back from '../../components/Back'
+import Background from '../../components/Background'
 import { useSelector } from 'react-redux'
 import { getFriends, getUser } from '@redux/selectors'
 import { ChatViewer, ChatInput } from '@features/messages'
@@ -44,6 +45,7 @@ const Chat = () => {
 
 	return (
 		<section className='chat-wrapper'>
+			<Background />
 			<div className='chat-back-wrapper'>
 				<Back />
 			</div>

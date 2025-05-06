@@ -32,24 +32,12 @@ const GameBoard = () => {
 		inputRef.current.value = ''
 	}
 
-	const fakeMessages = [
-		{
-			author: 'first',
-			content: 'Hello from first'
-		},
-		{
-			author: 'admin',
-			content: 'Hello from me'
-		},
-		{
-			author: 'first',
-			content: 'hey hey hey'
-		}
-	]
-
 	return (
 		<>
 			<section className='game-board-wrapper scrollable p-20' ref={scrollableRef}>
+				<p className='cartoon2-txt m-0 p-20' style={{ alignSelf: 'center' }}>
+					Textual chat initiated
+				</p>
 				<AnimatePresence>
 					{matchmaking?.messages &&
 						matchmaking.messages.map((message, index) => (
@@ -84,6 +72,11 @@ const GameBoard = () => {
 								</div>
 							</motion.div>
 						))}
+					{matchmaking?.messages?.length === 0 && (
+						<p className='cartoon2-txt gray' style={{ alignSelf: 'center' }}>
+							No messages yet
+						</p>
+					)}
 				</AnimatePresence>
 			</section>
 			<form className='game-form' onSubmit={e => handleSubmit(e)}>

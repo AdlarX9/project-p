@@ -22,6 +22,7 @@
 	--light-blue: #33aed7;
 	--active-green: rgb(111, 217, 72);
 	--purple: rgb(87, 70, 131);
+	--background-star-color: #3490bb;  /* to modify it will not modify the stars' color */
 	font-size: clamp(5px, min(1svh, 1vw), 15px);
 }
 
@@ -220,6 +221,10 @@ html {
 
 .white {
 	color: white;
+}
+
+.gray {
+	color: var(--gray);
 }
 
 .bg-red {

@@ -4,7 +4,8 @@ import settings from '../../assets/settings.png'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
-import { Friends } from '@features/friends/'
+import Background from '@components/Background'
+import { Friends } from '@features/friends'
 import { Money } from '@features/bank'
 import { Play } from '@features/matchmaking'
 import { Avatar, ProfileButton } from '@features/profile'
@@ -13,6 +14,7 @@ import { ShopButton } from '@features/shop'
 const Home = () => {
 	return (
 		<section className='home-wrapper'>
+			<Background />
 			<header className='home-header'>
 				<ProfileButton />
 				<div className='money-friends'>
