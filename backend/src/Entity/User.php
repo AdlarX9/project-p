@@ -82,6 +82,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Bank::class, mappedBy: 'owner')]
     private Collection $banks;
 
+    /**
+     * @var Collection<int, Loan>
+     */
+    #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'poor')]
+    private Collection $loans;
+
     public function __construct()
     {
         $this->friends = new ArrayCollection();
@@ -90,6 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->sent_messages = new ArrayCollection();
         $this->conversations = new ArrayCollection();
         $this->banks = new ArrayCollection();
+        $this->loans = new ArrayCollection();
     }
 
     public function createLocker(): void {
@@ -351,6 +358,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($bank->getOwner() === $this) {
                 $bank->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Loan>
+     */
+    public function getLoans(): Collection
+    {
+        return $this->loans;
+    }
+
+    public function addLoan(Loan $loan): static
+    {
+        if (!$this->loans->contains($loan)) {
+            $this->loans->add($loan);
+            $loan->setPoor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoan(Loan $loan): static
+    {
+        if ($this->loans->removeElement($loan)) {
+            // set the owning side to null (unless already changed)
+            if ($loan->getPoor() === $this) {
+                $loan->setPoor(null);
             }
         }
 

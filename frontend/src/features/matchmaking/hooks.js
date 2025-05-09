@@ -146,54 +146,9 @@ export const useHandleConnected = () => {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
-	const handleConnected = async (receiverAudioStream = null) => {
+	const handleConnected = async () => {
 		dispatch(matchmakingConnected())
 		navigate('/game')
-
-		if (!receiverAudioStream) {
-			return
-		}
-
-		// const audioContext = new AudioContext()
-		// const audioDestination = audioContext.createMediaStreamDestination()
-		// const audioSource = audioContext.createMediaStreamSource(receiverAudioStream)
-		// audioSource.connect(audioDestination)
-		// const audioStream = audioDestination.stream
-		// const audioTracks = audioStream.getAudioTracks()
-		// if (audioTracks.length === 0) {
-		// 	console.error('No audio tracks available')
-		// 	return
-		// }
-		// const audioTrack = audioTracks[0]
-		// const audioConstraints = {
-		// 	audio: {
-		// 		deviceId: audioTrack.getSettings().deviceId,
-		// 		echoCancellation: true,
-		// 		noiseSuppression: true,
-		// 		autoGainControl: true
-		// 	}
-		// }
-		// const stream = await navigator.mediaDevices.getUserMedia(audioConstraints)
-
-		const outputId = await navigator.mediaDevices
-			.enumerateDevices()
-			.then(devices => {
-				devices.filter(devices => devices.kind === 'audiooutput')
-				if (devices.some(device => device.deviceId === 'default')) {
-					return 'default'
-				} else {
-					return devices[0].deviceId
-				}
-			})
-			.catch(error => {
-				console.error(error)
-				return null
-			})
-
-		const audioElement = new Audio()
-		audioElement.srcObject = receiverAudioStream
-		audioElement.setSinkId(outputId)
-		audioElement.play()
 	}
 
 	return handleConnected

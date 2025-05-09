@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use App\Service\BankManager;
 use App\Utils\Functions;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;
@@ -23,7 +24,8 @@ final class BankController extends AbstractController
         UserRepository $userRepository,
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
-        PublisherInterface $publisher
+        PublisherInterface $publisher,
+        BankManager $bankManager
     ): JsonResponse {
         $user = $this->getUser();
 
@@ -53,15 +55,11 @@ final class BankController extends AbstractController
             return new JsonResponse(['error' => 'Insufficient funds'], 400);
         }
 
-        $user->setMoney($user->getMoney() - $amount);
-        $friend->setMoney($friend->getMoney() + $amount);
-        
+        $bankManager->transfer($user, $friend, $amount);
+
         $context = SerializationContext::create()->setGroups(['getUser']);
         $jsonUser = $serializer->serialize($user, 'json', $context);
 
-        $entityManager->persist($user);
-        $entityManager->persist($friend);
-        $entityManager->flush();
         Functions::postNotification($publisher, $entityManager, $user, 'transfer', "You transfered \${$amount} to {$friend->getUsername()}");
         Functions::postNotification($publisher, $entityManager, $friend, $user->getUsername(), "You received \${$amount} from {$friend->getUsername()}");
         return new JsonResponse($jsonUser, 200, [], true);

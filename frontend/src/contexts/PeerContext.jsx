@@ -36,6 +36,7 @@ export const PeerContextProvider = ({ children }) => {
 	const { waitSomeSSE, addTopic } = useMercureContext()
 	const peerRef = useRef(null)
 	const audioRef = useRef(null)
+	const peerAudioRef = useRef(null)
 	const connectionRef = useRef(null)
 
 	const generateTurnUsername = () => {
@@ -198,6 +199,8 @@ export const PeerContextProvider = ({ children }) => {
 
 	const waitForPeerCall = () => {
 		peerRef.current.on('call', call => {
+			console.log('call received', call)
+
 			connectionRef.current = call
 			connectionRef.current.answer(audioRef.current)
 			handleCall()
@@ -206,8 +209,8 @@ export const PeerContextProvider = ({ children }) => {
 
 	const handleCall = () => {
 		connectionRef.current.on('stream', audioStream => {
-			console.log('audio stream: ', audioStream)
-			handleConnected(audioStream)
+			peerAudioRef.current = audioStream
+			handleConnected()
 		})
 
 		connectionRef.current.on('close', () => {
@@ -304,12 +307,12 @@ export const PeerContextProvider = ({ children }) => {
 						peerConnect(matchmaking.matchedUsername)
 					}
 				} else if (matchmaking.role === 'receiver') {
-					addTopic(deliverIdTopic, deliverIdCommunication)
 					if (settings?.communicationPreference === 'call') {
 						waitForPeerCall(matchmaking.matchedUsername)
 					} else {
 						waitForPeerConnect(matchmaking.matchedUsername)
 					}
+					addTopic(deliverIdTopic, deliverIdCommunication)
 				}
 			})
 			.catch(error => {
@@ -322,7 +325,14 @@ export const PeerContextProvider = ({ children }) => {
 	}, [matchmakingState])
 
 	return (
-		<PeerContext.Provider value={{ peer: peerRef.current, sendMessage }}>
+		<PeerContext.Provider
+			value={{
+				peer: peerRef.current,
+				sendMessage,
+				dataConnection: connectionRef.current,
+				peerAudio: peerAudioRef.current
+			}}
+		>
 			{children}
 		</PeerContext.Provider>
 	)
