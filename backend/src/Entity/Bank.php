@@ -6,6 +6,7 @@ use App\Repository\BankRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BankRepository::class)]
 class Bank
@@ -13,6 +14,7 @@ class Bank
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['getUser', 'getBank'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'banks')]
@@ -20,12 +22,14 @@ class Bank
     private ?User $owner = null;
 
     #[ORM\Column]
+    #[Groups(['getBank'])]
     private ?int $money = null;
 
     /**
      * @var Collection<int, Loan>
      */
     #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'relation')]
+    #[Groups(['getBank'])]
     private Collection $loans;
 
     /**
@@ -35,6 +39,7 @@ class Bank
     private Collection $bankLogs;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['getBank'])]
     private ?string $name = null;
 
     public function __construct()

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\LoanRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LoanRepository::class)]
 class Loan
@@ -12,22 +13,28 @@ class Loan
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['getBank'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['getBank'])]
     private ?\DateTimeInterface $start = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['getBank'])]
     private ?\DateTimeInterface $deadline = null;
 
     #[ORM\Column]
+    #[Groups(['getBank'])]
     private ?int $amount = null;
 
     #[ORM\Column]
+    #[Groups(['getBank'])]
     private ?int $repaid = null;
 
     #[ORM\ManyToOne(inversedBy: 'loans')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['getBank'])]
     private ?User $poor = null;
 
     #[ORM\ManyToOne(inversedBy: 'loans')]

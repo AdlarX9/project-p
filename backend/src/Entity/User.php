@@ -80,6 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Bank>
      */
     #[ORM\OneToMany(targetEntity: Bank::class, mappedBy: 'owner')]
+    #[Groups(['getBank', 'getUser'])]
     private Collection $banks;
 
     /**

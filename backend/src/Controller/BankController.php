@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Bank;
 use App\Repository\UserRepository;
 use App\Service\BankManager;
 use App\Utils\Functions;
@@ -93,5 +94,76 @@ final class BankController extends AbstractController
         return new JsonResponse([
             'percentage' => $percentage
         ], Response::HTTP_OK);
+    }
+
+
+
+    #[Route('/create_bank', name: 'create_bank', methods: ['POST'])]
+    public function createBank(Request $request, EntityManagerInterface $entityManager): JsonResponse {
+        $user = $this->getUser();
+
+        $data = $request->toArray();
+        $bankName = $data['bankName'];
+        if (empty($bankName)) {
+            return new JsonResponse(['error' => 'Bank name cannot be empty'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $bank = new Bank();
+        $bank->setName($bankName);
+        $bank->setMoney(0);
+        $user->addBank($bank);
+        $entityManager->persist($user);
+        $entityManager->persist($bank);
+        $entityManager->flush();
+
+        return new JsonResponse([], Response::HTTP_CREATED);
+    }
+
+
+
+    #[Route('/get', name: 'get_banks', methods: ['GET'])]
+    public function getBanks(SerializerInterface $serializer): JsonResponse {
+        $user = $this->getUser();
+
+        $context = SerializationContext::create()->setGroups(['getBank']);
+        $jsonUser = $serializer->serialize($user, 'json', $context);
+        return new JsonResponse($jsonUser, Response::HTTP_OK, [], true);
+    }
+
+
+
+    #[Route('/borrow', name: 'borrow', methods: ['POST'])]
+    public function borrow(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer,
+        PublisherInterface $publisher
+    ): JsonResponse {
+        $user = $this->getUser();
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['bankId'], $data['amount'])) {
+            return new JsonResponse(['error' => 'Invalid request data'], 400);
+        }
+
+        $bankId = (int) $data['bankId'];
+        $amount = (float) $data['amount'];
+
+        if ($amount <= 0) {
+            return new JsonResponse(['error' => 'Amount must be greater than zero'], 400);
+        }
+
+        /** @var Bank|null */
+        $bank = $entityManager->getRepository(Bank::class)->find($bankId);
+        if (!$bank || !$user->getBanks()->contains($bank)) {
+            return new JsonResponse(['error' => 'Bank not found or not owned by user'], 404);
+        }
+
+        if ($bank->getMoney() < $amount) {
+            return new JsonResponse(['error' => 'Insufficient funds in the bank'], 400);
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }
