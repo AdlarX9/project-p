@@ -24,7 +24,7 @@ const Money = ({ interactive = true }) => {
 				animate={{ opacity: 1 }}
 				whileHover={{ scale: interactive ? 1.05 : 1 }}
 				className={`no-link money ${interactive ? 'c-pointer' : 'c-auto'}`}
-				to='bankaccount'
+				to='transfers'
 			>
 				<img src={money} alt='money' draggable='false' />
 				<span className='cartoon-txt'>{user.money}</span>

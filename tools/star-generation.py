@@ -43,8 +43,8 @@ def change_opaque_pixels(image_path: str, output_path: str, color: tuple | str) 
     print(f"Image successfully saved at {output_path}")
 
 
-image_path = "input.png"
-output_path = join("..", "frontend", "src", "assets", "background-pattern.png")
-color = "3490bb"  # dark blue
+image_path = "tools/input2.png"
+output_path = join("frontend", "src", "assets", "background-bank-pattern.png")
+color = "400000"
 
 change_opaque_pixels(image_path, output_path, color)  # Call to the main function

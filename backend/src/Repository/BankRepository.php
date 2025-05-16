@@ -31,13 +31,13 @@ class BankRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Bank
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+       public function searchByName(string $name): ?Bank
+       {
+           return $this->createQueryBuilder('b')
+               ->andWhere('b.name = :name')
+               ->setParameter('name', $name)
+               ->getQuery()
+               ->getOneOrNullResult()
+           ;
+       }
 }

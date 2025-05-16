@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { saveStateFriends } from '@redux/store'
 
 const friendsSlice = createSlice({
-	name: 'user',
+	name: 'friends',
 	initialState: {},
 	reducers: {
 		reduxAddFriend: (currentState, action) => {

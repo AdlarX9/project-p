@@ -42,10 +42,17 @@ class Bank
     #[Groups(['getBank'])]
     private ?string $name = null;
 
+    /**
+     * @var Collection<int, LoanRequest>
+     */
+    #[ORM\OneToMany(targetEntity: LoanRequest::class, mappedBy: 'bank', orphanRemoval: true)]
+    private Collection $loanRequests;
+
     public function __construct()
     {
         $this->loans = new ArrayCollection();
         $this->bankLogs = new ArrayCollection();
+        $this->loanRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +152,36 @@ class Bank
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LoanRequest>
+     */
+    public function getLoanRequests(): Collection
+    {
+        return $this->loanRequests;
+    }
+
+    public function addLoanRequest(LoanRequest $loanRequest): static
+    {
+        if (!$this->loanRequests->contains($loanRequest)) {
+            $this->loanRequests->add($loanRequest);
+            $loanRequest->setBank($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoanRequest(LoanRequest $loanRequest): static
+    {
+        if ($this->loanRequests->removeElement($loanRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($loanRequest->getBank() === $this) {
+                $loanRequest->setBank(null);
+            }
+        }
 
         return $this;
     }

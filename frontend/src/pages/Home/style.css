@@ -49,8 +49,15 @@
 }
 
 .home-settings img {
-	width: 20rem;
+	width: 23rem;
 	height: 20rem;
+	object-fit: cover;
+}
+
+.bank-settings-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
 }
 
 .avatar-wrapper {

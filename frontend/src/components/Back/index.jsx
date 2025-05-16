@@ -4,8 +4,9 @@ import back from '../../assets/back.png'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
-const Back = ({ className }) => {
+const Back = ({ className, to = null }) => {
 	const navigate = useNavigate()
+	const destination = to === null ? -1 : to
 
 	return (
 		<motion.button
@@ -14,7 +15,7 @@ const Back = ({ className }) => {
 			animate='visible'
 			whileHover='hover'
 			className={'back-btn int-btn ' + className}
-			onClick={() => navigate(-1)}
+			onClick={() => navigate(destination)}
 		>
 			<img src={back} alt='back' draggable='false' />
 		</motion.button>

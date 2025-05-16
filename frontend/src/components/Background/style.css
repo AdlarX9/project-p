@@ -1,3 +1,13 @@
+.theme-blue {
+	--background-color: #3490bb;
+	--background-darker-color: #1a3c75;
+}
+
+.theme-bank {
+	--background-color: #ac5b5b;
+	--background-darker-color: #6f2d2d;
+}
+
 .background-supervisor {
 	z-index: 0;
 	position: absolute;
@@ -23,15 +33,15 @@
 
 @keyframes moveStars {
 	0% {
-		background-position: 0 0;
+		background-position: 0 calc(var(--pattern-dimensions) / 4);
 	}
 	100% {
-		background-position: var(--pattern-dimensions) 0;
+		background-position: var(--pattern-dimensions) calc(var(--pattern-dimensions) / 4);
 	}
 }
 
 .background-gradient {
 	background:
-		linear-gradient(to bottom, transparent 50%, #1a3c75 100%),
-		radial-gradient(circle at 50% 50%, transparent 60%, var(--background-star-color) 100%);
+		linear-gradient(to bottom, transparent 50%, var(--background-darker-color) 100%),
+		radial-gradient(circle at 50% 50%, transparent 60%, var(--background-color) 100%);
 }

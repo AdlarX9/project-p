@@ -89,6 +89,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'poor')]
     private Collection $loans;
 
+    /**
+     * @var Collection<int, LoanRequest>
+     */
+    #[ORM\OneToMany(targetEntity: LoanRequest::class, mappedBy: 'applicant', orphanRemoval: true)]
+    private Collection $loanRequests;
+
     public function __construct()
     {
         $this->friends = new ArrayCollection();
@@ -98,6 +104,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->conversations = new ArrayCollection();
         $this->banks = new ArrayCollection();
         $this->loans = new ArrayCollection();
+        $this->loanRequests = new ArrayCollection();
     }
 
     public function createLocker(): void {
@@ -389,6 +396,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($loan->getPoor() === $this) {
                 $loan->setPoor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LoanRequest>
+     */
+    public function getLoanRequests(): Collection
+    {
+        return $this->loanRequests;
+    }
+
+    public function addLoanRequest(LoanRequest $loanRequest): static
+    {
+        if (!$this->loanRequests->contains($loanRequest)) {
+            $this->loanRequests->add($loanRequest);
+            $loanRequest->setApplicant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoanRequest(LoanRequest $loanRequest): static
+    {
+        if ($this->loanRequests->removeElement($loanRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($loanRequest->getApplicant() === $this) {
+                $loanRequest->setApplicant(null);
             }
         }
 

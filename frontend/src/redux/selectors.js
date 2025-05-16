@@ -19,3 +19,5 @@ export const getSettings = state => state.settings || {}
 export const getProfile = state => state.profile || {}
 
 export const getLocker = state => getProfile(state).locker || {}
+
+export const getBank = state => state.bank || {}

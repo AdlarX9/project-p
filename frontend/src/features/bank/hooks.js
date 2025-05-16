@@ -5,6 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { logPersoInf } from '@features/authentication'
 import { reduxLogFriends } from '@features/messages'
 import { useEffect } from 'react'
+import { reduxLogBank } from './slice'
 
 const axiosTransfer = async ({ body, headers }) => {
 	return axios
@@ -69,4 +70,40 @@ export const useGetPercentage = () => {
 	}, [user.money])
 
 	return { ...query, percentage: data }
+}
+
+const axiosGetBankData = async token => {
+	return axios
+		.get(process.env.MAIN_URL + '/api/bank/get', {
+			headers: {
+				Authorization: token
+			}
+		})
+		.then(response => response.data)
+		.catch(error => error.message)
+}
+
+export const useLoadBankData = () => {
+	const user = useSelector(getUser)
+	const token = useSelector(getToken)
+	const dispatch = useDispatch()
+
+	const { refetch, data, ...query } = useQuery({
+		queryKey: ['bankData'],
+		queryFn: () => axiosGetBankData(token),
+		retry: 0,
+		enabled: !!user
+	})
+
+	useEffect(() => {
+		refetch()
+	}, [user.money])
+
+	useEffect(() => {
+		if (data?.banks) {
+			dispatch(reduxLogBank(data))
+		}
+	}, [data])
+
+	return { ...query, data }
 }

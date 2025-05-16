@@ -5,6 +5,7 @@ import { notificationsReducer } from '@features/notifications'
 import { matchmakingReducer } from '@features/matchmaking'
 import { settingsReducer } from '@features/settings'
 import { profileReducer } from '@features/profile'
+import { bankReducer } from '@features/bank'
 
 const defaultState = {
 	user: {},
@@ -68,6 +69,16 @@ export const saveStateProfile = reduxState => {
 	}
 }
 
+export const saveStateBank = reduxState => {
+	try {
+		const serializedState = JSON.stringify(reduxState)
+		localStorage.removeItem('reduxStateBank')
+		localStorage.setItem('reduxStateBank', serializedState)
+	} catch (e) {
+		console.error('Could not save state', e)
+	}
+}
+
 const loadState = () => {
 	try {
 		const user = localStorage.getItem('reduxStateUser')
@@ -75,13 +86,15 @@ const loadState = () => {
 		const notifications = localStorage.getItem('reduxStateNotifications')
 		const settings = localStorage.getItem('reduxStateSettings')
 		const profile = localStorage.getItem('reduxStateProfile')
+		const bank = localStorage.getItem('reduxStateBank')
 		const serializedState = {
 			user: JSON.parse(user),
 			friends: JSON.parse(friends),
 			notifications: JSON.parse(notifications),
 			matchmaking: { state: 'nothing', id: null },
 			settings: JSON.parse(settings),
-			profile: JSON.parse(profile)
+			profile: JSON.parse(profile),
+			bank: JSON.parse(bank)
 		}
 		if (serializedState?.friends === null || serializedState?.user === null) {
 			return defaultState
@@ -102,7 +115,8 @@ export const store = configureStore({
 		notifications: notificationsReducer,
 		matchmaking: matchmakingReducer,
 		settings: settingsReducer,
-		profile: profileReducer
+		profile: profileReducer,
+		bank: bankReducer
 	}),
 	devTools: true
 })

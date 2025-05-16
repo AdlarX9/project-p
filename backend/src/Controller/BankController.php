@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Bank;
+use App\Entity\LoanRequest;
+use App\Repository\BankRepository;
 use App\Repository\UserRepository;
 use App\Service\BankManager;
 use App\Utils\Functions;
@@ -132,37 +134,66 @@ final class BankController extends AbstractController
 
 
 
-    #[Route('/borrow', name: 'borrow', methods: ['POST'])]
-    public function borrow(
+    #[Route('/request_loan', name: 'requestLoan', methods: ['POST'])]
+    public function requestLoan(
         Request $request,
         EntityManagerInterface $entityManager,
-        SerializerInterface $serializer,
-        PublisherInterface $publisher
+        BankRepository $bankRepository
     ): JsonResponse {
         $user = $this->getUser();
+        $data = $request->toArray();
 
-        $data = json_decode($request->getContent(), true);
-
-        if (!isset($data['bankId'], $data['amount'])) {
-            return new JsonResponse(['error' => 'Invalid request data'], 400);
-        }
-
-        $bankId = (int) $data['bankId'];
-        $amount = (float) $data['amount'];
+        $bankId = $data['bankId'];
+        $amount = $data['amount'];
+        $duration = new \DateTime($data['duration']);
+        $request = $data['request'];
+        $bank = $bankRepository->find($bankId);
 
         if ($amount <= 0) {
             return new JsonResponse(['error' => 'Amount must be greater than zero'], 400);
         }
-
-        /** @var Bank|null */
-        $bank = $entityManager->getRepository(Bank::class)->find($bankId);
-        if (!$bank || !$user->getBanks()->contains($bank)) {
-            return new JsonResponse(['error' => 'Bank not found or not owned by user'], 404);
+        if (!$bank) {
+            return new JsonResponse(['error' => 'Bank not found'], 404);
         }
-
         if ($bank->getMoney() < $amount) {
             return new JsonResponse(['error' => 'Insufficient funds in the bank'], 400);
         }
+
+        $loanRequest = new LoanRequest();
+        $bank->addLoanRequest($loanRequest);
+        $user->addLoanRequest($loanRequest);
+        $loanRequest->setAmount($amount);
+        $loanRequest->setDuration($duration);
+
+        $entityManager->persist($loanRequest);
+        $entityManager->persist($bank);
+        $entityManager->flush();
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+
+
+    #[Route('/accept_loan', name: 'acceptLoan', methods: ['POST'])]
+    public function acceptLoan(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BankRepository $bankRepository
+    ): JsonResponse {
+        $user = $this->getUser();
+        $data = $request->toArray();
+
+        $bankId = $data['bankId'];
+        $amount = $data['amount'];
+        $duration = new \DateTime($data['duration']);
+        $request = $data['request'];
+        $bank = $bankRepository->find($bankId);
+
+        $loanRequest = new LoanRequest();
+        $loanRequest->setBank($bank);
+        $loanRequest->setApplicant($user);
+        $loanRequest->setAmount($amount);
+        $loanRequest->setDuration($duration);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
