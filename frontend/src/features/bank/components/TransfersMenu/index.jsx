@@ -27,10 +27,17 @@ const TransfersMenu = () => {
 
 	return (
 		<div className='transfers-wrapper'>
-			<span className='cartoon-txt transfers-title'>transfers</span>
+			<motion.span
+				variants={basicVariants}
+				initial='hidden'
+				animate='visible'
+				className='title-txt transfers-title'
+			>
+				transfers
+			</motion.span>
 			<motion.form
 				variants={basicVariants}
-				hidden='hidden'
+				initial='hidden'
 				animate='visible'
 				onSubmit={e => handleSubmit(e)}
 				className='transfers-form'
@@ -47,9 +54,9 @@ const TransfersMenu = () => {
 					Transfer
 				</button>
 			</motion.form>
-			<motion.span className='link cartoon2-txt c-auto'>
+			<span className='link cartoon2-txt c-auto'>
 				Friend to send the money : {friend.username ? friend.username : 'none'}
-			</motion.span>
+			</span>
 			<SeeFriends
 				enableDetails={false}
 				friend={friend}

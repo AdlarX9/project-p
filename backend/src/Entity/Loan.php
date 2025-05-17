@@ -39,7 +39,11 @@ class Loan
 
     #[ORM\ManyToOne(inversedBy: 'loans')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Bank $relation = null;
+    private ?Bank $bank = null;
+
+    #[ORM\Column]
+    #[Groups(['getBank'])]
+    private ?float $interestRate = null;
 
     public function getId(): ?int
     {
@@ -106,14 +110,26 @@ class Loan
         return $this;
     }
 
-    public function getRelation(): ?Bank
+    public function getBank(): ?Bank
     {
-        return $this->relation;
+        return $this->bank;
     }
 
-    public function setRelation(?Bank $relation): static
+    public function setBank(?Bank $bank): static
     {
-        $this->relation = $relation;
+        $this->bank = $bank;
+
+        return $this;
+    }
+
+    public function getInterestRate(): ?float
+    {
+        return $this->interestRate;
+    }
+
+    public function setInterestRate(float $interestRate): static
+    {
+        $this->interestRate = $interestRate;
 
         return $this;
     }

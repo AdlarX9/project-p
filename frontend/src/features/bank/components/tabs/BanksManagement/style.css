@@ -1,0 +1,43 @@
+.banks-management-wrapper {
+	width: 90vw;
+	height: calc(100svh - 40rem);
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	padding: 2rem;
+	gap: 1rem;
+}
+
+.banks-management-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.btn-create-bank {
+	width: 6rem;
+	text-align: center;
+}
+
+.btn-your-bank {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.btn-your-bank:hover {
+	filter: brightness(0.9);
+}
+
+.btn-your-bank img {
+	--bank-dimensions: 7rem;
+	width: var(--bank-dimensions);
+	height: var(--bank-dimensions);
+}
+
+.btn-your-bank span {
+	display: flex;
+	flex-direction: column;
+	align-items: end;
+	justify-content: center;
+}

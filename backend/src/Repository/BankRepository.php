@@ -16,28 +16,24 @@ class BankRepository extends ServiceEntityRepository
         parent::__construct($registry, Bank::class);
     }
 
-    //    /**
-    //     * @return Bank[] Returns an array of Bank objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function searchByName(string $name): ?Bank
+    {
+        return $this->createQueryBuilder('b')
+           ->andWhere('b.name = :name')
+           ->setParameter('name', $name)
+           ->getQuery()
+           ->getOneOrNullResult()
+       ;
+    }
 
-       public function searchByName(string $name): ?Bank
-       {
-           return $this->createQueryBuilder('b')
-               ->andWhere('b.name = :name')
-               ->setParameter('name', $name)
-               ->getQuery()
-               ->getOneOrNullResult()
-           ;
-       }
+    public function searchByNamePagination(string $name, int $offset, int $limit): array {
+        return $this->createQueryBuilder('b')
+            ->where('LOWER(b.name) LIKE :query')
+            ->setParameter('query', '%' . strtolower($name) . '%')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

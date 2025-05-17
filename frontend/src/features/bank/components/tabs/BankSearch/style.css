@@ -1,0 +1,34 @@
+.bank-search-wrapper {
+	max-width: 100vw !important;
+	box-sizing: border-box;
+	overflow: hidden;
+	padding: 1rem;
+}
+
+.bank-search-bar img {
+	height: 6rem;
+	margin: 2rem;
+	margin-bottom: -2rem;
+}
+
+.bank-search-results {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2rem;
+	height: calc(100svh - 60rem);
+	padding: 2rem;
+}
+
+.bank-search-result {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.bank-search-result img {
+	width: 5rem;
+	height: 5rem;
+}

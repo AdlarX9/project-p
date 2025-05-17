@@ -4,7 +4,7 @@ import { getToken, getUser } from '@redux/selectors'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { logPersoInf } from '@features/authentication'
 import { reduxLogFriends } from '@features/messages'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { reduxLogBank } from './slice'
 
 const axiosTransfer = async ({ body, headers }) => {
@@ -80,7 +80,9 @@ const axiosGetBankData = async token => {
 			}
 		})
 		.then(response => response.data)
-		.catch(error => error.message)
+		.catch(error => {
+			throw new Error(error.response?.data?.message || error.message)
+		})
 }
 
 export const useLoadBankData = () => {
@@ -106,4 +108,38 @@ export const useLoadBankData = () => {
 	}, [data])
 
 	return { ...query, data }
+}
+
+const axiosSearchForBanks = async (searchValue, token) => {
+	return axios
+		.get(process.env.MAIN_URL + '/api/bank/search', {
+			headers: {
+				Authorization: token
+			},
+			params: {
+				name: searchValue
+			}
+		})
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error(error.response?.data?.message || error.message)
+		})
+}
+
+export const useSearchForBanks = () => {
+	const token = useSelector(getToken)
+	const [banks, setBanks] = useState(null)
+
+	const mutation = useMutation({
+		mutationFn: searchValue => axiosSearchForBanks(searchValue, token),
+		onSuccess: data => {
+			setBanks(data)
+		}
+	})
+
+	const searchForBanks = searchValue => {
+		mutation.mutate(searchValue)
+	}
+
+	return { ...mutation, searchForBanks, banks }
 }

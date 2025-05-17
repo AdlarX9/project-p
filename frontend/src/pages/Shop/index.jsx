@@ -1,12 +1,14 @@
 import { ShopWrapper } from '@features/shop'
 import './style.css'
 import Back from '@components/Back'
+import Background from '@components/Background'
 import { motion } from 'framer-motion'
 import { Money } from '@features/bank'
 
 const Shop = () => {
 	return (
 		<section className='shop-page-wrapper'>
+			<Background theme='purple' img='items' />
 			<div className='back-wrapper'>
 				<Back />
 			</div>

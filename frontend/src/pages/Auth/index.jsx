@@ -11,7 +11,7 @@ const Auth = ({ type }) => {
 		<>
 			{isLogged ? (
 				<div className='back-wrapper'>
-					<Back />
+					<Back to='/' />
 				</div>
 			) : (
 				<></>

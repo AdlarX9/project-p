@@ -33,6 +33,7 @@
         "symfony/property-info": "7.1.*",
         "symfony/redis-messenger": "7.1.*",
         "symfony/runtime": "7.1.*",
+        "symfony/scheduler": "7.1.*",
         "symfony/security-bundle": "7.1.*",
         "symfony/security-http": "7.1.*",
         "symfony/serializer": "7.1.*",

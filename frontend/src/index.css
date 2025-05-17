@@ -22,6 +22,8 @@
 	--light-blue: #33aed7;
 	--active-green: rgb(111, 217, 72);
 	--purple: rgb(87, 70, 131);
+	--back-yellow: #ffe760;
+	--bank-red: rgb(234, 137, 137);
 	font-size: clamp(5px, min(1svh, 1vw), 15px);
 }
 

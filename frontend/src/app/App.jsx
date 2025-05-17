@@ -20,12 +20,14 @@ import Error from '@pages/Error/'
 import Settings from '@pages/Settings/'
 import Profile from '@pages/ProfilePage/'
 import TransfersPage from '@pages/TransfersPage/'
-import Bank from '@pages/Bank/'
 import Shop from '@pages/Shop/'
 import ShopItem from '@pages/ShopItem/'
 import LoadingPage from '@pages/LoadingPage/'
 import Game from '@pages/Game'
 import Chat from '@pages/Chat'
+import Bank from '@pages/Bank/'
+import BankManage from '@pages/BankManage/'
+import BankOverview from '@pages/BankOverview/'
 
 const Home = lazy(() => import('@pages/Home/'))
 const Auth = lazy(() => import('@pages/Auth/'))
@@ -62,10 +64,18 @@ const App = () => {
 											<Route path='/settings' element={<Settings />} />
 											<Route path='/profile' element={<Profile />} />
 											<Route path='/transfers' element={<TransfersPage />} />
-											<Route path='/bank/:tab' element={<Bank />} />
 											<Route path='/shop' element={<Shop />} />
 											<Route path='/shop/item' element={<ShopItem />} />
 											<Route path='/chat/:username' element={<Chat />} />
+											<Route path='/bank/:tab' element={<Bank />} />
+											<Route
+												path='/focus-bank/:id/manage'
+												element={<BankManage />}
+											/>
+											<Route
+												path='/focus-bank/:id/overview'
+												element={<BankOverview />}
+											/>
 										</Routes>
 									</HomeContextProvider>
 								</Suspense>

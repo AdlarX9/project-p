@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Bank;
+use App\Entity\Loan;
 use App\Entity\LoanRequest;
 use App\Repository\BankRepository;
+use App\Repository\LoanRepository;
+use App\Repository\LoanRequestRepository;
 use App\Repository\UserRepository;
 use App\Service\BankManager;
 use App\Utils\Functions;
@@ -147,6 +150,7 @@ final class BankController extends AbstractController
         $amount = $data['amount'];
         $duration = new \DateTime($data['duration']);
         $request = $data['request'];
+        $interestRate = $data['interestRate'];
         $bank = $bankRepository->find($bankId);
 
         if ($amount <= 0) {
@@ -164,6 +168,7 @@ final class BankController extends AbstractController
         $user->addLoanRequest($loanRequest);
         $loanRequest->setAmount($amount);
         $loanRequest->setDuration($duration);
+        $loanRequest->setInterestRate($interestRate);
 
         $entityManager->persist($loanRequest);
         $entityManager->persist($bank);
@@ -178,23 +183,76 @@ final class BankController extends AbstractController
     public function acceptLoan(
         Request $request,
         EntityManagerInterface $entityManager,
+        LoanRequestRepository $loanRequestRepository,
         BankRepository $bankRepository
     ): JsonResponse {
         $user = $this->getUser();
         $data = $request->toArray();
 
-        $bankId = $data['bankId'];
-        $amount = $data['amount'];
-        $duration = new \DateTime($data['duration']);
-        $request = $data['request'];
-        $bank = $bankRepository->find($bankId);
+        $loanRequestId = $data['loanRequestId'];
+        $interestRate = $data['interestRate'];
+        $loanRequest = $loanRequestRepository->find($loanRequestId);
 
-        $loanRequest = new LoanRequest();
-        $loanRequest->setBank($bank);
-        $loanRequest->setApplicant($user);
-        $loanRequest->setAmount($amount);
-        $loanRequest->setDuration($duration);
+        if ($interestRate > $loanRequest->getInterestRate()) {
+            return new JsonResponse(['error' => 'Interest rate cannot be higher than the requested one'], 400);
+        }
+
+        $loan = new Loan();
+        $loanRequest->getBank()->addLoan($loan);
+        $user->addLoan($loan);
+        $loan->setStart(new \DateTime());
+        $loan->setDeadline($loanRequest->getDuration());
+        $loan->setAmount($loanRequest->getAmount());
+        $loan->setRepaid(0);
+        $loan->setInterestRate($interestRate);
+
+        $entityManager->persist($loan);
+        $entityManager->persist($loan->getBank());
+        $entityManager->persist($user);
+        $entityManager->remove($loanRequest);
+        $entityManager->flush();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+
+
+    #[Route('/search', name: 'search_banks', methods: ['GET'])]
+    public function searchBanks(
+        Request $request,
+        BankRepository $bankRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $name = $request->query->get('name', '');
+        $page = max(1, (int)$request->query->get('page', 1));
+        $limit = max(1, min(50, (int)$request->query->get('limit', 10)));
+        $offset = ($page - 1) * $limit;
+
+        $banks = $bankRepository->searchByNamePagination($name, $offset, $limit);
+
+        $context = SerializationContext::create()->setGroups(['getBank']);
+        $jsonBanks = $serializer->serialize($banks, 'json', $context);
+
+        return new JsonResponse($jsonBanks, Response::HTTP_OK, [], true);
+    }
+
+
+
+    #[Route('/:bankId', name: 'get_bank', methods: ['GET'])]
+    public function getBank(
+        int $bankId,
+        BankRepository $bankRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $bank = $bankRepository->find($bankId);
+        if (!$bank) {
+
+            return new JsonResponse(['error' => 'Bank not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $context = SerializationContext::create()->setGroups(['getBank']);
+        $jsonBank = $serializer->serialize($bank, 'json', $context);
+        
+        return new JsonResponse($jsonBank, Response::HTTP_OK, [], true);
     }
 }

@@ -28,7 +28,7 @@ class Bank
     /**
      * @var Collection<int, Loan>
      */
-    #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'relation')]
+    #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'bank')]
     #[Groups(['getBank'])]
     private Collection $loans;
 
@@ -96,7 +96,7 @@ class Bank
     {
         if (!$this->loans->contains($loan)) {
             $this->loans->add($loan);
-            $loan->setRelation($this);
+            $loan->setBank($this);
         }
 
         return $this;
@@ -106,8 +106,8 @@ class Bank
     {
         if ($this->loans->removeElement($loan)) {
             // set the owning side to null (unless already changed)
-            if ($loan->getRelation() === $this) {
-                $loan->setRelation(null);
+            if ($loan->getBank() === $this) {
+                $loan->setBank(null);
             }
         }
 

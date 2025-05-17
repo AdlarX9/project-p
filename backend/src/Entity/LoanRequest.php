@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\LoanRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LoanRequestRepository::class)]
 class LoanRequest
@@ -12,9 +13,11 @@ class LoanRequest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['getBank'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 1024)]
+    #[Groups(['getBank'])]
     private ?string $request = null;
 
     #[ORM\ManyToOne(inversedBy: 'loanRequests')]
@@ -23,13 +26,19 @@ class LoanRequest
 
     #[ORM\ManyToOne(inversedBy: 'loanRequests')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['getBank'])]
     private ?User $applicant = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(['getBank'])]
     private ?\DateTimeInterface $duration = null;
 
     #[ORM\Column]
+    #[Groups(['getBank'])]
     private ?int $amount = null;
+
+    #[ORM\Column]
+    private ?float $interestRate = null;
 
     public function getId(): ?int
     {
@@ -92,6 +101,18 @@ class LoanRequest
     public function setAmount(int $amount): static
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getInterestRate(): ?float
+    {
+        return $this->interestRate;
+    }
+
+    public function setInterestRate(float $interestRate): static
+    {
+        $this->interestRate = $interestRate;
 
         return $this;
     }

@@ -1,11 +1,13 @@
 import './style.css'
 import { motion } from 'framer-motion'
 import Back from '@components/Back'
+import Background from '@components/Background'
 import { SettingsDisplayer } from '@features/settings'
 
 const Settings = () => {
 	return (
-		<section className='settings-wrapper'>
+		<section className='settings-wrapper bg-gray'>
+			<Background theme='gray' img='grayStars' />
 			<div className='settings-back'>
 				<Back />
 			</div>

@@ -2,7 +2,7 @@ import './style.css'
 import back from '../../assets/back.png'
 
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, scale } from 'framer-motion'
 
 const Back = ({ className, to = null }) => {
 	const navigate = useNavigate()
@@ -26,15 +26,18 @@ const linkVariants = {
 	hidden: {
 		x: '100%',
 		opacity: 0,
-		scaleY: 0
+		scaleY: 0,
+		scaleX: 1.5
 	},
 	visible: {
 		x: 0,
 		opacity: 1,
-		scaleY: 1
+		scaleY: 1,
+		scaleX: 1
 	},
 	hover: {
-		scale: 1.05
+		scaleY: 1.05,
+		scaleX: 1.05
 	}
 }
 

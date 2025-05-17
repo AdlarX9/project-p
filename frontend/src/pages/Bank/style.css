@@ -1,5 +1,5 @@
 .bank-wrapper {
-	background: rgb(234, 137, 137);
+	background: var(--bank-red);
 	width: 100vw;
 	height: 100svh;
 	display: flex;

@@ -12,8 +12,7 @@ const bankSlice = createSlice({
 		},
 
 		reduxLogBank: (_, action) => {
-			const bank = action.payload.bank
-			return bank
+			return action.payload
 		},
 
 		reduxRemoveBank: (currentState, action) => {

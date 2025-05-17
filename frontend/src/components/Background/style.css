@@ -3,9 +3,20 @@
 	--background-darker-color: #1a3c75;
 }
 
-.theme-bank {
+.theme-red {
 	--background-color: #ac5b5b;
 	--background-darker-color: #6f2d2d;
+}
+
+.theme-gray {
+	--background-color: rgb(79, 78, 74);
+	--background-darker-color: rgb(38, 35, 38);
+}
+
+.theme-purple {
+	--background-color: #7118b0;
+	--background-darker-color: #391b55;
+	/* --background-darker-color: #4d1b7b; */
 }
 
 .background-supervisor {
