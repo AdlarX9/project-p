@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { getBank } from '@redux/selectors'
+import Loader from '@components/Loader'
 
 const MotionLink = motion.create(Link)
 
@@ -25,6 +26,11 @@ const BanksManagement = () => {
 						+
 					</MotionLink>
 				</h1>
+				{!bankState?.banks && (
+					<div className='banks-management-loader'>
+						<Loader />
+					</div>
+				)}
 				{bankState?.banks &&
 					bankState.banks.map((bank, index) => {
 						return (

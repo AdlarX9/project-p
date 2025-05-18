@@ -8,6 +8,10 @@
 	gap: 1rem;
 }
 
+.banks-management-loader {
+	align-self: center;
+}
+
 .banks-management-header {
 	display: flex;
 	align-items: center;

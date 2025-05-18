@@ -26,6 +26,7 @@ import LoadingPage from '@pages/LoadingPage/'
 import Game from '@pages/Game'
 import Chat from '@pages/Chat'
 import Bank from '@pages/Bank/'
+import BankCreate from '@pages/BankCreate/'
 import BankManage from '@pages/BankManage/'
 import BankOverview from '@pages/BankOverview/'
 
@@ -68,6 +69,7 @@ const App = () => {
 											<Route path='/shop/item' element={<ShopItem />} />
 											<Route path='/chat/:username' element={<Chat />} />
 											<Route path='/bank/:tab' element={<Bank />} />
+											<Route path='/create-bank' element={<BankCreate />} />
 											<Route
 												path='/focus-bank/:id/manage'
 												element={<BankManage />}

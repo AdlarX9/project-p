@@ -228,6 +228,17 @@ html {
 	color: var(--gray);
 }
 
+.bg {
+	width: 100vw;
+	height: 100svh;
+}
+
+.center-children {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .bg-red {
 	background: var(--red);
 }
@@ -254,6 +265,10 @@ html {
 
 .bg-gray {
 	background: var(--gray);
+}
+
+.bg-bank-red {
+	background: var(--bank-red);
 }
 
 .p-20 {
