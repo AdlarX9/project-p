@@ -14,22 +14,23 @@ class Bank
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getUser', 'getBank'])]
+    #[Groups(['getUser', 'getBank', 'getPublicBank'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'banks')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['getPublicBank'])]
     private ?User $owner = null;
 
     #[ORM\Column]
-    #[Groups(['getBank'])]
+    #[Groups(['getBank', 'getPublicBank'])]
     private ?int $money = null;
 
     /**
      * @var Collection<int, Loan>
      */
     #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'bank')]
-    #[Groups(['getBank'])]
+    #[Groups(['getBank', 'getPublicBank'])]
     private Collection $loans;
 
     /**
@@ -39,7 +40,7 @@ class Bank
     private Collection $bankLogs;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getBank'])]
+    #[Groups(['getBank', 'getPublicBank'])]
     private ?string $name = null;
 
     /**
@@ -47,6 +48,13 @@ class Bank
      */
     #[ORM\OneToMany(targetEntity: LoanRequest::class, mappedBy: 'bank', orphanRemoval: true)]
     private Collection $loanRequests;
+
+    #[ORM\Column(length: 1024, nullable: true)]
+    #[Groups(['getBank', 'getPublicBank'])]
+    private ?string $description = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()
     {
@@ -182,6 +190,30 @@ class Bank
                 $loanRequest->setBank(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -143,3 +143,34 @@ export const useSearchForBanks = () => {
 
 	return { ...mutation, searchForBanks, banks }
 }
+
+const axiosGetABank = async (bankId, token) => {
+	return axios
+		.get(process.env.MAIN_URL + '/api/bank/' + bankId, {
+			headers: {
+				Authorization: token
+			}
+		})
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error(error.response?.data?.message || error.message)
+		})
+}
+
+export const useGetABank = () => {
+	const token = useSelector(getToken)
+	const [bank, setBank] = useState(null)
+
+	const mutation = useMutation({
+		mutationFn: bankId => axiosGetABank(bankId, token),
+		onSuccess: data => {
+			setBank(data)
+		}
+	})
+
+	const getABank = bankId => {
+		mutation.mutate(bankId)
+	}
+
+	return { ...mutation, getABank, bank }
+}

@@ -238,7 +238,7 @@ final class BankController extends AbstractController
 
 
 
-    #[Route('/:bankId', name: 'get_bank', methods: ['GET'])]
+    #[Route('/{bankId}', name: 'get_bank', methods: ['GET'])]
     public function getBank(
         int $bankId,
         BankRepository $bankRepository,
@@ -250,7 +250,7 @@ final class BankController extends AbstractController
             return new JsonResponse(['error' => 'Bank not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $context = SerializationContext::create()->setGroups(['getBank']);
+        $context = SerializationContext::create()->setGroups(['getPublicBank']);
         $jsonBank = $serializer->serialize($bank, 'json', $context);
         
         return new JsonResponse($jsonBank, Response::HTTP_OK, [], true);

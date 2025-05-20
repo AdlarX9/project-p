@@ -20,11 +20,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getUser', 'getFriend', 'getMessage'])]
+    #[Groups(['getUser', 'getFriend', 'getMessage', 'getPublicBank'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['getUser', 'getFriend', 'getMessage'])]
+    #[Groups(['getUser', 'getFriend', 'getMessage', 'getPublicBank'])]
     private ?string $username = null;
 
     /**
