@@ -1,0 +1,32 @@
+.overview-bank-wrapper {
+	width: 100vw;
+	height: 100svh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	pointer-events: none;
+	flex-direction: column;
+	gap: 3rem;
+}
+
+.overview-bank-title {
+	position: absolute;
+	top: 3rem;
+}
+
+.overview-bank-card {
+	display: grid;
+	gap: 3rem;
+	width: 80vw;
+	grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+	pointer-events: all;
+}
+
+.bo-owner-title {
+	padding-bottom: 1rem;
+}
+
+.ask-loan-btn {
+	pointer-events: all;
+}

@@ -141,26 +141,24 @@ final class BankController extends AbstractController
     public function requestLoan(
         Request $request,
         EntityManagerInterface $entityManager,
-        BankRepository $bankRepository
+        BankRepository $bankRepository,
+        PublisherInterface $publisher
     ): JsonResponse {
         $user = $this->getUser();
         $data = $request->toArray();
 
-        $bankId = $data['bankId'];
-        $amount = $data['amount'];
-        $duration = new \DateTime($data['duration']);
-        $request = $data['request'];
-        $interestRate = $data['interestRate'];
+        $bankId = (int) $data['bankId'];
+        $amount = (int) $data['amount'];
+        $duration = (int) $data['duration'];
+        $request = (string) $data['request'];
+        $interestRate = (float) $data['interestRate'];
         $bank = $bankRepository->find($bankId);
 
         if ($amount <= 0) {
-            return new JsonResponse(['error' => 'Amount must be greater than zero'], 400);
+            return new JsonResponse(['message' => 'Amount must be greater than zero'], 400);
         }
         if (!$bank) {
-            return new JsonResponse(['error' => 'Bank not found'], 404);
-        }
-        if ($bank->getMoney() < $amount) {
-            return new JsonResponse(['error' => 'Insufficient funds in the bank'], 400);
+            return new JsonResponse(['message' => 'Bank not found'], 404);
         }
 
         $loanRequest = new LoanRequest();
@@ -169,12 +167,17 @@ final class BankController extends AbstractController
         $loanRequest->setAmount($amount);
         $loanRequest->setDuration($duration);
         $loanRequest->setInterestRate($interestRate);
+        $loanRequest->setRequest($request);
 
         $entityManager->persist($loanRequest);
         $entityManager->persist($bank);
         $entityManager->flush();
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        Functions::postNotification($publisher, $entityManager, $bank->getOwner(), 'Loan Request', "You received a loan request from {$user->getUsername()}");
+
+        Functions::postNotification($publisher, $entityManager, $user, 'Loan Request', "You successfully sent a loan request to {$bank->getOwner()->getUsername()}");
+
+        return new JsonResponse(['status' => 'success'], Response::HTTP_CREATED);
     }
 
 
@@ -246,7 +249,6 @@ final class BankController extends AbstractController
     ): JsonResponse {
         $bank = $bankRepository->find($bankId);
         if (!$bank) {
-
             return new JsonResponse(['error' => 'Bank not found'], Response::HTTP_NOT_FOUND);
         }
 
@@ -254,5 +256,37 @@ final class BankController extends AbstractController
         $jsonBank = $serializer->serialize($bank, 'json', $context);
         
         return new JsonResponse($jsonBank, Response::HTTP_OK, [], true);
+    }
+
+
+
+    #[Route('/{bankId}/change_name', name: 'change_bank_name', methods: ['PUT'])]
+    public function changeBankName(
+        Request $request,
+        int $bankId,
+        BankRepository $bankRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $user = $this->getUser();
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['name'])) {
+            return new JsonResponse(['message' => 'Invalid name'], 400);
+        }
+
+        $bank = $bankRepository->find($bankId);
+        if (!$bank) {
+            return new JsonResponse(['message' => 'Bank not found'], 404);
+        }
+
+        if ($bank->getOwner() !== $user) {
+            return new JsonResponse(['message' => 'You are not the owner of this bank'], 403);
+        }
+
+        $bank->setName($data['name']);
+        $entityManager->persist($bank);
+        $entityManager->flush();
+
+        return new JsonResponse(['status' => 'success', 'bankId' => $bank->getId(), 'name' => $bank->getName()], Response::HTTP_NO_CONTENT);
     }
 }

@@ -25,9 +25,21 @@ const bankSlice = createSlice({
 			const bank = {}
 			saveStateBank(bank)
 			return bank
+		},
+
+		reduxChangeBankName: (currentState, action) => {
+			const banks = currentState.map(bank => {
+				if (bank.id === action.payload.id) {
+					return { ...bank, name: action.payload.name }
+				}
+				return bank
+			})
+			saveStateBank(banks)
+			return banks
 		}
 	}
 })
 
-export const { reduxAddBank, reduxLogBank, reduxRemoveBank, logBankOut } = bankSlice.actions
+export const { reduxAddBank, reduxLogBank, reduxRemoveBank, logBankOut, reduxChangeBankName } =
+	bankSlice.actions
 export default bankSlice.reducer

@@ -16,6 +16,7 @@
 	--yellow: rgb(240, 188, 0);
 	--gray: #555;
 	--red: #ff8181;
+	--dark-red: #700000;
 	--green: #d4fdca;
 	--dark-blue: #1d71ba;
 	--blue: #6aa8e5;
@@ -140,7 +141,7 @@ html {
 
 .ui-txt {
 	font-family: arial, sans-serif;
-	font-size: 1rem;
+	font-size: 3rem;
 }
 
 .skewed {
@@ -190,6 +191,7 @@ html {
 	margin-bottom: 1rem;
 	background: var(--green);
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .c-pointer {
@@ -226,6 +228,10 @@ html {
 
 .gray {
 	color: var(--gray);
+}
+
+.dark-red {
+	color: var(--dark-red);
 }
 
 .bg {

@@ -8,16 +8,16 @@
 .tab {
 	background: #0000008e;
 	padding: 1rem;
-	box-shadow: -.5rem .5rem 0 rgba(255, 255, 255, 0.644);
+	box-shadow: -0.5rem 0.5rem 0 rgba(255, 255, 255, 0.644);
 	transition: 50ms ease-in-out;
 }
 
 .tab:hover {
 	background: black;
-	box-shadow: -.5rem .5rem 0 white;
+	box-shadow: -0.5rem 0.5rem 0 white;
 }
 
 .selected-tab {
 	background: black;
-	box-shadow: -.5rem .5rem 0 white;
+	box-shadow: -0.5rem 0.5rem 0 white;
 }

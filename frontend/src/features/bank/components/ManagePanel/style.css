@@ -1,0 +1,17 @@
+.bank-panel {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 3rem;
+	max-width: 85vw;
+}
+
+.bank-panel h1 {
+	text-align: center;
+}
+
+.bank-panel section {
+	width: 100%;
+	box-sizing: border-box;
+}

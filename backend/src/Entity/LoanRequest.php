@@ -29,15 +29,16 @@ class LoanRequest
     #[Groups(['getBank'])]
     private ?User $applicant = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['getBank'])]
-    private ?\DateTimeInterface $duration = null;
+    private ?int $duration = null;
 
     #[ORM\Column]
     #[Groups(['getBank'])]
     private ?int $amount = null;
 
     #[ORM\Column]
+    #[Groups(['getBank'])]
     private ?float $interestRate = null;
 
     public function getId(): ?int
@@ -81,12 +82,12 @@ class LoanRequest
         return $this;
     }
 
-    public function getDuration(): ?\DateTimeInterface
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
 
-    public function setDuration(\DateTimeInterface $duration): static
+    public function setDuration(int $duration): static
     {
         $this->duration = $duration;
 

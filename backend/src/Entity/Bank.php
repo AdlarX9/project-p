@@ -47,6 +47,7 @@ class Bank
      * @var Collection<int, LoanRequest>
      */
     #[ORM\OneToMany(targetEntity: LoanRequest::class, mappedBy: 'bank', orphanRemoval: true)]
+    #[Groups(['getBank'])]
     private Collection $loanRequests;
 
     #[ORM\Column(length: 1024, nullable: true)]

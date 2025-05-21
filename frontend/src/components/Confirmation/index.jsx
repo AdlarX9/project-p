@@ -43,12 +43,18 @@ const Confirmation = () => {
 			setOpen={setOpen}
 			className='popup-confirmation cartoon-short-txt popup-profile'
 		>
-			<div>{props.message}</div>{' '}
+			<div className='popup-confirmation-message cartoon-txt'>{props.message}</div>
 			<div className='confirmation-buttons'>
-				<button onClick={handleCancel} className='int-btn p-20 bg-blue'>
+				<button
+					onClick={handleCancel}
+					className='int-btn p-20 bg-blue popup-confirmation-btn'
+				>
 					Cancel
 				</button>
-				<button onClick={handleConfirm} className='int-btn skewed p-20 bg-red'>
+				<button
+					onClick={handleConfirm}
+					className='int-btn skewed p-20 bg-red popup-confirmation-btn'
+				>
 					<span>Confirm</span>
 				</button>
 			</div>
