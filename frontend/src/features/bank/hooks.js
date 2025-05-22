@@ -2,10 +2,10 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { getToken, getUser } from '@redux/selectors'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { logPersoInf } from '@features/authentication'
+import { logPersoInf, modifyUser } from '@features/authentication'
 import { reduxLogFriends } from '@features/messages'
 import { useEffect, useState } from 'react'
-import { reduxChangeBankName, reduxLogBank } from './slice'
+import { reduxLogBank, modifyBank } from './slice'
 
 const axiosTransfer = async ({ body, headers }) => {
 	return axios
@@ -205,14 +205,14 @@ export const useRequestLoan = () => {
 
 const axiosChangeBankName = async (bankId, name, token) => {
 	return axios
-		.patch(
+		.put(
 			process.env.MAIN_URL + `/api/bank/${bankId}/change_name`,
 			{ name },
 			{ headers: { Authorization: token } }
 		)
 		.then(response => response.data)
 		.catch(error => {
-			throw new Error(error.response?.data?.message || error.message)
+			return error.response?.data?.message || error.message
 		})
 }
 
@@ -224,7 +224,7 @@ export const useChangeBankName = () => {
 		mutationKey: ['changeBankName'],
 		mutationFn: ({ bankId, name }) => axiosChangeBankName(bankId, name, token),
 		onSuccess: data => {
-			dispatch(reduxChangeBankName({ id: data.bankId, name: data.name }))
+			dispatch(modifyBank({ id: data.bankId, name: data.name }))
 		}
 	})
 
@@ -233,4 +233,69 @@ export const useChangeBankName = () => {
 	}
 
 	return { changeBankName, ...mutation }
+}
+
+const axiosChangeBankDescription = async (bankId, description, token) => {
+	return axios
+		.put(
+			process.env.MAIN_URL + `/api/bank/${bankId}/change_description`,
+			{ description },
+			{ headers: { Authorization: token } }
+		)
+		.then(response => response.data)
+		.catch(error => {
+			return error.response?.data?.message || error.message
+		})
+}
+
+export const useChangeBankDescription = () => {
+	const token = useSelector(getToken)
+	const dispatch = useDispatch()
+
+	const mutation = useMutation({
+		mutationKey: ['changeBankDescription'],
+		mutationFn: ({ bankId, name }) => axiosChangeBankDescription(bankId, name, token),
+		onSuccess: data => {
+			dispatch(modifyBank({ id: data.bankId, description: data.description }))
+		}
+	})
+
+	const changeBankDescription = async (bankId, name) => {
+		return mutation.mutateAsync({ bankId, name })
+	}
+
+	return { changeBankDescription, ...mutation }
+}
+
+const axiosBankMoneyIn = async (bankId, amount, token) => {
+	return axios
+		.post(
+			process.env.MAIN_URL + `/api/bank/${bankId}/money_in`,
+			{ amount },
+			{ headers: { Authorization: token } }
+		)
+		.then(response => response.data)
+		.catch(error => {
+			return error.response?.data?.message || error.message
+		})
+}
+
+export const useBankMoneyIn = () => {
+	const token = useSelector(getToken)
+	const dispatch = useDispatch()
+
+	const mutation = useMutation({
+		mutationKey: ['bankMoneyIn'],
+		mutationFn: ({ bankId, amount }) => axiosBankMoneyIn(bankId, amount, token),
+		onSuccess: data => {
+			dispatch(modifyBank({ id: data.bankId, money: data.bankMoney }))
+			dispatch(modifyUser({ money: data.userMoney }))
+		}
+	})
+
+	const bankMoneyIn = async (bankId, amount) => {
+		return mutation.mutateAsync({ bankId, amount })
+	}
+
+	return { bankMoneyIn, ...mutation }
 }

@@ -287,6 +287,73 @@ final class BankController extends AbstractController
         $entityManager->persist($bank);
         $entityManager->flush();
 
-        return new JsonResponse(['status' => 'success', 'bankId' => $bank->getId(), 'name' => $bank->getName()], Response::HTTP_NO_CONTENT);
+        return new JsonResponse(['status' => 'success', 'bankId' => $bank->getId(), 'name' => $bank->getName()], Response::HTTP_OK);
+    }
+
+
+
+    #[Route('/{bankId}/change_description', name: 'change_bank_description', methods: ['PUT'])]
+    public function changeBankDescription(
+        Request $request,
+        int $bankId,
+        BankRepository $bankRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $user = $this->getUser();
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['description'])) {
+            return new JsonResponse(['message' => 'Invalid description'], 400);
+        }
+
+        $bank = $bankRepository->find($bankId);
+        if (!$bank) {
+            return new JsonResponse(['message' => 'Bank not found'], 404);
+        }
+
+        if ($bank->getOwner() !== $user) {
+            return new JsonResponse(['message' => 'You are not the owner of this bank'], 403);
+        }
+
+        $bank->setDescription($data['description']);
+        $entityManager->persist($bank);
+        $entityManager->flush();
+
+        return new JsonResponse(['status' => 'success', 'bankId' => $bank->getId(), 'description' => $bank->getDescription()], Response::HTTP_OK);
+    }
+
+
+
+    #[Route('/{bankId}/money_in', name: 'bank_money_in', methods: ['POST'])]
+    public function moneyIn(
+        int $bankId,
+        Request $request,
+        BankRepository $bankRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $user = $this->getUser();
+        $data = $request->toArray();
+        $amount = (int) $data['amount'];
+
+        if (!isset($amount)) {
+            return new JsonResponse(['message' => 'Invalid amount'], 400);
+        }
+
+        $bank = $bankRepository->find($bankId);
+        if (!$bank) {
+            return new JsonResponse(['message' => 'Bank not found'], 404);
+        }
+
+        if ($bank->getOwner() !== $user) {
+            return new JsonResponse(['message' => 'You are not the owner of this bank'], 403);
+        }
+
+        $bank->setMoney($bank->getMoney() + $amount);
+        $user->setMoney($user->getMoney() - $amount);
+        $entityManager->persist($bank);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return new JsonResponse(['status' => 'success', 'amount' => $amount, 'bankMoney' => $bank->getMoney(), 'userMoney' => $user->getMoney()], Response::HTTP_OK);
     }
 }

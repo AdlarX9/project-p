@@ -27,19 +27,30 @@ const bankSlice = createSlice({
 			return bank
 		},
 
-		reduxChangeBankName: (currentState, action) => {
-			const banks = currentState.map(bank => {
+		modifyBank: (currentState, action) => {
+			const banks = currentState.banks.map(bank => {
 				if (bank.id === action.payload.id) {
-					return { ...bank, name: action.payload.name }
+					const newBank = { ...bank }
+					if (action.payload?.name) {
+						newBank.name = action.payload.name
+					}
+					if (action.payload?.description) {
+						newBank.description = action.payload.description
+					}
+					if (action.payload?.money) {
+						newBank.money = action.payload.money
+					}
+					return newBank
 				}
 				return bank
 			})
-			saveStateBank(banks)
-			return banks
+			const newState = { ...currentState, banks }
+			saveStateBank(newState)
+			return newState
 		}
 	}
 })
 
-export const { reduxAddBank, reduxLogBank, reduxRemoveBank, logBankOut, reduxChangeBankName } =
+export const { reduxAddBank, reduxLogBank, reduxRemoveBank, logBankOut, modifyBank } =
 	bankSlice.actions
 export default bankSlice.reducer

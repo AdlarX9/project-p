@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, current } from '@reduxjs/toolkit'
 import { saveStateFriends, saveStateUser } from '@redux/store'
 
 const userSlice = createSlice({
@@ -28,6 +28,18 @@ const userSlice = createSlice({
 			return state.user
 		},
 
+		modifyUser: (currentState, action) => {
+			const state = { ...currentState }
+			if (action.payload.username) {
+				state.username = action.payload.username
+			}
+			if (action.payload.money) {
+				state.money = action.payload.money
+			}
+			saveStateUser(state)
+			return state
+		},
+
 		logUserOut: () => {
 			const state = {
 				friends: [],
@@ -40,5 +52,5 @@ const userSlice = createSlice({
 	}
 })
 
-export const { logUser, logPersoInf, logUserOut } = userSlice.actions
+export const { logUser, logPersoInf, logUserOut, modifyUser } = userSlice.actions
 export default userSlice.reducer

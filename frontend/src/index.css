@@ -144,6 +144,10 @@ html {
 	font-size: 3rem;
 }
 
+.normal-case {
+	text-transform: none;
+}
+
 .skewed {
 	transform: skewX(-10deg);
 }
@@ -320,4 +324,12 @@ html {
 
 .scrollable::-webkit-scrollbar-thumb:active {
 	cursor: grabbing;
+}
+
+.max-80 {
+	max-width: 80%;
+}
+
+.tac {
+	text-align: center;
 }

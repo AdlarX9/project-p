@@ -55,6 +55,7 @@ class Bank
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['getBank', 'getPublicBank'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()
