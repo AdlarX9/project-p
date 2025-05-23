@@ -29,6 +29,8 @@ import Bank from '@pages/Bank/'
 import BankCreate from '@pages/BankCreate/'
 import BankManage from '@pages/BankManage/'
 import BankOverview from '@pages/BankOverview/'
+import LoanRequests from '@pages/LoanRequests/'
+import Loans from '@pages/Loans/'
 
 const Home = lazy(() => import('@pages/Home/'))
 const Auth = lazy(() => import('@pages/Auth/'))
@@ -70,6 +72,14 @@ const App = () => {
 											<Route path='/chat/:username' element={<Chat />} />
 											<Route path='/bank/:tab' element={<Bank />} />
 											<Route path='/create-bank' element={<BankCreate />} />
+											<Route
+												path='/focus-bank/:id/loans'
+												element={<Loans />}
+											/>
+											<Route
+												path='/focus-bank/:id/loan-requests'
+												element={<LoanRequests />}
+											/>
 											<Route
 												path='/focus-bank/:id/manage'
 												element={<BankManage />}

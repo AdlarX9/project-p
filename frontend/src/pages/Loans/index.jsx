@@ -1,18 +1,18 @@
 import './style.css'
+import { LoansComponent } from '@features/bank'
 import Back from '@components/Back'
 import Background from '@components/Background'
-import { ManagePanel } from '@features/bank'
 
-const BankManage = () => {
+const Loans = () => {
 	return (
-		<main className='bg-bank-red bg center-children oh'>
+		<main className='bg-bank-red bg center-children'>
 			<div className='back-wrapper'>
 				<Back />
 			</div>
 			<Background theme='red' img='dollarSign' />
-			<ManagePanel />
+			<LoansComponent />
 		</main>
 	)
 }
 
-export default BankManage
+export default Loans

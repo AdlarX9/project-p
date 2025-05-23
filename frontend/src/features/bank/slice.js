@@ -12,6 +12,7 @@ const bankSlice = createSlice({
 		},
 
 		reduxLogBank: (_, action) => {
+			saveStateBank(action.payload)
 			return action.payload
 		},
 

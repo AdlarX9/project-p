@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { getToken, getUser } from '@redux/selectors'
+import { getToken, getUser, getBank } from '@redux/selectors'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { logPersoInf, modifyUser } from '@features/authentication'
 import { reduxLogFriends } from '@features/messages'
 import { useEffect, useState } from 'react'
 import { reduxLogBank, modifyBank } from './slice'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const axiosTransfer = async ({ body, headers }) => {
 	return axios
@@ -298,4 +299,24 @@ export const useBankMoneyIn = () => {
 	}
 
 	return { bankMoneyIn, ...mutation }
+}
+
+export const useFindBank = () => {
+	const { id } = useParams()
+	const bankState = useSelector(getBank)
+	const navigate = useNavigate()
+
+	const [bankFound, setBankFound] = useState({})
+	useEffect(() => {
+		if (bankState?.banks) {
+			const bankFound = bankState.banks.find(bank => bank.id == id)
+			if (bankFound) {
+				setBankFound(bankFound)
+			} else {
+				navigate('/bank/banks')
+			}
+		}
+	}, [bankState])
+
+	return bankFound
 }

@@ -9,6 +9,8 @@ import BankGeneral from './components/tabs/BankGeneral'
 import Loans from './components/tabs/Loans'
 import BanksManagement from './components/tabs/BanksManagement'
 import BankSearch from './components/tabs/BankSearch'
+import LoanRequestsComponent from './components/LoanRequestsComponent'
+import LoansComponent from './components/LoansComponent'
 
 export {
 	Money,
@@ -21,7 +23,9 @@ export {
 	BankSearch,
 	ManagePanel,
 	OverviewBank,
-	CreateBank
+	CreateBank,
+	LoanRequestsComponent,
+	LoansComponent
 }
 
 export * from './hooks'

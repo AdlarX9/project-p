@@ -1,0 +1,14 @@
+.bank-panel-li {
+	background: transparent;
+	transition: .1s ease;
+}
+
+.bank-panel-li:hover {
+	background: rgba(0, 0, 0, 0.1);
+}
+
+.panel-li-btn {
+	width: 100%;
+	height: 100%;
+	text-align-last: left;
+}
