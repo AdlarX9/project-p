@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { logPersoInf, modifyUser } from '@features/authentication'
 import { reduxLogFriends } from '@features/messages'
 import { useEffect, useState } from 'react'
-import { reduxLogBank, modifyBank } from './slice'
+import { reduxLogBank, modifyBank, addLoan } from './slice'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const axiosTransfer = async ({ body, headers }) => {
@@ -319,4 +319,37 @@ export const useFindBank = () => {
 	}, [bankState])
 
 	return bankFound
+}
+
+const axiosApproveLoanRequest = async (loanRequestId, interestRate, token) => {
+	return axios
+		.post(
+			process.env.MAIN_URL + '/api/bank/accept_loan/' + loanRequestId,
+			{ interestRate },
+			{ headers: { Authorization: token } }
+		)
+		.then(response => response.data)
+		.catch(error => {
+			return error.response?.data?.message || error.message
+		})
+}
+
+export const useApproveLoanRequest = () => {
+	const token = useSelector(getToken)
+	const dispatch = useDispatch()
+
+	const mutation = useMutation({
+		mutationKey: ['approveLoanRequest'],
+		mutationFn: ({ loanRequestId, interestRate }) =>
+			axiosApproveLoanRequest(loanRequestId, interestRate, token),
+		onSuccess: data => {
+			dispatch(addLoan(data))
+		}
+	})
+
+	const approveLoanRequest = async (loanRequestId, interestRate) => {
+		return mutation.mutateAsync({ loanRequestId, interestRate })
+	}
+
+	return { approveLoanRequest, ...mutation }
 }

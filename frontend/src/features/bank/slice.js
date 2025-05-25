@@ -48,10 +48,26 @@ const bankSlice = createSlice({
 			const newState = { ...currentState, banks }
 			saveStateBank(newState)
 			return newState
+		},
+
+		addLoan: (state, action) => {
+			const bank = state.banks.find(bank => bank.id === action.payload.bankId)
+			if (bank) {
+				if (!bank.loan_requests) {
+					bank.loan_requests = []
+				}
+				bank.loan_requests = bank.loan_requests.filter(
+					loanRequest => loanRequest.id !== action.payload.loanRequestId
+				)
+				if (!bank.loans) bank.loans = []
+				bank.loans.push(JSON.parse(action.payload.loan))
+			}
+			saveStateBank(state)
+			return state
 		}
 	}
 })
 
-export const { reduxAddBank, reduxLogBank, reduxRemoveBank, logBankOut, modifyBank } =
+export const { reduxAddBank, reduxLogBank, reduxRemoveBank, logBankOut, modifyBank, addLoan } =
 	bankSlice.actions
 export default bankSlice.reducer

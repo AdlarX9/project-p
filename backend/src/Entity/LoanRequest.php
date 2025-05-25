@@ -26,7 +26,6 @@ class LoanRequest
 
     #[ORM\ManyToOne(inversedBy: 'loanRequests')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['getBank'])]
     private ?User $applicant = null;
 
     #[ORM\Column(type: Types::INTEGER)]

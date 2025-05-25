@@ -1,6 +1,6 @@
 .bank-panel-li {
 	background: transparent;
-	transition: .1s ease;
+	transition: 0.1s ease;
 }
 
 .bank-panel-li:hover {

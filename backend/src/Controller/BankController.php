@@ -127,12 +127,29 @@ final class BankController extends AbstractController
 
 
     #[Route('/get', name: 'get_banks', methods: ['GET'])]
-    public function getBanks(SerializerInterface $serializer): JsonResponse {
+    public function getBanks(
+        SerializerInterface $serializer,
+        LoanRequestRepository $loanRequestRepository
+    ): JsonResponse {
         $user = $this->getUser();
 
         $context = SerializationContext::create()->setGroups(['getBank']);
-        $jsonUser = $serializer->serialize($user, 'json', $context);
-        return new JsonResponse($jsonUser, Response::HTTP_OK, [], true);
+        $jsonBanks = $serializer->serialize($user, 'json', $context);
+
+        $banks = json_decode($jsonBanks, true);
+
+        foreach ($banks['banks'] as &$bank) {
+            foreach ($bank['loan_requests'] as &$loanRequest) {
+                $loanRequestEntity = $loanRequestRepository->find($loanRequest['id']);
+                $loanRequest['applicant'] = [
+                    'id' => $loanRequestEntity->getApplicant()->getId(),
+                    'name' => $loanRequestEntity->getApplicant()->getUsername()
+                ];
+            }
+        }
+        unset($bank);
+
+        return new JsonResponse($banks, Response::HTTP_OK, [], false);
     }
 
 
@@ -182,29 +199,36 @@ final class BankController extends AbstractController
 
 
 
-    #[Route('/accept_loan', name: 'acceptLoan', methods: ['POST'])]
+    #[Route('/accept_loan/{id}', name: 'acceptLoan', methods: ['POST'])]
     public function acceptLoan(
+        int $id,
         Request $request,
         EntityManagerInterface $entityManager,
         LoanRequestRepository $loanRequestRepository,
-        BankRepository $bankRepository
+        PublisherInterface $publisher,
+        SerializerInterface $serializer
     ): JsonResponse {
         $user = $this->getUser();
         $data = $request->toArray();
 
-        $loanRequestId = $data['loanRequestId'];
         $interestRate = $data['interestRate'];
-        $loanRequest = $loanRequestRepository->find($loanRequestId);
+        $loanRequest = $loanRequestRepository->find($id);
 
         if ($interestRate > $loanRequest->getInterestRate()) {
-            return new JsonResponse(['error' => 'Interest rate cannot be higher than the requested one'], 400);
+            return new JsonResponse(['message' => 'Interest rate cannot be higher than the requested one'], 400);
         }
 
         $loan = new Loan();
         $loanRequest->getBank()->addLoan($loan);
-        $user->addLoan($loan);
+        $applicant = $loanRequest->getApplicant();
+        $applicant->addLoan($loan);
+
+        $end = new \DateTime();
+        $interval = new \DateInterval("P{$loanRequest->getDuration()}W");
+        $end->add($interval);
         $loan->setStart(new \DateTime());
-        $loan->setDeadline($loanRequest->getDuration());
+        $loan->setDeadline($end);
+
         $loan->setAmount($loanRequest->getAmount());
         $loan->setRepaid(0);
         $loan->setInterestRate($interestRate);
@@ -215,7 +239,14 @@ final class BankController extends AbstractController
         $entityManager->remove($loanRequest);
         $entityManager->flush();
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        Functions::postNotification($publisher, $entityManager, $user, 'Loan', "You approved a loan request from {$applicant->getUsername()}");
+
+        Functions::postNotification($publisher, $entityManager, $applicant, 'Loan', "The bank {$loan->getBank()->getName()} approved your loan request");
+
+        $context = SerializationContext::create()->setGroups(['getBank']);
+        $jsonLoan = $serializer->serialize($loan, 'json', $context);
+
+        return new JsonResponse(['status' => 'success', 'loan' => $jsonLoan, 'bankId' => $loan->getBank()->getId(), 'loanRequestId' => $id], Response::HTTP_OK, [], false);
     }
 
 

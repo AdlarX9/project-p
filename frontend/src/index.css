@@ -411,10 +411,18 @@ html {
 	max-width: 80%;
 }
 
+.max-100 {
+	max-width: 100%;
+}
+
 .tac {
 	text-align: center;
 }
 
 .oh {
 	overflow: hidden;
+}
+
+.border-box {
+	box-sizing: border-box;
 }

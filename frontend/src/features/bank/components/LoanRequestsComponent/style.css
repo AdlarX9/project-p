@@ -1,0 +1,28 @@
+.loan-requests-component {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.loan-requests-list {
+	height: calc(100svh - 25rem);
+}
+
+.loan-request-item {
+	display: flex;
+	flex-direction: column;
+}
+
+.loan-request-core {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.loan-request-details-core {
+	word-break: break-word;
+}
+
+.popup-loan-request {
+	max-height: calc(100svh - 70rem);
+}
