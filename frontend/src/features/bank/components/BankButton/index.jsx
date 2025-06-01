@@ -9,7 +9,7 @@ const BankButton = () => {
 	return (
 		<MotionLink
 			className='bank-button int-btn p-20 bg-red'
-			to='/bank/general'
+			to='/bank/banks'
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			whileHover={{ scale: 1.05 }}

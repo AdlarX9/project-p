@@ -27,16 +27,12 @@ const NavBar = () => {
 
 const tabs = [
 	{
-		name: 'General',
-		to: '/general'
+		name: 'Banks',
+		to: '/banks'
 	},
 	{
 		name: 'Loans',
 		to: '/loans'
-	},
-	{
-		name: 'Banks',
-		to: '/banks'
 	},
 	{
 		name: 'Search',

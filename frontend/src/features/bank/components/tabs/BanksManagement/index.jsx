@@ -41,6 +41,7 @@ const BanksManagement = () => {
 								key={index}
 								className='no-link cartoon-txt p-20 shadowed br-20 m-0 bg-blue btn-your-bank c-pointer'
 								to={`/focus-bank/${bank.id}/manage`}
+								layoutId={index}
 							>
 								<img src={Bank} alt='bank' draggable={false} />
 								<span>

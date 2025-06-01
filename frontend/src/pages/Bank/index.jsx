@@ -33,23 +33,18 @@ const Bank = () => {
 			</div>
 			<NavBar />
 			<AnimatePresence>
-				{currentTab === 'general' && (
-					<Wrapper layoutId='1'>
-						<BankGeneral />
-					</Wrapper>
-				)}
 				{currentTab === 'loans' && (
-					<Wrapper layoutId='2'>
+					<Wrapper layoutId='1'>
 						<Loans />
 					</Wrapper>
 				)}
 				{currentTab === 'banks' && (
-					<Wrapper layoutId='3'>
+					<Wrapper layoutId='2'>
 						<BanksManagement />
 					</Wrapper>
 				)}
 				{currentTab === 'search' && (
-					<Wrapper layoutId='4'>
+					<Wrapper layoutId='3'>
 						<BankSearch />
 					</Wrapper>
 				)}

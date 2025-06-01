@@ -1,0 +1,4 @@
+.loans-wrapper {
+	height: calc(100svh - 35rem);
+	width: 80vw;
+}

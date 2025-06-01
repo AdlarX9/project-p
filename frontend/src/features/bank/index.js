@@ -5,7 +5,6 @@ import NavBar from './components/NavBar'
 import ManagePanel from './components/ManagePanel'
 import OverviewBank from './components/OverviewBank'
 import CreateBank from './components/CreateBank'
-import BankGeneral from './components/tabs/BankGeneral'
 import Loans from './components/tabs/Loans'
 import BanksManagement from './components/tabs/BanksManagement'
 import BankSearch from './components/tabs/BankSearch'
@@ -17,7 +16,6 @@ export {
 	TransfersMenu,
 	BankButton,
 	NavBar,
-	BankGeneral,
 	Loans,
 	BanksManagement,
 	BankSearch,

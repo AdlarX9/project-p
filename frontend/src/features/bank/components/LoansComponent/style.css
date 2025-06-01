@@ -1,0 +1,13 @@
+.loans-component-wrapper {
+	height: calc(100svh - 15rem);
+}
+
+.loan-component {
+	width: 50rem;
+	display: block;
+	text-align: left;
+}
+
+.progress-bar {
+	width: 40rem;
+}

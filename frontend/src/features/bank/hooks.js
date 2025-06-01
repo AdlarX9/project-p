@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { logPersoInf, modifyUser } from '@features/authentication'
 import { reduxLogFriends } from '@features/messages'
 import { useEffect, useState } from 'react'
-import { reduxLogBank, modifyBank, addLoan } from './slice'
+import { reduxLogBank, modifyBank, addLoan, reduxAddBank } from './slice'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const axiosTransfer = async ({ body, headers }) => {
@@ -352,4 +352,38 @@ export const useApproveLoanRequest = () => {
 	}
 
 	return { approveLoanRequest, ...mutation }
+}
+
+const axiosCreateBank = async (body, token) => {
+	return axios
+		.post(process.env.MAIN_URL + '/api/bank/create_bank', body, {
+			headers: {
+				Authorization: token
+			}
+		})
+		.then(response => response.data)
+		.catch(error => {
+			return error.response?.data?.message || error.message
+		})
+}
+
+export const useCreateBank = () => {
+	const token = useSelector(getToken)
+	const dispatch = useDispatch()
+
+	const mutation = useMutation({
+		mutationKey: ['createBank'],
+		mutationFn: body => axiosCreateBank(body, token),
+		onSuccess: data => {
+			if (data?.bank) {
+				dispatch(reduxAddBank(data.bank))
+			}
+		}
+	})
+
+	const createBank = async (bankName, bankDescription) => {
+		return mutation.mutateAsync({ bankName, bankDescription })
+	}
+
+	return { createBank, ...mutation }
 }

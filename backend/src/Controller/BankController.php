@@ -104,24 +104,35 @@ final class BankController extends AbstractController
 
 
     #[Route('/create_bank', name: 'create_bank', methods: ['POST'])]
-    public function createBank(Request $request, EntityManagerInterface $entityManager): JsonResponse {
+    public function createBank(
+            Request $request,
+            SerializerInterface $serializer,
+            EntityManagerInterface $entityManager
+        ): JsonResponse {
         $user = $this->getUser();
 
         $data = $request->toArray();
         $bankName = $data['bankName'];
+        $bankDescription = $data['bankDescription'];
         if (empty($bankName)) {
-            return new JsonResponse(['error' => 'Bank name cannot be empty'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['message' => 'Bank name cannot be empty'], Response::HTTP_BAD_REQUEST);
         }
 
         $bank = new Bank();
         $bank->setName($bankName);
+        $bank->setDescription($bankDescription);
         $bank->setMoney(0);
         $user->addBank($bank);
+        $bank->setCreatedAt(new \DateTimeImmutable());
         $entityManager->persist($user);
         $entityManager->persist($bank);
         $entityManager->flush();
 
-        return new JsonResponse([], Response::HTTP_CREATED);
+        $context = SerializationContext::create()->setGroups(['getBank']);
+        $jsonBank = $serializer->serialize($bank, 'json', $context);
+        $associativeBank = json_decode($jsonBank, true);
+
+        return new JsonResponse(['status' => 'success', 'bank' => $associativeBank], Response::HTTP_CREATED);
     }
 
 
@@ -129,7 +140,8 @@ final class BankController extends AbstractController
     #[Route('/get', name: 'get_banks', methods: ['GET'])]
     public function getBanks(
         SerializerInterface $serializer,
-        LoanRequestRepository $loanRequestRepository
+        LoanRequestRepository $loanRequestRepository,
+        LoanRepository $loanRepository
     ): JsonResponse {
         $user = $this->getUser();
 
@@ -146,8 +158,24 @@ final class BankController extends AbstractController
                     'name' => $loanRequestEntity->getApplicant()->getUsername()
                 ];
             }
+            foreach ($bank['loans'] as &$loan) {
+                $loanEntity = $loanRepository->find($loan['id']);
+                $loan['poor'] = [
+                    'id' => $loanEntity->getPoor()->getId(),
+                    'name' => $loanEntity->getPoor()->getUsername()
+                ];
+            }
         }
         unset($bank);
+
+        foreach ($banks['loans'] as &$loan) {
+            $realLoan = $loanRepository->find($loan['id']);
+            $loan['bank'] = [
+                'id' => $realLoan->getBank()->getId(),
+                'name' => $realLoan->getBank()->getName()
+            ];
+        }
+        unset($loan);
 
         return new JsonResponse($banks, Response::HTTP_OK, [], false);
     }

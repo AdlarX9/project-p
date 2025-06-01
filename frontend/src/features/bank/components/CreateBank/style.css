@@ -1,0 +1,9 @@
+.create-bank-title {
+	position: absolute;
+	top: 5rem;
+	margin: 0;
+}
+
+.create-bank-field {
+	width: 50rem !important;
+}

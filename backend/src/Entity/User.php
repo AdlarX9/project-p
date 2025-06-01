@@ -87,6 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Loan>
      */
     #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'poor')]
+    #[Groups(['getBank'])]
     private Collection $loans;
 
     /**

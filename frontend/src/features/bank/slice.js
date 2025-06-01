@@ -6,9 +6,10 @@ const bankSlice = createSlice({
 	initialState: {},
 	reducers: {
 		reduxAddBank: (currentState, action) => {
-			const bank = [...currentState, action.payload]
-			saveStateBank(bank)
-			return bank
+			const banks = [...currentState.banks, action.payload]
+			const newState = { ...currentState, banks }
+			saveStateBank(newState)
+			return newState
 		},
 
 		reduxLogBank: (_, action) => {
@@ -17,9 +18,9 @@ const bankSlice = createSlice({
 		},
 
 		reduxRemoveBank: (currentState, action) => {
-			const bank = currentState.filter(friend => friend.id !== action.payload.id)
-			saveStateBank(bank)
-			return bank
+			const banks = currentState.banks.filter(bank => bank.id !== action.payload.id)
+			saveStateBank({ ...currentState, banks })
+			return { ...currentState, banks }
 		},
 
 		logBankOut: () => {

@@ -362,6 +362,38 @@ html {
 	background: var(--bank-red);
 }
 
+.var-red {
+	color: var(--red);
+}
+
+.var-blue {
+	color: var(--blue);
+}
+
+.var-green {
+	color: var(--green);
+}
+
+.var-yellow {
+	color: var(--yellow);
+}
+
+.var-active-green {
+	color: var(--active-green);
+}
+
+.var-purple {
+	color: var(--purple);
+}
+
+.var-gray {
+	color: var(--gray);
+}
+
+.var-bank-red {
+	color: var(--bank-red);
+}
+
 .p-20 {
 	padding: 2rem;
 }
