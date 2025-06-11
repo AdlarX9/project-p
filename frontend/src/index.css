@@ -39,6 +39,18 @@ html {
 	z-index: 0;
 }
 
+.check-paragraph {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 0.6rem;
+	left: 50%;
+	transform: translateX(-50%);
+	font-family: arial, sans-serif;
+	font-size: 1.3rem;
+	color: rgba(255, 255, 255, 0.3);
+}
+
 .int-btn {
 	border-radius: 2rem;
 	border: 0.4rem black solid;

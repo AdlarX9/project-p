@@ -5,3 +5,4 @@ mercure_config
 .DS_Store
 *.DS_Store
 *.vscode
+*.code-workspace

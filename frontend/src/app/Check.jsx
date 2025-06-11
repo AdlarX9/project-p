@@ -13,7 +13,7 @@ const Check = () => {
 		}
 	}, [isLogged])
 
-	return null
+	return <p className='check-paragraph'>Project P — Beta version — Copyright (c) 2025 AdlarX9</p>
 }
 
 export default Check
