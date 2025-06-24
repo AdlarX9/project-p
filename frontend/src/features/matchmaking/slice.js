@@ -33,7 +33,8 @@ const matchmakingSlice = createSlice({
 				...prevState,
 				state: 'connecting',
 				role: action.payload.role,
-				matchedUsername: action.payload.matchedUsername
+				matchedUsername: action.payload.matchedUsername,
+				gameId: action.payload.gameId
 			}
 		},
 

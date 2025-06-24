@@ -1,10 +1,10 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { getMatchmakingId, getToken, getUser } from '@redux/selectors'
+import { getMatchmakingId, getMatchmaking, getToken, getUser } from '@redux/selectors'
 import {
 	matchmakingConnected,
 	matchmakingConnecting,
@@ -27,7 +27,6 @@ const axiosPlay = async token => {
 		)
 		.then(response => response.data)
 		.catch(error => {
-			console.log(error.response.data)
 			throw new Error(error.message)
 		})
 }
@@ -62,6 +61,9 @@ const handleUpdate = ({ type, parsedData, dispatch, user }) => {
 			break
 		case 'ping':
 			axiosPong(user)
+			break
+		case 'nothing':
+			dispatch(matchmakingNothing())
 			break
 		default:
 			break
@@ -157,11 +159,113 @@ export const useHandleConnected = () => {
 export const useHandleDisconnected = () => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const { removeTopic } = useMercureContext()
+	const { username } = useSelector(getUser)
 
 	const handleDisconnected = () => {
+		const topic = process.env.MAIN_URL + '/' + username + '/matchmaking_update'
+		removeTopic(topic)
 		navigate('/')
 		dispatch(matchmakingNothing())
 	}
 
 	return handleDisconnected
+}
+
+const axiosGetTime = async (token, gameId) => {
+	return axios
+		.get(process.env.MAIN_URL + '/api/matchmaking/get_time/' + gameId, {
+			headers: {
+				Authorization: token
+			}
+		})
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error(error.response.data.message)
+		})
+}
+
+export const useGetTime = () => {
+	const token = useSelector(getToken)
+	const [time, setTime] = useState(null)
+	const { gameId } = useSelector(getMatchmaking)
+
+	const { data, ...query } = useQuery({
+		queryKey: ['getTime'],
+		queryFn: () => axiosGetTime(token, gameId)
+	})
+
+	useEffect(() => {
+		if (data?.timeLeft) {
+			setTime(data.timeLeft)
+		}
+	}, [data])
+
+	return { ...query, data, time, setTime }
+}
+
+const axiosGameExpired = async (token, gameId) => {
+	return axios
+		.post(
+			process.env.MAIN_URL + '/api/matchmaking/game_expired',
+			{ gameId },
+			{
+				headers: {
+					Authorization: token
+				}
+			}
+		)
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error(error.response.data.message)
+		})
+}
+
+export const useGameExpired = () => {
+	const token = useSelector(getToken)
+	const { gameId } = useSelector(getMatchmaking)
+
+	const mutation = useMutation({
+		mutationKey: 'gameExpired',
+		mutationFn: () => axiosGameExpired(token, gameId)
+	})
+
+	const gameExpired = () => {
+		mutation.mutate()
+	}
+
+	return { gameExpired }
+}
+
+const axiosLoseGame = async (token, gameId) => {
+	return axios
+		.post(
+			process.env.MAIN_URL + '/api/matchmaking/lose_game',
+			{ gameId },
+			{
+				headers: {
+					Authorization: token
+				}
+			}
+		)
+		.then(response => response.data)
+		.catch(error => {
+			throw new Error(error.response.data.message)
+		})
+}
+
+export const useLoseGame = () => {
+	const token = useSelector(getToken)
+	const { gameId } = useSelector(getMatchmaking)
+
+	const mutation = useMutation({
+		mutationKey: 'loseGame',
+		mutationFn: () => axiosLoseGame(token, gameId)
+	})
+
+	const loseGame = () => {
+		mutation.mutate()
+	}
+
+	return { loseGame, ...mutation }
 }

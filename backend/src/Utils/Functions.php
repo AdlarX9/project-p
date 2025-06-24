@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Entity\Notification;
 use App\Entity\User;
+use App\Service\GameManager;
 use Symfony\Component\Mercure\Update;
 
 class Functions {
@@ -33,7 +34,15 @@ class Functions {
         $mercurePublisher($update);
 	}
 
-    public static function sendMatchmakingUpdate($mercurePublisher, $username, $message, $messageId = '', $role = '', $matchedUsername = ''): void {
+    public static function sendMatchmakingUpdate(
+            $mercurePublisher,
+            $username,
+            $message,
+            $messageId = '',
+            $role = '',
+            $matchedUsername = '',
+            $gameId = ''
+        ): void {
         // $role = 'caller' ou 'receiver'
 
         $update = [
@@ -41,7 +50,8 @@ class Functions {
             'type' => 'matchmakingUpdate',
             'messageId' => $messageId,
             'role' => $role,
-            'matchedUsername' => $matchedUsername
+            'matchedUsername' => $matchedUsername,
+            'gameId' => $gameId
         ];
 
         $jsonUpdate = json_encode($update);
@@ -66,14 +76,6 @@ class Functions {
         $update = new Update($_ENV['MAIN_URL'] . '/' . $username . '/' . $direction . '_id', $jsonUpdate);
         $mercurePublisher($update);
 	}
-
-    public static function initializeGame(User $user1, User $user2, $mercurePublisher): bool {
-        // Envoyer les notifications de connexions
-        Functions::sendMatchmakingUpdate($mercurePublisher, $user1->getUsername(), 'connecting', '', 'caller', $user2->getUsername());
-        Functions::sendMatchmakingUpdate($mercurePublisher, $user2->getUsername(), 'connecting', '', 'receiver', $user1->getUsername());
-
-        return true;
-    }
 
     public static function sendMessageUpdate($mercurePublisher, $user, $message, $action): void  {
         // $action = 'receive' ou 'delete'

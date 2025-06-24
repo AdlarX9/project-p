@@ -6,6 +6,10 @@ use App\Repository\LoanRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
+use Symfony\Component\Scheduler\RecurringMessage;
+use Symfony\Component\Scheduler\Scheduler;
+use Symfony\Component\Scheduler\Trigger\CronExpressionTrigger;
+use \Symfony\Component\Scheduler\Message\CommandMessage;
 
 #[ORM\Entity(repositoryClass: LoanRepository::class)]
 class Loan
@@ -44,6 +48,53 @@ class Loan
     #[ORM\Column]
     #[Groups(['getBank'])]
     private ?float $interestRate = null;
+
+    // public function scheduleLoanRepaymentJob(Scheduler $scheduler): void 
+    // {
+    //     $startDate = $this->getStart();
+
+    //     $minute = $startDate->format('i');
+    //     $hour = $startDate->format('H');
+    //     $dayOfWeek = $startDate->format('w');
+
+    //     $cron = sprintf('%s %s * * %s', $minute, $hour, $dayOfWeek);
+
+    //     // Utilise ton message personnalisé
+    //     $message = new LoanRepaymentMessage($this->getId());
+
+    //     $scheduler->add(
+    //         new RecurringMessage(
+    //             $message,
+    //             new CronExpressionTrigger($cron)
+    //         )
+    //     );
+    // }
+
+    private function getWeeksLeft(): int {
+        $now = new \DateTimeImmutable();
+        $seconds = $this->deadline->getTimestamp() - $now->getTimestamp();
+        $weeks = $seconds / (7 * 24 * 60 * 60); // 1 week = 604800 seconds
+        $weeksInt = (int) round($weeks);
+        return $weeksInt;
+    }
+
+    public function repay(): int {
+        $amountLeft = $this->amount - $this->repaid;
+        $amountLeft *= 1 + $this->interestRate / 100;
+        $weeklyAmount = $amountLeft / $this->getWeeksLeft();
+
+        $this->repaid += $weeklyAmount;
+        if ($this->repaid > $this->amount) {
+            $this->repaid = $this->amount;
+        }
+
+        return $weeklyAmount;
+    }
+
+    public function mustDisappear(): bool
+    {
+        return $this->getWeeksLeft() == 0;
+    }
 
     public function getId(): ?int
     {

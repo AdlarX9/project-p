@@ -284,6 +284,32 @@ export const PeerContextProvider = ({ children }) => {
 		handleDisconnected()
 	}
 
+	// --- Handle window refreshing and closing events ---
+
+	const handleWindowUnload = () => {
+		if (matchmakingState === 'connected') {
+			navigator.sendBeacon(
+				process.env.MAIN_URL + '/api/public/lose_game_refresh',
+				JSON.stringify({
+					token: token,
+					gameId: matchmaking.gameId
+				})
+			)
+		}
+	}
+
+	useEffect(() => {
+		window.addEventListener('beforeunload', handleWindowUnload)
+	})
+
+	// Safety
+
+	useEffect(() => {
+		if (matchmakingState === 'nothing') {
+			closeConnection()
+		}
+	}, [matchmakingState])
+
 	// --- Truly initialize game ---
 
 	// Script de l'initialisation de la partie

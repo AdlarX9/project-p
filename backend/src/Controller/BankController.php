@@ -28,9 +28,7 @@ final class BankController extends AbstractController
     public function transfer(
         Request $request,
         UserRepository $userRepository,
-        EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
-        PublisherInterface $publisher,
         BankManager $bankManager
     ): JsonResponse {
         $user = $this->getUser();
@@ -66,8 +64,6 @@ final class BankController extends AbstractController
         $context = SerializationContext::create()->setGroups(['getUser']);
         $jsonUser = $serializer->serialize($user, 'json', $context);
 
-        Functions::postNotification($publisher, $entityManager, $user, 'transfer', "You transfered \${$amount} to {$friend->getUsername()}");
-        Functions::postNotification($publisher, $entityManager, $friend, $user->getUsername(), "You received \${$amount} from {$friend->getUsername()}");
         return new JsonResponse($jsonUser, 200, [], true);
     }
 

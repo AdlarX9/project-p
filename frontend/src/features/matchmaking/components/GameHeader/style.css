@@ -1,0 +1,13 @@
+.game-header {
+	display: flex;
+	width: calc(80vw - 30rem);
+	justify-content: space-between;
+	align-items: center;
+}
+
+.game-header-chrono-ff {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}

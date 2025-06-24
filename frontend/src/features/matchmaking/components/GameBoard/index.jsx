@@ -1,11 +1,8 @@
 import './style.css'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useSelector } from 'react-redux'
 import { getMatchmaking, getSettings } from '@redux/selectors'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getUser } from '@redux/selectors'
-import { usePeerContext } from '@contexts/PeerContext'
 import TextualChat from '../TextualChat'
 import CallComponent from '../CallComponent'
 

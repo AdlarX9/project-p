@@ -4,6 +4,7 @@ namespace App\MessageHandler;
 
 use App\Message\RedisStreamMessage;
 use App\Repository\UserRepository;
+use App\Service\GameManager;
 use App\Utils\Functions;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mercure\PublisherInterface;
@@ -15,19 +16,17 @@ use Symfony\Contracts\Cache\ItemInterface;
 #[AsMessageHandler]
 final class RedisStreamMessageHandler
 {
-    private $cache;
-    private $redis;
-    private $userRepository;
-    private $mercureHub;
-    private $logger;
+    private Redis $redis;
 
-    public function __construct(CacheInterface $cacheRedis, UserRepository $userRepository, PublisherInterface $mercureHub, LoggerInterface $logger) {
+    public function __construct(
+        private CacheInterface $cache,
+        private UserRepository $userRepository,
+        private PublisherInterface $mercureHub,
+        private LoggerInterface $logger,
+        private GameManager $gameManager
+    ) {
         $this->redis = new Redis();
         $this->redis->connect('redis', 6379);
-        $this->cache = $cacheRedis;
-        $this->userRepository = $userRepository;
-        $this->mercureHub = $mercureHub;
-        $this->logger = $logger;
     }
 
     public function __invoke(RedisStreamMessage $message): void {
@@ -83,7 +82,8 @@ final class RedisStreamMessageHandler
                     $this->redis->xAck('matchmaking_stream', 'matchmaking_group', [$matchedId]);
                     $this->redis->xDel('matchmaking_stream', [$matchedId]);
                     $this->logger->info('delete message ' . $matchedId . 'from redis matchmaking_stream');
-                    Functions::initializeGame($receivedUser, $matchedUser, $this->mercureHub);
+                    $this->gameManager->initializeGame($receivedUser, $matchedUser);
+
                     break;
                 } else if ($attempts == $maxAttempts) {
                     $messageId = $this->redis->xAdd('matchmaking_stream', '*', $message->getData());

@@ -8,7 +8,7 @@ use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
 
-#[AsSchedule]
+#[AsSchedule('payment')]
 class PaymentProvider implements ScheduleProviderInterface
 {
 	private ?Schedule $schedule = null;

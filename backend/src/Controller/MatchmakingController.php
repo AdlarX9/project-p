@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Message\RedisStreamMessage;
+use App\Repository\UserRepository;
+use App\Service\BankManager;
+use App\Service\GameManager;
 use App\Utils\Functions;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -96,5 +99,57 @@ final class MatchmakingController extends AbstractController
         $data = json_decode($request->getContent(), true);
         Functions::sendMatchmakingUpdate($publisher, $data['peerUsername'], 'send', $data['id']);
         return new JsonResponse(['message' => 'PeerId sent successfully!'], Response::HTTP_NO_CONTENT);
+    }
+
+
+
+    #[Route('/game_expired', name: 'gameExpired', methods: ['POST'])]
+    public function gameExpired(Request $request, GameManager $gameManager, BankManager $bankManager, UserRepository $userRepository): JsonResponse {
+        $data = $request->toArray();
+        $gameId = $data['gameId'] ?? '';
+
+        $game = $gameManager->getGame($gameId);
+        if ($gameManager->isGameExpired($gameId)) {
+            $bankManager->transferToBank($userRepository->getUserByUsername($game['user1']), $bankManager->getCentralBank(), 200);
+            $bankManager->transferToBank($userRepository->getUserByUsername($game['user2']), $bankManager->getCentralBank(), 200);
+            return new JsonResponse(['message' => 'Game is done'], Response::HTTP_OK);
+        }
+
+        return new JsonResponse(['message' => 'Game is still active'], Response::HTTP_TOO_EARLY);
+    }
+
+
+
+    #[Route('/lose_game', name: 'loseGame', methods: ['POST'])]
+    public function loseGame(Request $request, GameManager $gameManager, BankManager $bankManager, UserRepository $userRepository): JsonResponse {
+        $data = $request->toArray();
+        $gameId = $data['gameId'] ?? '';
+        $user = $this->getUser();
+        $trueUser = $userRepository->find($user->getId());
+
+        if (!$gameManager->isGameExpired($gameId)) {
+            $receiverName = $gameManager->getGameReceiver($gameId, $trueUser);
+            $receiver = $userRepository->getUserByUsername($receiverName);
+            $gameManager->expireGame($gameId);
+            $bankManager->transfer($trueUser, $receiver, 50);
+            return new JsonResponse(['message' => 'You successfully lost the game (sarcasm)'], Response::HTTP_OK);
+        }
+
+        return new JsonResponse(['message' => 'Game is not active anymore'], Response::HTTP_OK);
+    }
+
+
+
+    #[Route('/get_time/{gameId}', name: 'getTime', methods: ['GET'])]
+    public function getTime(GameManager $gameManager, string $gameId): JsonResponse {
+        $game = $gameManager->getGame($gameId);
+        if ($game) {
+            $timeLeft = 300 - (time() - $game['startTime']);
+            return new JsonResponse(['timeLeft' => max(0, $timeLeft)], Response::HTTP_OK);
+        }
+
+        $games = $gameManager->getGameIds();
+
+        return new JsonResponse(['message' => 'Game not found', 'games' => $games], Response::HTTP_NOT_FOUND);
     }
 }

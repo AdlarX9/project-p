@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Service\BankManager;
+use App\Service\GameManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -108,5 +111,36 @@ class PublicController extends AbstractController
         return new JsonResponse([
             'token' => $newJwtToken
         ]);
+    }
+
+
+
+    #[Route('/lose_game_refresh', name: 'loseGameRefresh', methods: ['POST'])]
+    public function loseGameRefresh(
+        Request $request,
+        JWTTokenManagerInterface $JWTManager,
+        UserRepository $userRepository,
+        GameManager $gameManager,
+        BankManager $bankManager
+    ): JsonResponse {
+        $data = $request->toArray();
+        $gameId = $data['gameId'];
+        $token = $data['token'];
+        $token = substr($token, 7);
+
+        $userData = $JWTManager->parse($token);
+        $username = $userData['username'];
+        $user = $userRepository->getUserByUsername($username);
+
+        $game = $gameManager->getGame($gameId);
+        if ($game) {
+            $receiverName = $gameManager->getGameReceiver($gameId, $user);
+            $receiver = $userRepository->getUserByUsername($receiverName);
+            $gameManager->expireGame($gameId);
+            $bankManager->transfer($user, $receiver, 60); // Quit like a man!
+            return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        }
+
+        return new JsonResponse([], Response::HTTP_NOT_FOUND);
     }
 }
