@@ -49,26 +49,22 @@ class Loan
     #[Groups(['getBank'])]
     private ?float $interestRate = null;
 
-    // public function scheduleLoanRepaymentJob(Scheduler $scheduler): void 
-    // {
-    //     $startDate = $this->getStart();
+    public function getInterval(): int {
+        return 604_800_000; // 1 week in milliseconds
+    }
 
-    //     $minute = $startDate->format('i');
-    //     $hour = $startDate->format('H');
-    //     $dayOfWeek = $startDate->format('w');
+    public function getWeeklyRepayment(): int {
+        $repayment = $this->amount * $this->interestRate / 100 / (1 - (1 + $this->interestRate / 100) ** -$this->getDuration());
+        $repayment = (int) round($repayment);
+        return $repayment;
+    }
 
-    //     $cron = sprintf('%s %s * * %s', $minute, $hour, $dayOfWeek);
-
-    //     // Utilise ton message personnalisé
-    //     $message = new LoanRepaymentMessage($this->getId());
-
-    //     $scheduler->add(
-    //         new RecurringMessage(
-    //             $message,
-    //             new CronExpressionTrigger($cron)
-    //         )
-    //     );
-    // }
+    public function getDuration(): int {
+        $seconds = $this->deadline->getTimestamp() - $this->start->getTimestamp();
+        $weeks = $seconds / (7 * 24 * 60 * 60); // 1 week = 604800 seconds
+        $weeksInt = (int) round($weeks);
+        return $weeksInt;
+    }
 
     private function getWeeksLeft(): int {
         $now = new \DateTimeImmutable();
@@ -76,19 +72,6 @@ class Loan
         $weeks = $seconds / (7 * 24 * 60 * 60); // 1 week = 604800 seconds
         $weeksInt = (int) round($weeks);
         return $weeksInt;
-    }
-
-    public function repay(): int {
-        $amountLeft = $this->amount - $this->repaid;
-        $amountLeft *= 1 + $this->interestRate / 100;
-        $weeklyAmount = $amountLeft / $this->getWeeksLeft();
-
-        $this->repaid += $weeklyAmount;
-        if ($this->repaid > $this->amount) {
-            $this->repaid = $this->amount;
-        }
-
-        return $weeklyAmount;
     }
 
     public function mustDisappear(): bool

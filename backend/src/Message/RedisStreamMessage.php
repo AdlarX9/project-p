@@ -4,11 +4,6 @@ namespace App\Message;
 
 final class RedisStreamMessage
 {
-    /*
-     * Add whatever properties and methods you need
-     * to hold the data for this message class.
-     */
-
     private $data;
 
     public function __construct($data)

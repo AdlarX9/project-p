@@ -41,8 +41,8 @@ class BankManager{
 		return $this->centralBank;
 	}
 
-	public function transfer(User $sender, User $receiver, int $amount): bool {
-		if ($sender->getMoney() < $amount) {
+	public function transfer(User $sender, User $receiver, int $amount, bool $force = false): bool {
+		if ($sender->getMoney() < $amount && !$force) {
 			return false;
 		}
 
@@ -58,7 +58,9 @@ class BankManager{
 			$this->entityManager,
 			$sender,
 			'transfer',
-			"You transfered \${$amount} to {$receiver->getUsername()}"
+			"You transfered \${$amount} to {$receiver->getUsername()}",
+			'addMoney',
+			-$amount
 		);
 
         Functions::postNotification(
@@ -66,7 +68,9 @@ class BankManager{
 			$this->entityManager,
 			$receiver,
 			$sender->getUsername(),
-			"You received \${$amount} from {$sender->getUsername()}"
+			"You received \${$amount} from {$sender->getUsername()}",
+			'addMoney',
+			$amount
 		);
 
 		return true;

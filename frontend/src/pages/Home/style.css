@@ -28,7 +28,8 @@
 .home-shop-button-wrapper {
 	align-self: end;
 	justify-self: end;
-	margin: 4rem;
+	margin: 2rem;
+	margin-right: 4rem;
 }
 
 .home-footer {

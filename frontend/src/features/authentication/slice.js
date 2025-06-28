@@ -40,6 +40,15 @@ const userSlice = createSlice({
 			return state
 		},
 
+		addMoney: (currentState, action) => {
+			const state = {
+				...currentState,
+				money: parseInt(currentState.money) + parseInt(action.payload)
+			}
+			saveStateUser(state)
+			return state
+		},
+
 		logUserOut: () => {
 			const state = {
 				friends: [],
@@ -52,5 +61,5 @@ const userSlice = createSlice({
 	}
 })
 
-export const { logUser, logPersoInf, logUserOut, modifyUser } = userSlice.actions
+export const { logUser, logPersoInf, logUserOut, modifyUser, addMoney } = userSlice.actions
 export default userSlice.reducer

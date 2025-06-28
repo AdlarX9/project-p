@@ -12,6 +12,7 @@ import {
 } from '@features/notifications'
 import { useMercureContext } from '@contexts/MercureContext'
 import { reduxAddFriend, reduxRemoveFriend } from '@features/friends'
+import { addMoney } from '@features/authentication'
 
 const axiosNotificationsGet = async token => {
 	return axios
@@ -60,6 +61,9 @@ const handleNotification = ({ type, parsedData, dispatch, user, removeNotificati
 				removeNotification(parsedData)
 				return
 			}
+			break
+		case 'addMoney':
+			dispatch(addMoney(parseInt(parsedData.target)))
 			break
 	}
 

@@ -20,6 +20,7 @@ const BankSearch = () => {
 
 	return (
 		<section className='bank-search-wrapper'>
+			<h1 className='title-txt m-20'>Bank Search</h1>
 			<motion.form className='bank-search-bar' onSubmit={handleSearch}>
 				<input
 					type='text'

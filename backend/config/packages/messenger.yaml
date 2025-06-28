@@ -11,3 +11,4 @@ framework:
 
         routing:
             App\Message\RedisStreamMessage: cache_redis
+            App\Message\PaymentMessage: cache_redis

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Bank;
 use App\Entity\Loan;
 use App\Entity\LoanRequest;
+use App\Message\PaymentMessage;
 use App\Repository\BankRepository;
 use App\Repository\LoanRepository;
 use App\Repository\LoanRequestRepository;
@@ -19,6 +20,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mercure\PublisherInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/bank')]
@@ -230,7 +233,8 @@ final class BankController extends AbstractController
         EntityManagerInterface $entityManager,
         LoanRequestRepository $loanRequestRepository,
         PublisherInterface $publisher,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        MessageBusInterface $bus
     ): JsonResponse {
         $user = $this->getUser();
         $data = $request->toArray();
@@ -262,6 +266,8 @@ final class BankController extends AbstractController
         $entityManager->persist($user);
         $entityManager->remove($loanRequest);
         $entityManager->flush();
+
+        $bus->dispatch(new PaymentMessage($loan->getId()), [new DelayStamp($loan->getInterval())]);
 
         Functions::postNotification($publisher, $entityManager, $user, 'Loan', "You approved a loan request from {$applicant->getUsername()}");
 

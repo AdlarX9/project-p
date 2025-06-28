@@ -43,6 +43,7 @@ final class MatchmakingController extends AbstractController
             'connection_time' => (new \DateTime())->format('Y-m-d\TH:i:sP'),
             'money' => $user->getMoney(),
             'username' => $user->getUsername(),
+            'id' => $user->getId(),
             'communicationPreference' => $user->getSettings()['communicationPreference'] ?? 'text'
         ];
         $this->bus->dispatch(new RedisStreamMessage(data: $data));
@@ -131,7 +132,7 @@ final class MatchmakingController extends AbstractController
             $receiverName = $gameManager->getGameReceiver($gameId, $trueUser);
             $receiver = $userRepository->getUserByUsername($receiverName);
             $gameManager->expireGame($gameId);
-            $bankManager->transfer($trueUser, $receiver, 50);
+            $bankManager->transfer($trueUser, $receiver, 50, true);
             return new JsonResponse(['message' => 'You successfully lost the game (sarcasm)'], Response::HTTP_OK);
         }
 
