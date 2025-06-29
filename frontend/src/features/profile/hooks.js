@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { getToken } from '@redux/selectors'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { logProfile, setMainColor } from './slice'
 
 const axiosGetProfile = async token => {
@@ -69,4 +69,35 @@ export const useSetColor = () => {
 	}
 
 	return { setColor, ...mutation }
+}
+
+const axiosGetPublicProfile = async username => {
+	if (!username) {
+		return null
+	}
+
+	return axios
+		.get(process.env.MAIN_URL + '/api/public/get_public_profile/' + username)
+		.then(data => data.data)
+		.catch(err => {
+			throw new Error(err.message)
+		})
+}
+
+export const useGetPublicProfile = username => {
+	const [profile, setProfile] = useState(null)
+
+	const { data, ...query } = useQuery({
+		queryKey: ['getPublicProfile', username],
+		queryFn: () => axiosGetPublicProfile(username),
+		enabled: !!username
+	})
+
+	useEffect(() => {
+		if (data?.id) {
+			setProfile(data)
+		}
+	}, [data])
+
+	return { profile, data, ...query }
 }

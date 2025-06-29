@@ -12,6 +12,7 @@ RUN apt-get install -y gnupg2 --fix-missing
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g mkcert
+ARG DOMAIN_NAME
 ENV DOMAIN_NAME=${DOMAIN_NAME}
 
 # Configurer SSL et génération de tickets
@@ -30,7 +31,7 @@ FROM node:20 AS peerjs-server
 WORKDIR /usr/local/project-p/peerjs-server
 RUN npm install peer -g
 EXPOSE 2021
-CMD peerjs --port 2021 --key peerjs --path /peer-server --allow-discovery --cors ${DOMAIN_NAME}
+CMD ["peerjs", "--port", "2021", "--key", "peerjs", "--path", "/peer-server", "--allow-discovery", "--cors", "${DOMAIN_NAME}"]
 
 
 # Coturn config
@@ -125,6 +126,7 @@ CMD ["php", "-S", "0.0.0.0:9000", "-t", "public"]
 FROM node:20 AS frontend
 WORKDIR /usr/local/project-p/frontend
 RUN npm install -g pnpm mkcert
+ARG DOMAIN_NAME
 ENV DOMAIN_NAME=${DOMAIN_NAME}
 COPY ./frontend/entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh

@@ -34,10 +34,11 @@ export const PeerContextProvider = ({ children }) => {
 	const matchmakingState = useSelector(getMatchmakingState)
 	const matchmaking = useSelector(getMatchmaking)
 	const { waitSomeSSE, addTopic } = useMercureContext()
-	const peerRef = useRef(null)
-	const audioRef = useRef(null)
-	const peerAudioRef = useRef(null)
-	const connectionRef = useRef(null)
+	const peerIdRef = useRef(null) // the peer id of the peer
+	const peerRef = useRef(null) // the user's Peer instance
+	const peerAudioRef = useRef(null) // the audio stream received from the peer
+	const connectionRef = useRef(null) // the connection coming from the connect methods
+	const callRef = useRef(null) // the connection coming from the call methods
 
 	const generateTurnUsername = () => {
 		return Math.floor(Date.now() / 1000).toString()
@@ -73,34 +74,37 @@ export const PeerContextProvider = ({ children }) => {
 		if (type !== 'sendId') {
 			return
 		}
-
-		console.log('just received id: ', parsedData.id)
 	}
 
 	const idBoxTopic = process.env.MAIN_URL + '/' + user.username + '/' + 'send_id'
 	const getSomeId = async username => {
 		return new Promise((resolve, reject) => {
-			const intervalId = setInterval(() => {
+			waitSomeSSE(idBoxTopic, handleReceiveId)
+				.then(({ id }) => {
+					clearInterval(interval)
+					clearTimeout(timeout)
+					peerIdRef.current = id
+					resolve(peerIdRef.current)
+				})
+				.catch(err => {
+					clearInterval(interval)
+					clearTimeout(timeout)
+					reject(err)
+				})
+
+			const interval = setInterval(() => {
+				if (peerIdRef.current) {
+					resolve(peerIdRef.current)
+					clearInterval(interval)
+				}
 				console.log('Sent request for peer id of', username)
 				axiosId('ask', username, token)
 			}, 500)
 
-			const timeoutId = setTimeout(() => {
-				clearInterval(intervalId)
+			const timeout = setTimeout(() => {
+				clearInterval(interval)
 				reject(new Error('Timeout while waiting for peer id'))
-			}, 10000) // Timeout après 10 secondes (par exemple)
-
-			waitSomeSSE(idBoxTopic, handleReceiveId)
-				.then(({ id }) => {
-					clearInterval(intervalId)
-					clearTimeout(timeoutId)
-					resolve(id)
-				})
-				.catch(err => {
-					clearInterval(intervalId)
-					clearTimeout(timeoutId)
-					reject(err)
-				})
+			}, 20000) // Timeout après 20 secondes (par exemple)
 		})
 	}
 
@@ -135,13 +139,27 @@ export const PeerContextProvider = ({ children }) => {
 			navigator.mediaDevices
 				.getUserMedia({ audio: true })
 				.then(userMedia => {
-					console.log('input audio found:', userMedia)
 					resolve(userMedia)
 				})
 				.catch(() => {
 					resolve(getSilentAudioStream())
 				})
 		})
+	}
+
+	const changeAudioStream = async () => {
+		try {
+			const newStream = await getAudio()
+			const senders = callRef.current.getConnection.getSenders()
+			newStream.getAudioTracks().forEach(newTrack => {
+				const sender = senders.find(s => s.track.kind === 'audio')
+				if (sender) {
+					sender.replaceTrack(newTrack)
+				}
+			})
+		} catch (error) {
+			console.error('Error changing audio stream:', error)
+		}
 	}
 
 	// --- Functions dealing with the peerjs library ---
@@ -168,10 +186,6 @@ export const PeerContextProvider = ({ children }) => {
 			}
 		})
 
-		if (settings?.communicationPreference === 'call') {
-			audioRef.current = await getAudio()
-		}
-
 		return new Promise(resolve => {
 			peerRef.current.on('open', id => {
 				peerRef.current.off('open')
@@ -183,37 +197,42 @@ export const PeerContextProvider = ({ children }) => {
 	// Peer call
 
 	const peerCall = receiverUsername => {
-		getSomeId(receiverUsername).then(receiverId => {
-			console.log('received matched user id:', receiverId)
+		getAudio().then(stream => {
+			getSomeId(receiverUsername).then(receiverId => {
+				callRef.current = peerRef.current.call(receiverId, stream, {
+					metadata: {
+						id: peerRef.current.id,
+						username: user.username
+					}
+				})
 
-			connectionRef.current = peerRef.current.call(receiverId, audioRef.current, {
-				metadata: {
-					id: peerRef.current.id,
-					username: user.username
-				}
+				handleCall()
 			})
-
-			handleCall()
 		})
 	}
 
 	const waitForPeerCall = () => {
 		peerRef.current.on('call', call => {
-			console.log('call received', call)
-
-			connectionRef.current = call
-			connectionRef.current.answer(audioRef.current)
-			handleCall()
+			getAudio().then(stream => {
+				callRef.current = call
+				callRef.current.answer(stream)
+				handleCall()
+			})
 		})
 	}
 
 	const handleCall = () => {
-		connectionRef.current.on('stream', audioStream => {
+		console.log('handleCall called')
+		navigator.mediaDevices.addEventListener('devicechange', changeAudioStream)
+
+		callRef.current.on('stream', audioStream => {
 			peerAudioRef.current = audioStream
 			handleConnected()
+			playAudioStream()
 		})
 
-		connectionRef.current.on('close', () => {
+		callRef.current.on('close', () => {
+			navigator.mediaDevices.removeEventListener('devicechange', changeAudioStream)
 			closeConnection()
 		})
 	}
@@ -225,7 +244,8 @@ export const PeerContextProvider = ({ children }) => {
 			connectionRef.current = peerRef.current.connect(receiverId, {
 				metadata: {
 					id: peerRef.current.id,
-					username: user.username
+					username: user.username,
+					userId: user.id
 				}
 			})
 			handleConnect()
@@ -240,6 +260,8 @@ export const PeerContextProvider = ({ children }) => {
 	}
 
 	const handleConnect = () => {
+		console.log('handleConnect called')
+
 		connectionRef.current.on('open', () => {
 			handleConnected()
 			connectionRef.current.on('data', message => {
@@ -273,9 +295,14 @@ export const PeerContextProvider = ({ children }) => {
 			connectionRef.current.off('data')
 			connectionRef.current.off('close')
 			connectionRef.current.off('error')
-			connectionRef.current.off('stream')
 			connectionRef.current.close()
 			connectionRef.current = null
+		}
+		if (callRef.current) {
+			callRef.current.off('stream')
+			callRef.current.off('close')
+			callRef.current.close()
+			callRef.current = null
 		}
 		if (peerRef.current) {
 			peerRef.current.destroy()
@@ -299,7 +326,7 @@ export const PeerContextProvider = ({ children }) => {
 	}
 
 	useEffect(() => {
-		window.addEventListener('beforeunload', handleWindowUnload)
+		window.onpagehide = handleWindowUnload
 	})
 
 	// Safety
@@ -313,7 +340,6 @@ export const PeerContextProvider = ({ children }) => {
 	// --- Truly initialize game ---
 
 	// Script de l'initialisation de la partie
-	const [isPeerInitializing, setIsPeerInitializing] = useState(false)
 	useEffect(() => {
 		if (matchmakingState !== 'connecting') {
 			return
@@ -323,40 +349,52 @@ export const PeerContextProvider = ({ children }) => {
 			return
 		}
 
-		setIsPeerInitializing(true)
 		initializePeer()
 			.then(() => {
 				if (matchmaking.role === 'caller') {
+					peerConnect(matchmaking.matchedUsername)
 					if (settings?.communicationPreference === 'call') {
 						peerCall(matchmaking.matchedUsername)
-					} else {
-						peerConnect(matchmaking.matchedUsername)
 					}
 				} else if (matchmaking.role === 'receiver') {
+					waitForPeerConnect(matchmaking.matchedUsername)
 					if (settings?.communicationPreference === 'call') {
 						waitForPeerCall(matchmaking.matchedUsername)
-					} else {
-						waitForPeerConnect(matchmaking.matchedUsername)
 					}
 					addTopic(deliverIdTopic, deliverIdCommunication)
+					console.log('listening to events as a receiver')
 				}
 			})
 			.catch(error => {
 				closeConnection()
-				console.error('Failed to initialize peer:', error)
-			})
-			.finally(() => {
-				setIsPeerInitializing(false)
 			})
 	}, [matchmakingState])
+
+	// --- Play received audio stream ---
+
+	const playAudioStream = () => {
+		if (peerAudioRef.current instanceof MediaStream) {
+			const audioEl = document.createElement('audio')
+			audioEl.setAttribute('autoplay', 'autoplay')
+			audioEl.setAttribute('playsinline', 'playsinline')
+			audioEl.srcObject = peerAudioRef.current
+
+			const playPromise = audioEl.play()
+			if (playPromise !== undefined) {
+				playPromise.catch(err => {
+					console.warn('Playback failed: ' + err.message)
+				})
+			}
+		}
+	}
 
 	return (
 		<PeerContext.Provider
 			value={{
 				peer: peerRef.current,
 				sendMessage,
-				dataConnection: connectionRef.current,
-				peerAudio: peerAudioRef.current
+				peerAudioRef: peerAudioRef,
+				getAudio: getAudio
 			}}
 		>
 			{children}

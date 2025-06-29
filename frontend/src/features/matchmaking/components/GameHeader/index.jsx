@@ -4,18 +4,23 @@ import { motion } from 'framer-motion'
 import { useGetTime, useGameExpired, useLoseGame } from '../../hooks'
 import Loader from '@components/Loader'
 import { confirm } from '@components/Confirmation'
+import { useSelector } from 'react-redux'
+import { getMatchmakingState } from '@redux/selectors'
 
 const GameHeader = () => {
 	const { time, setTime, isLoading } = useGetTime()
 	const { gameExpired } = useGameExpired()
 	const { loseGame } = useLoseGame()
+	const matchmakingState = useSelector(getMatchmakingState)
 
 	useEffect(() => {
 		const interval = setInterval(() => {
 			if (time > 0) {
 				setTime(time => time - 1)
 			} else if (time <= 0) {
-				gameExpired()
+				if (matchmakingState === 'connected') {
+					gameExpired()
+				}
 				clearInterval(interval)
 			}
 		}, 1000)

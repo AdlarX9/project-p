@@ -13,7 +13,9 @@ const TextualChat = () => {
 	const scrollableRef = useRef(null)
 
 	useEffect(() => {
-		if (!scrollableRef.current) return
+		if (!scrollableRef.current) {
+			return
+		}
 		scrollableRef.current.scrollTo({
 			top: scrollableRef.current.scrollHeight - scrollableRef.current.clientHeight,
 			behavior: 'smooth'
@@ -33,38 +35,39 @@ const TextualChat = () => {
 					Textual chat initiated
 				</p>
 				<AnimatePresence>
-					{matchmaking.messages.map((message, index) => (
-						<motion.div
-							key={index}
-							variants={messageVariants}
-							initial='hidden'
-							animate='visible'
-							exit='exit'
-							className='game-message'
-							style={{ alignSelf: message.author === user.username && 'start' }}
-							layout
-						>
-							<div
-								className='cartoon-short-txt'
-								style={{
-									alignSelf: message.author === user.username && 'start'
-								}}
+					{matchmaking?.messages?.length &&
+						matchmaking.messages.map((message, index) => (
+							<motion.div
+								key={index}
+								variants={messageVariants}
+								initial='hidden'
+								animate='visible'
+								exit='exit'
+								className='game-message'
+								style={{ alignSelf: message.author === user.username && 'start' }}
+								layout
 							>
-								{message.author}
-							</div>
-							<div
-								className='cartoon2-txt p-20 br-20 shadowed'
-								style={{
-									backgroundColor:
-										message.author === user.username
-											? 'var(--yellow)'
-											: 'var(--red)'
-								}}
-							>
-								{message.content}
-							</div>
-						</motion.div>
-					))}
+								<div
+									className='cartoon-short-txt'
+									style={{
+										alignSelf: message.author === user.username && 'start'
+									}}
+								>
+									{message.author}
+								</div>
+								<div
+									className='cartoon2-txt p-20 br-20 shadowed'
+									style={{
+										backgroundColor:
+											message.author === user.username
+												? 'var(--yellow)'
+												: 'var(--red)'
+									}}
+								>
+									{message.content}
+								</div>
+							</motion.div>
+						))}
 					{matchmaking?.messages?.length === 0 && (
 						<p className='cartoon2-txt gray' style={{ alignSelf: 'center' }}>
 							No messages yet

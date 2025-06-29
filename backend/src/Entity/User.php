@@ -20,11 +20,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getUser', 'getFriend', 'getMessage', 'getPublicBank'])]
+    #[Groups(['getUser', 'getFriend', 'getMessage', 'getPublicBank', 'getPublicProfile'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['getUser', 'getFriend', 'getMessage', 'getPublicBank'])]
+    #[Groups(['getUser', 'getFriend', 'getMessage', 'getPublicBank', 'getPublicProfile'])]
     private ?string $username = null;
 
     /**
@@ -48,7 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $friends;
 
     #[ORM\Column(type: Types::BIGINT)]
-    #[Groups(['getUser', 'getFriend'])]
+    #[Groups(['getUser', 'getFriend', 'getPublicProfile'])]
     private ?string $money = null;
 
     /**
@@ -73,7 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $settings = [];
 
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
-    #[Groups(['getProfile'])]
+    #[Groups(['getProfile', 'getPublicProfile'])]
     private ?Locker $locker = null;
 
     /**

@@ -20,7 +20,7 @@ class Locker
     private ?User $owner = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getProfile'])]
+    #[Groups(['getProfile', 'getPublicProfile'])]
     private ?string $color = null;
 
     #[ORM\Column]

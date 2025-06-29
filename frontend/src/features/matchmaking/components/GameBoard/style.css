@@ -1,0 +1,27 @@
+.game-board-avatars {
+	height: 50rem;
+	width: 100rem;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	display: grid;
+	grid-template-columns: 50rem 50rem;
+	grid-template-rows: 50rem;
+	overflow: hidden;
+}
+
+.game-board-avatars > * {
+	width: 50rem;
+	height: 50rem;
+}
+
+.game-board-loader-wrapper {
+	position: absolute;
+	top: 50%;
+	left: 75%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}

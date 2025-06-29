@@ -5,6 +5,10 @@
 	padding: 1rem;
 }
 
+.bank-search-bar input {
+	width: 41rem;
+}
+
 .bank-search-bar img {
 	height: 6rem;
 	margin: 2rem;

@@ -3,18 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Message\PaymentMessage;
 use App\Repository\UserRepository;
 use App\Service\BankManager;
 use App\Service\GameManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -144,5 +144,28 @@ class PublicController extends AbstractController
         }
 
         return new JsonResponse([], Response::HTTP_NOT_FOUND);
+    }
+
+
+
+    #[Route('/get_public_profile/{username}', name: 'getPublicProfile', methods: ['GET'])]
+    public function getPublicProfile(
+        string $username,
+        UserRepository $userRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $user = $userRepository->getUserByUsername($username);
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Serialize the user entity to JSON
+        $context = SerializationContext::create()
+            ->setGroups(['getPublicProfile'])
+            ->setSerializeNull(true);
+        $jsonContent = $serializer->serialize($user, 'json', $context);
+
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 }

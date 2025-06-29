@@ -5,6 +5,8 @@ services:
         build:
             context: ./
             target: reverse-proxy
+            args:
+                DOMAIN_NAME: ${DOMAIN_NAME}
         ports:
             - 443:83
         healthcheck:
@@ -18,6 +20,8 @@ services:
             - frontend
             - mercure-hub
             - peerjs-server
+        environment:
+            - DOMAIN_NAME=${DOMAIN_NAME}
         env_file:
             - .env
         volumes:
@@ -206,6 +210,8 @@ services:
         build:
             context: ./
             target: frontend
+            args:
+                DOMAIN_NAME: ${DOMAIN_NAME}
         ports:
             - "3000:3000"
         working_dir: /usr/local/project-p/frontend
@@ -213,6 +219,8 @@ services:
             - ./frontend:/usr/local/project-p/frontend
             - ./certificate:/usr/local/project-p/certificate:rw
             - .env:/usr/local/project-p/frontend/.env
+        environment:
+            - DOMAIN_NAME=${DOMAIN_NAME}
         develop:
             watch:
                 - path: ./frontend/src/app

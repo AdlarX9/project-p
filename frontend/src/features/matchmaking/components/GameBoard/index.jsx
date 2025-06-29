@@ -1,15 +1,22 @@
 import './style.css'
 import { useSelector } from 'react-redux'
-import { getMatchmaking, getSettings } from '@redux/selectors'
-import { useEffect } from 'react'
+import { getMatchmaking } from '@redux/selectors'
+import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TextualChat from '../TextualChat'
-import CallComponent from '../CallComponent'
+import { Avatar, useGetPublicProfile, switchColorContent } from '@features/profile'
+import Loader from '@components/Loader'
+import { usePeerContext } from '@contexts/PeerContext'
 
 const GameBoard = () => {
 	const matchmaking = useSelector(getMatchmaking)
-	const settings = useSelector(getSettings)
 	const navigate = useNavigate()
+	const { peerAudioRef, getAudio } = usePeerContext()
+	const peersVolumeRef = useRef(1)
+	const userVolumeRef = useRef(1)
+	const userAudioRef = useRef(null)
+
+	const { profile, isPending } = useGetPublicProfile('first')
 
 	useEffect(() => {
 		if (matchmaking.state === 'nothing') {
@@ -17,14 +24,80 @@ const GameBoard = () => {
 		}
 	}, [matchmaking])
 
+	const handleVolume = person => {
+		const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+		const analyser = audioCtx.createAnalyser()
+		analyser.fftSize = 2048
+
+		let source
+		if (person === 'peer') {
+			source = audioCtx.createMediaStreamSource(peerAudioRef.current)
+		} else if (person === 'user') {
+			source = audioCtx.createMediaStreamSource(userAudioRef.current)
+		}
+		source.connect(analyser)
+
+		const dataArray = new Uint8Array(analyser.fftSize)
+
+		const getVolume = () => {
+			analyser.getByteTimeDomainData(dataArray)
+
+			let sum = 0
+			for (let i = 0; i < dataArray.length; i++) {
+				const val = (dataArray[i] - 128) / 128
+				sum += val * val
+			}
+
+			const rms = Math.sqrt(sum / dataArray.length)
+			const normalized = Math.min(rms * 10, 1) // adapte la sensibilité ici
+
+			const volume = 1 + normalized / 2
+
+			if (person === 'peer') {
+				peersVolumeRef.current = volume
+			} else if (person === 'user') {
+				userVolumeRef.current = volume
+			}
+
+			if (
+				(person === 'user' && userAudioRef.current instanceof MediaStream) ||
+				(person === 'peer' && peerAudioRef.current instanceof MediaStream)
+			) {
+				requestAnimationFrame(getVolume)
+			}
+		}
+
+		getVolume()
+	}
+
+	useEffect(() => {
+		getAudio().then(stream => {
+			userAudioRef.current = stream
+			handleVolume('user')
+			if (peerAudioRef.current instanceof MediaStream) {
+				handleVolume('peer')
+			}
+		})
+	})
+
 	return (
 		<>
-			{matchmaking?.messages &&
-				(settings?.communicationPreference === 'call' ? (
-					<CallComponent />
+			<div className='game-board-avatars'>
+				<Avatar reverse scaleRef={userVolumeRef} />
+				{isPending ? (
+					<div className='game-board-loader-wrapper'>
+						<Loader />
+					</div>
+				) : profile?.locker?.color ? (
+					<Avatar
+						customColor={switchColorContent(profile.locker.color)}
+						scaleRef={peersVolumeRef}
+					/>
 				) : (
-					<TextualChat />
-				))}
+					<Avatar customColor='hotpink' scaleRef={peersVolumeRef} />
+				)}
+			</div>
+			<TextualChat />
 		</>
 	)
 }

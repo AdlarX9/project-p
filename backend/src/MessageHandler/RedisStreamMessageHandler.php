@@ -90,7 +90,13 @@ final class RedisStreamMessageHandler
                     break;
                 } else if ($attempts == $maxAttempts) {
                     $this->logger->info('max attempts reached, user ' . $receivedData['username'] . ' is not matched with ' . $matchedUser->getUsername() . ', adding to queue.');
-                    $this->addUserToQueue($message->getData());
+
+                    if ($isReceivedUserThere) {
+                        $this->addUserToQueue($message->getData());
+                    }
+                    if (!$isMatchedUserThere) {
+                        $this->removeUserFromQueue($matchedId);
+                    }
                     break;
                 }
 

@@ -158,14 +158,12 @@ export const useHandleConnected = () => {
 
 export const useHandleDisconnected = () => {
 	const dispatch = useDispatch()
-	const navigate = useNavigate()
 	const { removeTopic } = useMercureContext()
 	const { username } = useSelector(getUser)
 
 	const handleDisconnected = () => {
 		const topic = process.env.MAIN_URL + '/' + username + '/matchmaking_update'
 		removeTopic(topic)
-		navigate('/')
 		dispatch(matchmakingNothing())
 	}
 
@@ -173,6 +171,10 @@ export const useHandleDisconnected = () => {
 }
 
 const axiosGetTime = async (token, gameId) => {
+	if (!gameId) {
+		return { timeLeft: 0 }
+	}
+
 	return axios
 		.get(process.env.MAIN_URL + '/api/matchmaking/get_time/' + gameId, {
 			headers: {
