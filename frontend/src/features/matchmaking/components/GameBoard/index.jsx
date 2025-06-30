@@ -11,12 +11,11 @@ import { usePeerContext } from '@contexts/PeerContext'
 const GameBoard = () => {
 	const matchmaking = useSelector(getMatchmaking)
 	const navigate = useNavigate()
-	const { peerAudioRef, getAudio } = usePeerContext()
+	const { peerAudioRef, userAudioRef } = usePeerContext()
 	const peersVolumeRef = useRef(1)
 	const userVolumeRef = useRef(1)
-	const userAudioRef = useRef(null)
 
-	const { profile, isPending } = useGetPublicProfile('first')
+	const { profile, isPending } = useGetPublicProfile(matchmaking?.matchedUsername)
 
 	useEffect(() => {
 		if (matchmaking.state === 'nothing') {
@@ -71,13 +70,12 @@ const GameBoard = () => {
 	}
 
 	useEffect(() => {
-		getAudio().then(stream => {
-			userAudioRef.current = stream
+		if (userAudioRef.current instanceof MediaStream) {
 			handleVolume('user')
-			if (peerAudioRef.current instanceof MediaStream) {
-				handleVolume('peer')
-			}
-		})
+		}
+		if (peerAudioRef.current instanceof MediaStream) {
+			handleVolume('peer')
+		}
 	})
 
 	return (

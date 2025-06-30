@@ -2,6 +2,7 @@
 
 namespace App\MessageHandler;
 
+use App\Entity\User;
 use App\Message\RedisStreamMessage;
 use App\Repository\UserRepository;
 use App\Service\GameManager;
@@ -29,9 +30,11 @@ final class RedisStreamMessageHandler
         $this->redis->connect('redis', 6379);
     }
 
+
+
     public function __invoke(RedisStreamMessage $message): void {
         // "Hyperparamètres" de l'algorithme de matchmaking
-        $deltaMoney = 5000000;
+        $deltaMoney = 10_000;
 
         // Récupérer les données du message
         $receivedData = $message->getData();
@@ -48,65 +51,81 @@ final class RedisStreamMessageHandler
                 // Condition de matching basée sur la différence d'argent
                 if (abs($data['money'] - $receivedData['money']) < $deltaMoney && $data['username'] != $receivedData['username']) {
                     $possibleMatchedUser = $this->userRepository->find($receivedData['id']);
+
                     if ($possibleMatchedUser && $data['communicationPreference'] == $possibleMatchedUser->getSettings()['communicationPreference']) {
+                        $this->logger->info('found matching user ' . $data['username'] . ' of timestamp ' . $data['connection_time']);
+
                         $matchedUser = $this->userRepository->findOneBy(['username' => $data['username']]);
-                        $matchedId = $id;
-                        $this->logger->info('found matching user ' . $matchedUser->getUsername() . ' of timestamp ' . $data['connection_time']);
-                        break;
+                        $indicator = $this->handleMatchedUser($receivedUser, $matchedUser, $id);
+
+                        if ($indicator === true || $indicator === null) {
+                            return; // Dans les deux cas, le joueur n'est plus à traiter
+                        } else if ($indicator === false) {
+                            continue;
+                        }
                     }
                 }
             }
         }
 
-        // Si un utilisateur est matché, on le stocke dans le cache et on attend un pong de sa part
-        if ($matchedUser) {
-            $attempts = 0;
-            $maxAttempts = 5;
-            $interval = 1; // en secondes
-            $this->cache->delete('pong_'. $matchedUser->getUsername());
-            $this->cache->delete('pong_' . $receivedData['username']);
-            while ($attempts < $maxAttempts) {
-                $attempts++;
-                $isMatchedUserThere = $this->cache->get('pong_' . $matchedUser->getUsername(), function (ItemInterface $item) use ($matchedUser, $maxAttempts, $interval): bool {
-                    $item->expiresAfter($maxAttempts * $interval);
-                    $this->logger->info('adding matched user to cache, send ping.');
-                    Functions::sendMatchmakingUpdate($this->mercureHub, $matchedUser->getUsername(), 'ping');
-                    return false;
-                });
-
-                $isReceivedUserThere = $this->cache->get('pong_' . $receivedData['username'], function (ItemInterface $item) use ($receivedData, $maxAttempts, $interval): bool {
-                    $item->expiresAfter($maxAttempts * $interval);
-                    $this->logger->info('adding received user to cache, send ping.');
-                    Functions::sendMatchmakingUpdate($this->mercureHub, $receivedData['username'], 'ping');
-                    return false;
-                });
-
-                // Si les deux utilisateurs sont là, on initie la partie
-                $this->logger->info('isMatchedUserThere : ' . ($isMatchedUserThere ? 'true' : 'false') . ' | isReceivedUserThere : ' . ($isReceivedUserThere ? 'true' : 'false'));
-                if ($isMatchedUserThere && $isReceivedUserThere) {
-                    $this->removeUserFromQueue($matchedId);
-                    $this->logger->info('delete message ' . $matchedId . 'from redis matchmaking_stream');
-                    $this->gameManager->initializeGame($receivedUser, $matchedUser);
-                    break;
-                } else if ($attempts == $maxAttempts) {
-                    $this->logger->info('max attempts reached, user ' . $receivedData['username'] . ' is not matched with ' . $matchedUser->getUsername() . ', adding to queue.');
-
-                    if ($isReceivedUserThere) {
-                        $this->addUserToQueue($message->getData());
-                    }
-                    if (!$isMatchedUserThere) {
-                        $this->removeUserFromQueue($matchedId);
-                    }
-                    break;
-                }
-
-                sleep($interval); // Attendre 1 seconde entre chaque essai
-            }
-        } else {
-            // Si l'utilisateur n'est pas matché, on l'ajoute à la file d'attente Redis
-            $this->addUserToQueue($message->getData());
-        }
+        $this->addUserToQueue($message->getData());
     }
+
+
+
+    private function handleMatchedUser(
+        User $receivedUser,
+        User $matchedUser,
+        string $matchedId
+    ): ?bool { // Retourne true si la partie est initiée, null si le joueur n'est pas là, false sinon
+        $attempts = 0;
+        $maxAttempts = 5;
+        $interval = 1; // en secondes
+        $this->cache->delete('pong_'. $matchedUser->getUsername());
+        $this->cache->delete('pong_' . $receivedUser->getUsername());
+
+        while ($attempts < $maxAttempts) {
+            $attempts++;
+            $isMatchedUserThere = $this->cache->get('pong_' . $matchedUser->getUsername(), function (ItemInterface $item) use ($matchedUser, $maxAttempts, $interval): bool {
+                $item->expiresAfter($maxAttempts * $interval);
+                $this->logger->info('adding matched user to cache, send ping.');
+                Functions::sendMatchmakingUpdate($this->mercureHub, $matchedUser->getUsername(), 'ping');
+                return false;
+            });
+
+            $isReceivedUserThere = $this->cache->get('pong_' . $receivedUser->getUsername(), function (ItemInterface $item) use ($receivedUser, $maxAttempts, $interval): bool {
+                $item->expiresAfter($maxAttempts * $interval);
+                $this->logger->info('adding received user to cache, send ping.');
+                Functions::sendMatchmakingUpdate($this->mercureHub, $receivedUser->getUsername(), 'ping');
+                return false;
+            });
+
+            // Si les deux utilisateurs sont là, on initie la partie
+            $this->logger->info('isMatchedUserThere : ' . ($isMatchedUserThere ? 'true' : 'false') . ' | isReceivedUserThere : ' . ($isReceivedUserThere ? 'true' : 'false'));
+            if ($isMatchedUserThere && $isReceivedUserThere) {
+                $this->removeUserFromQueue($matchedId);
+                $this->logger->info('delete message ' . $matchedId . 'from redis matchmaking_stream');
+                $this->gameManager->initializeGame($receivedUser, $matchedUser);
+                return true;
+            } else if ($attempts == $maxAttempts) {
+                $this->logger->info('max attempts reached, user ' . $receivedUser->getUsername() . ' is not matched with ' . $matchedUser->getUsername() . ', adding to queue.');
+
+                if (!$isReceivedUserThere)  {
+                    return null;
+                }
+                if (!$isMatchedUserThere) {
+                    $this->removeUserFromQueue($matchedId);
+                    return false;
+                }
+                return false;
+            }
+
+            sleep($interval); // Attendre 1 seconde entre chaque essai
+        }
+        return false;
+    }
+
+
 
     private function removeUserFromQueue(string $id): void {
         $this->redis->xAck('matchmaking_stream', 'matchmaking_group', [$id]);

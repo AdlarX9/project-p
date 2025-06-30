@@ -37,6 +37,7 @@ export const PeerContextProvider = ({ children }) => {
 	const peerIdRef = useRef(null) // the peer id of the peer
 	const peerRef = useRef(null) // the user's Peer instance
 	const peerAudioRef = useRef(null) // the audio stream received from the peer
+	const userAudioRef = useRef(null) // the audio stream received from the user
 	const connectionRef = useRef(null) // the connection coming from the connect methods
 	const callRef = useRef(null) // the connection coming from the call methods
 
@@ -74,6 +75,7 @@ export const PeerContextProvider = ({ children }) => {
 		if (type !== 'sendId') {
 			return
 		}
+		peerIdRef.current = parsedData.id
 	}
 
 	const idBoxTopic = process.env.MAIN_URL + '/' + user.username + '/' + 'send_id'
@@ -150,7 +152,7 @@ export const PeerContextProvider = ({ children }) => {
 	const changeAudioStream = async () => {
 		try {
 			const newStream = await getAudio()
-			const senders = callRef.current.getConnection.getSenders()
+			const senders = callRef.current.getSenders()
 			newStream.getAudioTracks().forEach(newTrack => {
 				const sender = senders.find(s => s.track.kind === 'audio')
 				if (sender) {
@@ -165,6 +167,7 @@ export const PeerContextProvider = ({ children }) => {
 	// --- Functions dealing with the peerjs library ---
 
 	const initializePeer = async () => {
+		peerIdRef.current = null
 		const turnUsername = generateTurnUsername()
 		const turnPassword = generateTurnPassword(turnUsername)
 		peerRef.current = new Peer({
@@ -198,8 +201,10 @@ export const PeerContextProvider = ({ children }) => {
 
 	const peerCall = receiverUsername => {
 		getAudio().then(stream => {
+			userAudioRef.current = stream
 			getSomeId(receiverUsername).then(receiverId => {
-				callRef.current = peerRef.current.call(receiverId, stream, {
+				console.log('receiverId:', receiverId)
+				callRef.current = peerRef.current.call(receiverId, userAudioRef.current, {
 					metadata: {
 						id: peerRef.current.id,
 						username: user.username
@@ -214,8 +219,9 @@ export const PeerContextProvider = ({ children }) => {
 	const waitForPeerCall = () => {
 		peerRef.current.on('call', call => {
 			getAudio().then(stream => {
+				userAudioRef.current = stream
 				callRef.current = call
-				callRef.current.answer(stream)
+				callRef.current.answer(userAudioRef.current)
 				handleCall()
 			})
 		})
@@ -241,6 +247,8 @@ export const PeerContextProvider = ({ children }) => {
 
 	const peerConnect = receiverUsername => {
 		getSomeId(receiverUsername).then(receiverId => {
+			console.log('receiverId:', receiverId)
+
 			connectionRef.current = peerRef.current.connect(receiverId, {
 				metadata: {
 					id: peerRef.current.id,
@@ -327,6 +335,12 @@ export const PeerContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		window.onpagehide = handleWindowUnload
+		window.onbeforeunload = handleWindowUnload
+
+		return () => {
+			window.onpagehide = null
+			window.onbeforeunload = null
+		}
 	})
 
 	// Safety
@@ -365,7 +379,7 @@ export const PeerContextProvider = ({ children }) => {
 					console.log('listening to events as a receiver')
 				}
 			})
-			.catch(error => {
+			.catch(() => {
 				closeConnection()
 			})
 	}, [matchmakingState])
@@ -394,7 +408,7 @@ export const PeerContextProvider = ({ children }) => {
 				peer: peerRef.current,
 				sendMessage,
 				peerAudioRef: peerAudioRef,
-				getAudio: getAudio
+				userAudioRef: userAudioRef
 			}}
 		>
 			{children}
