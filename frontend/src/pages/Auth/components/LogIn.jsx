@@ -36,9 +36,9 @@ const LogIn = () => {
 			<SubmitButton />
 
 			<AuthMessage
-				text="Vous n'avez pas de compte ?"
+				text="You don't have an account?"
 				endpoint='/signup'
-				linkMessage='Créez-en un !'
+				linkMessage='Create one!'
 			/>
 
 			{isPending && (

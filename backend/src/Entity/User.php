@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\GenderEnum;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -95,6 +96,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: LoanRequest::class, mappedBy: 'applicant', orphanRemoval: true)]
     private Collection $loanRequests;
+
+    #[ORM\Column(enumType: GenderEnum::class)]
+    private ?GenderEnum $gender = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['getProfile'])]
+    private ?string $email = null;
+
+    #[ORM\Column(type: Types::SIMPLE_ARRAY)]
+    #[Groups(['getPublicProfile', 'getProfile'])]
+    private array $links = [];
 
     public function __construct()
     {
@@ -429,6 +441,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $loanRequest->setApplicant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getGender(): ?GenderEnum
+    {
+        return $this->gender;
+    }
+
+    public function getGenderValue(): ?string {
+        return $this->gender->getGender();
+    }
+
+    public function setGender(GenderEnum $gender): static
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+    public function setGenderValue(string $gender): static
+    {
+        $this->gender = GenderEnum::fromValue($gender);
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getLinks(): array
+    {
+        return $this->links;
+    }
+
+    public function setLinks(array $links): static
+    {
+        $this->links = $links;
 
         return $this;
     }

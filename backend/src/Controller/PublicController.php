@@ -60,6 +60,8 @@ class PublicController extends AbstractController
         $user->setMoney("999");
         $user->setSettings([]);
 
+        $user->setGender($data['gender'] ?? 'Man');
+
         // Valider l'utilisateur
         $errors = $validator->validate($user);
         if (count($errors) > 0) {

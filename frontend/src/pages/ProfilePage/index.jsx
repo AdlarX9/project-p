@@ -6,7 +6,7 @@ import Back from '@components/Back'
 import PopUp from '@components/PopUp'
 import Background from '@components/Background'
 import { getUser } from '@redux/selectors'
-import { ProfilePopup, Avatar, LockerPreview } from '@features/profile'
+import { ProfilePopup, Avatar, LockerPreview, ProfileInfo } from '@features/profile'
 
 const Profile = () => {
 	const [open, setOpen] = useState(false)
@@ -30,8 +30,15 @@ const Profile = () => {
 			</motion.button>
 
 			<main className='profile-page-main'>
-				<Avatar />
-				<LockerPreview />
+				<section>
+					<ProfileInfo />
+				</section>
+				<section className='profile-page-locker'>
+					<div>
+						<Avatar />
+					</div>
+					<LockerPreview />
+				</section>
 			</main>
 
 			<PopUp open={open} setOpen={setOpen} className='popup-profile'>

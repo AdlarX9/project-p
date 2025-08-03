@@ -204,10 +204,11 @@ export const useSignup = () => {
 		}
 	})
 
-	const signup = (username, password) => {
+	const signup = (username, password, gender) => {
 		mutation.mutate({
 			username: username,
-			password: password
+			password: password,
+			gender: gender
 		})
 	}
 

@@ -10,7 +10,7 @@ const SubmitButton = () => {
 			style={{ skewX: '-10deg' }}
 			type='submit'
 		>
-			<span>Envoyer</span>
+			<span>Submit</span>
 		</motion.button>
 	)
 }
