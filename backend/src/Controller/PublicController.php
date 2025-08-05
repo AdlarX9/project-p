@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\GenderEnum;
 use App\Repository\UserRepository;
 use App\Service\BankManager;
 use App\Service\GameManager;
@@ -60,7 +61,7 @@ class PublicController extends AbstractController
         $user->setMoney("999");
         $user->setSettings([]);
 
-        $user->setGender($data['gender'] ?? 'Man');
+        $user->setGender(GenderEnum::fromValue($data['gender'] ?? 'Man'));
 
         // Valider l'utilisateur
         $errors = $validator->validate($user);

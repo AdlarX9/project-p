@@ -3,6 +3,7 @@ import { useDelete, useLogout } from '@features/authentication'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { getUser } from '@redux/selectors'
+import { confirm } from '@components/Confirmation'
 
 const ProfilePopup = () => {
 	const navigate = useNavigate()

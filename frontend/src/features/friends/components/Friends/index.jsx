@@ -9,7 +9,7 @@ import SearchFriends from '../SearchFriends'
 import SeeFriends from '../SeeFriends'
 
 const Friends = () => {
-	const [open, setOpen] = useState(false)
+	const [open, setOpen] = useState(true)
 	const [isSeeking, setIsSeeking] = useState(false)
 	const openPopUp = () => {
 		setOpen(true)
@@ -31,7 +31,7 @@ const Friends = () => {
 			<PopUp open={open} setOpen={setOpen} className='popup-friends'>
 				<div className='friends-popup-wrapper'>
 					<header className='friends-popup-header'>
-						<h2>Amis</h2>
+						<h2 className='title-txt m-0'>Friends</h2>
 						<button className='no-btn' onClick={() => setIsSeeking(!isSeeking)}>
 							<img
 								src={isSeeking ? seeking : seeing}

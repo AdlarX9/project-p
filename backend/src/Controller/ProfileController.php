@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Enum\GenderEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -52,5 +53,37 @@ final class ProfileController extends AbstractController
         $entityManager->flush();
 
         return $jsonResponse;
+    }
+
+
+
+    #[Route('/set_links', name: 'setLinks', methods: ['PUT'])]
+    public function setLinks(EntityManagerInterface $entityManager, Request $request): JsonResponse {
+        $user = $this->getUser();
+        $content = $request->toArray();
+        $links = $content['links'];
+
+        $user->setLinks($links);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+
+
+    #[Route('/set_gender_email', name: 'setGenderEmail', methods: ['PUT'])]
+    public function setGenderEmail(EntityManagerInterface $entityManager, Request $request): JsonResponse {
+        $user = $this->getUser();
+        $content = $request->toArray();
+        $gender = $content['gender'];
+        $email = $content['email'];
+
+        $user->setGender(GenderEnum::fromValue($gender));
+        $user->setEmail($email);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

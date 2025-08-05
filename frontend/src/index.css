@@ -15,6 +15,7 @@
 :root {
 	--yellow: rgb(240, 188, 0);
 	--gray: #555;
+	--dark-gray: #333;
 	--red: #ff8181;
 	--dark-red: #700000;
 	--green: #d4fdca;
@@ -327,6 +328,10 @@ html {
 	color: var(--gray);
 }
 
+.dark-gray {
+	color: var(--dark-gray);
+}
+
 .dark-red {
 	color: var(--dark-red);
 }
@@ -410,6 +415,10 @@ html {
 	padding: 2rem;
 }
 
+.br-10 {
+	border-radius: 1rem;
+}
+
 .br-20 {
 	border-radius: 2rem;
 }
@@ -469,4 +478,10 @@ html {
 
 .border-box {
 	box-sizing: border-box;
+}
+
+.dotted-txt {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\ConversationRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 use JMS\Serializer\SerializationContext;
@@ -18,11 +20,41 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UserController extends AbstractController
 {
     #[Route('/me', name: 'get_one_user', methods: ['GET'])]
-    public function getOneUser(SerializerInterface $serializer): JsonResponse {
-        $user = $this->getUser();
-        $context = SerializationContext::create()->setGroups(['getUser']);
-        $jsonUser = $serializer->serialize($user, 'json', $context);
-        return new JsonResponse($jsonUser, Response::HTTP_OK, [], true);
+    public function getOneUser(
+        SerializerInterface $serializer,
+        UserRepository $userRepository,
+        ConversationRepository $conversationRepository
+    ): JsonResponse {
+        $me = $this->getUser();
+
+        $userContext = SerializationContext::create()->setGroups(['getUser']);
+        $jsonUser = $serializer->serialize($me, 'json', $userContext);
+
+        $user = json_decode($jsonUser, true);
+        $user['friends'] = array_map(function ($friend) use ($userRepository, $conversationRepository, $me) {
+            $realFriend = $userRepository->find($friend['id']);
+            $conversation = $conversationRepository->findConversationBetweenTwoUsers($me, $realFriend);
+            $lastMessage = $conversation?->getLastMessage();
+            return [
+                'id' => $friend['id'],
+                'username' => $friend['username'],
+                'money' => $friend['money'],
+                'last_message' => [
+                    'content' => $lastMessage?->getContent(),
+                    'created_at' => $lastMessage?->getTimestamp()?->format('Y-m-d H:i:s'),
+                    'sender' => $lastMessage?->getSender()?->getUsername()
+                ],
+            ];
+        }, $user['friends']);
+
+        usort($user['friends'], function ($a, $b) {
+            if (empty($a['last_message']['created_at']) || empty($b['last_message']['created_at'])) {
+                return 0; // If either message is missing, consider them equal
+            }
+            return $b['last_message']['created_at'] <=> $a['last_message']['created_at'];
+        });
+
+        return new JsonResponse($user, Response::HTTP_OK, [], false);
     }
 
 

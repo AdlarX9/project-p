@@ -191,7 +191,9 @@ const axiosSignup = async data => {
 	return axios
 		.post(process.env.MAIN_URL + '/api/public/signup', data)
 		.then(response => response.data)
-		.catch(error => error)
+		.catch(error => {
+			throw new Error(error.response.data.message || 'Error while trying to sign up')
+		})
 }
 
 export const useSignup = () => {

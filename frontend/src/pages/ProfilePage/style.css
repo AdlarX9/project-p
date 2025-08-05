@@ -20,13 +20,19 @@
 	gap: 5rem;
 }
 
+@media screen and (max-height: 70vw) {
+	.profile-page-main {
+		flex-direction: row;
+		gap: 2rem;
+	}
+}
+
 .profile-page-locker {
 	display: grid;
 	grid-template-columns: minmax(1rem, 1fr) 1fr;
 	grid-template-rows: 1fr;
 	max-width: 80vw;
 	direction: rtl;
-	border: 1px solid red;
 }
 
 .profile-page-locker > div {

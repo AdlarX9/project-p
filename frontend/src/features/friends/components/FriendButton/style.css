@@ -1,10 +1,56 @@
 .friend-fetched {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	width: 90%;
 	padding: 1rem;
 	margin-top: 1rem;
 	border-radius: 1.5rem;
 	background: var(--blue);
+}
+
+.friend-fetched-profile-picture {
+	width: 5rem;
+	height: 5rem;
+	filter: drop-shadow(0 0 0.2rem black);
+	margin-right: 1rem;
+	border-radius: 50%;
+}
+
+.friend-fetched-writings {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: start;
+	width: calc(100% - 7rem);
+}
+
+.friend-fetched-info {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.friend-fetched-username {
+	flex: 1;
+	text-align: left;
+}
+
+.friend-fetched-money {
+	flex-shrink: 0;
+}
+
+.last-message-wrapper {
+	display: flex;
+	width: 100%;
+	align-items: center;
+}
+
+.last-message-preview {
+	text-align: left;
+	flex: 1;
+}
+
+.last-message-date {
+	flex-shrink: 0;
+	padding: 0 1rem;
 }

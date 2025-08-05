@@ -21,11 +21,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getUser', 'getFriend', 'getMessage', 'getPublicBank', 'getPublicProfile'])]
+    #[Groups(['getUser', 'getMessage', 'getPublicBank', 'getPublicProfile', 'getFriend'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['getUser', 'getFriend', 'getMessage', 'getPublicBank', 'getPublicProfile'])]
+    #[Groups(['getUser', 'getMessage', 'getPublicBank', 'getPublicProfile', 'getFriend'])]
     private ?string $username = null;
 
     /**
@@ -49,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $friends;
 
     #[ORM\Column(type: Types::BIGINT)]
-    #[Groups(['getUser', 'getFriend', 'getPublicProfile'])]
+    #[Groups(['getUser', 'getPublicProfile', 'getFriend'])]
     private ?string $money = null;
 
     /**
@@ -104,7 +104,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['getProfile'])]
     private ?string $email = null;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY)]
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     #[Groups(['getPublicProfile', 'getProfile'])]
     private array $links = [];
 

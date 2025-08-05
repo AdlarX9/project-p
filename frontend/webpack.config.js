@@ -74,7 +74,6 @@ module.exports = {
 			progress: true
 		},
 		historyApiFallback: true,
-		https: true,
 		server: {
 			type: 'https',
 			options: {

@@ -57,9 +57,9 @@ const Search = () => {
 		content = <span className='cartoon2-txt'>Aucun résultat trouvé</span>
 	} else {
 		content = data?.pages.flatMap(page =>
-			page.map(friend => {
+			page.map((friend, idx) => {
 				return !friends.map(user => user.id).includes(friend.id) ? (
-					<FriendButton friend={friend} key={friend.id} onClick={handleOpenDetails} />
+					<FriendButton friend={friend} key={idx} onClick={handleOpenDetails} />
 				) : null
 			})
 		)
@@ -73,7 +73,7 @@ const Search = () => {
 					animate={{ x: 0, opacity: 1, scaleY: 1 }}
 					className='field shadowed search-input-field'
 					type='text'
-					placeholder='Ajouter un ami'
+					placeholder='Search for a friend!'
 					value={username}
 					onChange={handleChange}
 				/>

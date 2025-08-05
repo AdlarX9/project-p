@@ -1,0 +1,62 @@
+.profile-links {
+	list-style: none;
+	margin: 0;
+	padding-left: 2rem;
+}
+
+.profile-links li {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	position: relative;
+}
+
+.profile-link-img {
+	width: 4rem;
+	height: 4rem;
+}
+
+.profile-edit-img {
+	width: 4.5rem;
+	height: 4.5rem;
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	right: 7rem;
+}
+
+.profile-edit-img img {
+	width: auto;
+	height: 100%;
+	object-fit: cover;
+}
+
+.profile-delete-img {
+	right: 2rem;
+}
+
+.profile-link-input {
+	margin: 1rem;
+	background: transparent;
+	border-radius: 1rem 0 1rem 0;
+	border: 2px solid darkviolet;
+	width: 43rem;
+}
+
+.profile-link-link {
+	max-width: 32rem;
+}
+
+.profile-gender-email {
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: start;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 1rem;
+	margin-left: -1rem;
+	gap: 0.5rem;
+	transition: 50ms linear;
+}

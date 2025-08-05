@@ -36,6 +36,15 @@ class Conversation
         $this->messages = new ArrayCollection();
     }
 
+    public function getLastMessage(): ?Message {
+        if ($this->messages->isEmpty()) {
+            return null;
+        }
+
+        $lastMessage = $this->messages->last();
+        return $lastMessage instanceof Message ? $lastMessage : null;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

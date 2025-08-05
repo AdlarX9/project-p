@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { getToken } from '@redux/selectors'
 import { useEffect, useState } from 'react'
-import { logProfile, setMainColor } from './slice'
+import { logProfile, setMainColor, reduxSetLinks, reduxSetGenderEmail } from './slice'
 
 const axiosGetProfile = async token => {
 	return axios
@@ -100,4 +100,74 @@ export const useGetPublicProfile = username => {
 	}, [data])
 
 	return { profile, data, ...query }
+}
+
+const axiosSetLinks = async (token, links) => {
+	return axios
+		.put(
+			process.env.MAIN_URL + '/api/profile/set_links',
+			{ links },
+			{ headers: { Authorization: token } }
+		)
+		.then(data => data.data)
+		.catch(err => {
+			throw new Error(err.message)
+		})
+}
+
+export const useSetLinks = () => {
+	const dispatch = useDispatch()
+	const token = useSelector(getToken)
+
+	const mutation = useMutation({
+		mutationKey: 'setLinks',
+		mutationFn: links => axiosSetLinks(token, links)
+	})
+
+	const setLinks = links => {
+		mutation
+			.mutateAsync(links)
+			.then(() => {
+				dispatch(reduxSetLinks(links))
+			})
+			.catch(err => err)
+	}
+
+	return { setLinks, ...mutation }
+}
+
+const axiosSetGenderEmail = async (token, gender, email) => {
+	return axios
+		.put(
+			process.env.MAIN_URL + '/api/profile/set_gender_email',
+			{ gender, email },
+			{ headers: { Authorization: token } }
+		)
+		.then(data => data.data)
+		.catch(err => {
+			console.log(err)
+
+			throw new Error(err.message)
+		})
+}
+
+export const useSetGenderEmail = () => {
+	const dispatch = useDispatch()
+	const token = useSelector(getToken)
+
+	const mutation = useMutation({
+		mutationKey: 'setGenderEmail',
+		mutationFn: ({ gender, email }) => axiosSetGenderEmail(token, gender, email)
+	})
+
+	const setGenderEmail = (gender, email) => {
+		mutation
+			.mutateAsync({ gender, email })
+			.then(() => {
+				dispatch(reduxSetGenderEmail({ gender, email }))
+			})
+			.catch(err => err)
+	}
+
+	return { setGenderEmail, ...mutation }
 }

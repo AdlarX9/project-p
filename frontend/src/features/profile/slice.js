@@ -46,6 +46,29 @@ const profileSlice = createSlice({
 			return newState
 		},
 
+		reduxSetLinks: (currentState, action) => {
+			const links = action.payload
+			const newState = {
+				...currentState,
+				links
+			}
+
+			saveStateProfile(newState)
+			return newState
+		},
+
+		reduxSetGenderEmail: (currentState, action) => {
+			const { gender, email } = action.payload
+			const newState = {
+				...currentState,
+				gender,
+				email
+			}
+
+			saveStateProfile(newState)
+			return newState
+		},
+
 		logProfileOut: () => {
 			saveStateProfile({})
 			return {}
@@ -53,5 +76,12 @@ const profileSlice = createSlice({
 	}
 })
 
-export const { logProfile, logProfileOut, addColor, setMainColor } = profileSlice.actions
+export const {
+	logProfile,
+	logProfileOut,
+	addColor,
+	setMainColor,
+	reduxSetLinks,
+	reduxSetGenderEmail
+} = profileSlice.actions
 export default profileSlice.reducer

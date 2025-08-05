@@ -13,7 +13,7 @@ const Profile = () => {
 	const user = useSelector(getUser)
 
 	return (
-		<section className='profile-wrapper'>
+		<section className='profile-wrapper oh'>
 			<Background />
 			<div className='back-wrapper'>
 				<Back />
@@ -30,14 +30,14 @@ const Profile = () => {
 			</motion.button>
 
 			<main className='profile-page-main'>
-				<section>
-					<ProfileInfo />
-				</section>
+				<ProfileInfo />
 				<section className='profile-page-locker'>
 					<div>
 						<Avatar />
 					</div>
-					<LockerPreview />
+					<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+						<LockerPreview />
+					</motion.div>
 				</section>
 			</main>
 
