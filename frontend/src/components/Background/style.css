@@ -44,10 +44,11 @@
 
 @keyframes moveStars {
 	0% {
-		background-position: 0 calc(var(--pattern-dimensions) / 4);
+		background-position: var(--initial-offset) calc(var(--pattern-dimensions) / 4);
 	}
 	100% {
-		background-position: var(--pattern-dimensions) calc(var(--pattern-dimensions) / 4);
+		background-position: calc(var(--initial-offset) + var(--pattern-dimensions))
+			calc(var(--pattern-dimensions) / 4);
 	}
 }
 

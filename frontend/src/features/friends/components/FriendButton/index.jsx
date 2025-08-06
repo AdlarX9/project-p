@@ -6,6 +6,7 @@ import Profile from '@assets/profile.png'
 
 const FriendButton = ({ onClick, friend, ref, showLastMessage = true }) => {
 	const user = useSelector(getUser)
+
 	const memoizedTimeAgo = useMemo(() => {
 		return timeAgo(friend?.last_message?.created_at)
 	}, [friend?.last_message?.created_at])
@@ -13,10 +14,38 @@ const FriendButton = ({ onClick, friend, ref, showLastMessage = true }) => {
 	function timeAgo(dateString) {
 		if (!dateString) return ''
 
-		const givenDate = new Date(dateString + ' UTC')
-		const currentDate = new Date()
+		let givenDate
 
+		// Meilleure gestion du parsing de date pour Safari
+		try {
+			// Si c'est déjà au format ISO (YYYY-MM-DDTHH:mm:ssZ)
+			if (dateString.includes('T') || dateString.includes('Z')) {
+				givenDate = new Date(dateString)
+			}
+			// Si c'est au format "YYYY-MM-DD HH:MM:SS"
+			else if (dateString.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) {
+				// Convertir en format ISO pour Safari
+				const isoString = dateString.replace(' ', 'T') + 'Z'
+				givenDate = new Date(isoString)
+			}
+			// Autres formats
+			else {
+				givenDate = new Date(dateString)
+			}
+
+			// Vérifier si la date est valide
+			if (isNaN(givenDate.getTime())) {
+				console.warn('Date invalide:', dateString)
+				return 'Date invalide'
+			}
+		} catch (error) {
+			console.error('Erreur de parsing de date:', error, dateString)
+			return 'Erreur date'
+		}
+
+		const currentDate = new Date()
 		const diffMs = currentDate - givenDate
+
 		if (diffMs < 0) return '0 s'
 
 		const diffSeconds = Math.floor(diffMs / 1000)
@@ -25,7 +54,7 @@ const FriendButton = ({ onClick, friend, ref, showLastMessage = true }) => {
 			[86400, 'day'], // jour
 			[3600, 'h'], // heure
 			[60, 'min'], // minute
-			[1, 'sec'] // seconde
+			[1, 's'] // seconde (changé de 'sec' à 's' pour cohérence)
 		]
 
 		for (const [seconds, unit] of units) {

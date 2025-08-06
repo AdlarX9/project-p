@@ -57,13 +57,16 @@ const TransfersMenu = () => {
 			<span className='link cartoon2-txt c-auto'>
 				Friend to send the money : {friend.username ? friend.username : 'none'}
 			</span>
-			<SeeFriends
-				enableDetails={false}
-				friend={friend}
-				setFriend={newFriend =>
-					setFriend(friend => (friend?.id == newFriend.id ? {} : newFriend))
-				}
-			/>
+			<div className='transfers-friends-wrapper'>
+				<SeeFriends
+					enableDetails={false}
+					friend={friend}
+					showLastMessage={false}
+					setFriend={newFriend =>
+						setFriend(friend => (friend?.id == newFriend.id ? {} : newFriend))
+					}
+				/>
+			</div>
 		</div>
 	)
 }

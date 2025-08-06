@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 
 const MotionFriendButton = motion.create(FriendButton)
 
-const See = ({ enableDetails = true, friend, setFriend }) => {
+const See = ({ enableDetails = true, friend, setFriend, showLastMessage = true }) => {
 	const friends = useSelector(getFriends)
 	const [openFriends, setOpenFriends] = useState(false)
 
@@ -20,16 +20,17 @@ const See = ({ enableDetails = true, friend, setFriend }) => {
 
 	return (
 		<>
-			<div className='friends-result-wrapper'>
+			<div className='friends-result-wrapper scrollable'>
 				<AnimatePresence>
 					{friends.map(friend => (
 						<MotionFriendButton
+							showLastMessage={showLastMessage}
 							friend={friend}
 							onClick={handleOpenDetails}
 							key={friend.id}
 							variants={friendVariants}
 							initial='hidden'
-							whileInView='visible'
+							animate='visible'
 							exit='exit'
 							layout
 						/>

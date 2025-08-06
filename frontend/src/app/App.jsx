@@ -19,6 +19,7 @@ import { MatchmakingIndicator } from '@features/matchmaking'
 import Error from '@pages/Error/'
 import Settings from '@pages/Settings/'
 import Profile from '@pages/ProfilePage/'
+import ProfileOverview from '@pages/ProfileOverview/'
 import TransfersPage from '@pages/TransfersPage/'
 import Shop from '@pages/Shop/'
 import ShopItem from '@pages/ShopItem/'
@@ -66,6 +67,10 @@ const App = () => {
 											<Route path='/game' element={<Game />} />
 											<Route path='/settings' element={<Settings />} />
 											<Route path='/profile' element={<Profile />} />
+											<Route
+												path='/profile_overview'
+												element={<ProfileOverview />}
+											/>
 											<Route path='/transfers' element={<TransfersPage />} />
 											<Route path='/shop' element={<Shop />} />
 											<Route path='/shop/item' element={<ShopItem />} />

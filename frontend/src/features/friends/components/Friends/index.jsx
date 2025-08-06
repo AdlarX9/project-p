@@ -9,7 +9,7 @@ import SearchFriends from '../SearchFriends'
 import SeeFriends from '../SeeFriends'
 
 const Friends = () => {
-	const [open, setOpen] = useState(true)
+	const [open, setOpen] = useState(false)
 	const [isSeeking, setIsSeeking] = useState(false)
 	const openPopUp = () => {
 		setOpen(true)

@@ -16,3 +16,8 @@
 .transfers-field {
 	font-size: 5rem;
 }
+
+.transfers-friends-wrapper {
+	box-sizing: border-box;
+	height: calc(100vh - 50rem);
+}
