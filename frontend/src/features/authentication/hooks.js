@@ -198,6 +198,7 @@ const axiosSignup = async data => {
 
 export const useSignup = () => {
 	const dispatch = useDispatch()
+	const { cleanupTopics } = useMercureContext()
 
 	const mutation = useMutation({
 		mutationFn: data => axiosSignup(data),
@@ -207,6 +208,7 @@ export const useSignup = () => {
 	})
 
 	const signup = (username, password, gender) => {
+		cleanupTopics()
 		mutation.mutate({
 			username: username,
 			password: password,

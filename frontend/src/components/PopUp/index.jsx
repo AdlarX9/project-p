@@ -2,7 +2,7 @@ import './style.css'
 import cancel from '../../assets/cancel.png'
 import { motion } from 'framer-motion'
 
-const PopUp = ({ children, open, setOpen, className }) => {
+const PopUp = ({ children, open, setOpen, className, canClose = true }) => {
 	return (
 		<motion.section
 			variants={backgroundVariants}
@@ -17,9 +17,11 @@ const PopUp = ({ children, open, setOpen, className }) => {
 				variants={className === 'popup-friends' ? positionVariants : scaleVariants}
 			>
 				{children}
-				<button className='shadowed-simple popup-cancel' onClick={() => setOpen(false)}>
-					<img src={cancel} alt='close' draggable='false' />
-				</button>
+				{canClose && (
+					<button className='shadowed-simple popup-cancel' onClick={() => setOpen(false)}>
+						<img src={cancel} alt='close' draggable='false' />
+					</button>
+				)}
 			</motion.div>
 		</motion.section>
 	)

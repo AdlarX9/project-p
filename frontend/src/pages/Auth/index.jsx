@@ -1,8 +1,7 @@
-import Back from '../../components/Back'
-import { useLogged } from '@features/authentication'
 import './style.css'
-import LogIn from './components/LogIn'
-import SignUp from './components/SignUp'
+import Back from '@components/Back'
+import { useLogged } from '@features/authentication'
+import { LogIn, SignUp } from '@features/authentication'
 import { motion } from 'framer-motion'
 
 const Auth = ({ type }) => {

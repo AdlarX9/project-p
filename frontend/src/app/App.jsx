@@ -12,8 +12,8 @@ import { PeerContextProvider } from '@contexts/PeerContext'
 import { HomeContextProvider } from '@contexts/HomeContext'
 
 import Check from './Check'
-import { Notifications } from '@features/notifications'
 import Confirmation from '@components/Confirmation'
+import { Notifications } from '@features/notifications'
 import { MatchmakingIndicator } from '@features/matchmaking'
 
 import Error from '@pages/Error/'

@@ -1,8 +1,8 @@
-import '../style.css'
+import './style.css'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLogin } from '@features/authentication'
-import Loader from '../../../components/Loader'
+import Loader from '@components/Loader'
 
 import PasswordField from './PasswordField'
 import UsernameField from './UsernameField'

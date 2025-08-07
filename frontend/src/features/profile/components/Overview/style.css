@@ -31,6 +31,8 @@
 
 .overview-header h1 {
 	flex: 1;
+	box-sizing: border-box;
+	padding-left: 1rem;
 }
 
 .overview-friend-btn {

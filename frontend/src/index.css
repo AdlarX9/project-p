@@ -423,6 +423,10 @@ html {
 	border-radius: 2rem;
 }
 
+.br-40 {
+	border-radius: 4rem;
+}
+
 .m-0 {
 	margin: 0;
 }
@@ -470,6 +474,18 @@ html {
 
 .tac {
 	text-align: center;
+}
+
+.df {
+	display: flex;
+}
+
+.jcc {
+	justify-content: center;
+}
+
+.aic {
+	align-items: center;
 }
 
 .oh {

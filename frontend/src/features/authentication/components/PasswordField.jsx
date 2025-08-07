@@ -1,6 +1,6 @@
 import Field from './Field'
-import hide from '../../../assets/hide.png'
-import unhide from '../../../assets/unhide.png'
+import hide from '@assets/hide.png'
+import unhide from '@assets/unhide.png'
 import { useState } from 'react'
 
 const PasswordField = ({ password, setPassword, isNewPassword }) => {
