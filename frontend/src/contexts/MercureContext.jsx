@@ -27,7 +27,6 @@ export const MercureContextProvider = ({ children }) => {
 			const handler = topics[topic]
 			eventSourceRef.current.addEventListener('message', message => {
 				const parsedData = JSON.parse(message.data)
-				console.log(parsedData)
 				handler({ parsedData, type: parsedData.type, dispatch, user, removeNotification })
 			})
 		})
@@ -45,7 +44,6 @@ export const MercureContextProvider = ({ children }) => {
 
 			// Redémarrage ne cas d'erreur
 			eventSourceRef.current.onerror = err => {
-				console.log(err)
 				eventSourceRef.current.close()
 				setTimeout(() => {
 					eventSourceRef.current = new EventSource(url)

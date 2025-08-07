@@ -60,7 +60,6 @@ const axiosLogout = async ({ refresh_token, token }) => {
 		})
 		.then(data => data.data)
 		.catch(error => {
-			console.log(error)
 			throw new Error(error.response.data.message)
 		})
 }

@@ -145,8 +145,6 @@ const axiosSetGenderEmail = async (token, gender, email) => {
 		)
 		.then(data => data.data)
 		.catch(err => {
-			console.log(err)
-
 			throw new Error(err.message)
 		})
 }

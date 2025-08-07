@@ -26,9 +26,6 @@ export const useTransfer = () => {
 		onSuccess: data => {
 			dispatch(logPersoInf(data))
 			dispatch(reduxLogFriends(data))
-		},
-		onError: error => {
-			console.error('Erreur lors du transfert :', error.message)
 		}
 	})
 

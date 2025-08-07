@@ -118,9 +118,6 @@ export const useRemoveNotification = () => {
 		mutationFn: notification => axiosNotificationsDelete(token, notification),
 		onSuccess: data => {
 			dispatch(deleteNotification(data))
-		},
-		onError: error => {
-			console.error('Erreur lors de la suppression de la notification:', error)
 		}
 	})
 

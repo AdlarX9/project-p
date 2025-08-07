@@ -99,7 +99,6 @@ export const PeerContextProvider = ({ children }) => {
 					resolve(peerIdRef.current)
 					clearInterval(interval)
 				}
-				console.log('Sent request for peer id of', username)
 				axiosId('ask', username, token)
 			}, 500)
 
@@ -115,7 +114,6 @@ export const PeerContextProvider = ({ children }) => {
 	const deliverIdCommunication = ({ type }) => {
 		if (type === 'askId') {
 			axiosId('send', matchmaking.matchedUsername, token, peerRef.current.id)
-			console.log('Just sent  id', peerRef.current.id, 'to', matchmaking.matchedUsername)
 		}
 		return deliverIdTopic
 	}
@@ -203,7 +201,6 @@ export const PeerContextProvider = ({ children }) => {
 		getAudio().then(stream => {
 			userAudioRef.current = stream
 			getSomeId(receiverUsername).then(receiverId => {
-				console.log('receiverId:', receiverId)
 				callRef.current = peerRef.current.call(receiverId, userAudioRef.current, {
 					metadata: {
 						id: peerRef.current.id,
@@ -228,7 +225,6 @@ export const PeerContextProvider = ({ children }) => {
 	}
 
 	const handleCall = () => {
-		console.log('handleCall called')
 		navigator.mediaDevices.addEventListener('devicechange', changeAudioStream)
 
 		callRef.current.on('stream', audioStream => {
@@ -247,8 +243,6 @@ export const PeerContextProvider = ({ children }) => {
 
 	const peerConnect = receiverUsername => {
 		getSomeId(receiverUsername).then(receiverId => {
-			console.log('receiverId:', receiverId)
-
 			connectionRef.current = peerRef.current.connect(receiverId, {
 				metadata: {
 					id: peerRef.current.id,
@@ -268,8 +262,6 @@ export const PeerContextProvider = ({ children }) => {
 	}
 
 	const handleConnect = () => {
-		console.log('handleConnect called')
-
 		connectionRef.current.on('open', () => {
 			handleConnected()
 			connectionRef.current.on('data', message => {
@@ -376,7 +368,6 @@ export const PeerContextProvider = ({ children }) => {
 						waitForPeerCall(matchmaking.matchedUsername)
 					}
 					addTopic(deliverIdTopic, deliverIdCommunication)
-					console.log('listening to events as a receiver')
 				}
 			})
 			.catch(() => {

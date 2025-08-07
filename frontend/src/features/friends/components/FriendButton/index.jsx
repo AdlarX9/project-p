@@ -41,7 +41,6 @@ const FriendButton = ({ onClick, friend, ref, showLastMessage = true }) => {
 				return 'Date invalide'
 			}
 		} catch (error) {
-			console.error('Erreur de parsing de date:', error, dateString)
 			return 'Erreur date'
 		}
 

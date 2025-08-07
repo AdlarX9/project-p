@@ -17,9 +17,7 @@ const axiosAddFriend = async ({ id, token }) => {
 			}
 		)
 		.then(response => response.data)
-		.catch(error => {
-			console.log(error)
-		})
+		.catch(error => {})
 }
 
 export const useAddFriend = () => {
