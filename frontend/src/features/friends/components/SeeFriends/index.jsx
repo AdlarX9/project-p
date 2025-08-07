@@ -1,51 +1,45 @@
 import './style.css'
 import { useSelector } from 'react-redux'
 import { getFriends } from '@redux/selectors'
-import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
-import FriendDetails from '../FriendDetails'
 import FriendButton from '../FriendButton'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const MotionFriendButton = motion.create(FriendButton)
 
-const See = ({ enableDetails = true, friend, setFriend, showLastMessage = true }) => {
+const See = ({ enableDetails = true, setFriend, showLastMessage = true }) => {
 	const friends = useSelector(getFriends)
-	const [openFriends, setOpenFriends] = useState(false)
+	const navigate = useNavigate()
 
 	const handleOpenDetails = friendSelected => {
 		setFriend(friendSelected)
-		setOpenFriends(true)
+		if (enableDetails) {
+			navigate('/chat/' + friendSelected.username)
+		}
 	}
 
 	return (
-		<>
-			<div className='friends-result-wrapper scrollable'>
-				<AnimatePresence>
-					{friends.map(friend => (
-						<MotionFriendButton
-							showLastMessage={showLastMessage}
-							friend={friend}
-							onClick={handleOpenDetails}
-							key={friend.id}
-							variants={friendVariants}
-							initial='hidden'
-							animate='visible'
-							exit='exit'
-							layout
-						/>
-					))}
-				</AnimatePresence>
-				{friends?.length === 0 && (
-					<p className='cartoon2-txt tac'>You don&apos;t have any friends yet!</p>
-				)}
-			</div>
-			<FriendDetails
-				friend={friend}
-				open={enableDetails ? openFriends : false}
-				setOpen={setOpenFriends}
-			/>
-		</>
+		<div className='friends-result-wrapper scrollable'>
+			<AnimatePresence>
+				{friends.map(friend => (
+					<MotionFriendButton
+						showLastMessage={showLastMessage}
+						friend={friend}
+						onClick={handleOpenDetails}
+						key={friend.id}
+						variants={friendVariants}
+						initial='hidden'
+						animate='visible'
+						exit='exit'
+						layout
+					/>
+				))}
+			</AnimatePresence>
+			{friends?.length === 0 && (
+				<p className='cartoon2-txt tac'>You don&apos;t have any friends yet!</p>
+			)}
+		</div>
 	)
 }
 

@@ -3,8 +3,9 @@ import ProfilePopup from './components/ProfilePopup'
 import ProfileButton from './components/ProfileButton'
 import LockerPreview from './components/LockerPreview'
 import ProfileInfo from './components/ProfileInfo'
+import Overview from './components/Overview'
 
-export { ProfilePopup, ProfileButton, Avatar, LockerPreview, ProfileInfo }
+export { ProfilePopup, ProfileButton, Avatar, LockerPreview, ProfileInfo, Overview }
 export * from './hooks'
 export * from './slice'
 export { default as profileReducer } from './slice'

@@ -3,9 +3,11 @@ import { useSelector } from 'react-redux'
 import { getUser } from '@redux/selectors'
 import { useMemo } from 'react'
 import Profile from '@assets/profile.png'
+import { useNavigate } from 'react-router-dom'
 
 const FriendButton = ({ onClick, friend, ref, showLastMessage = true }) => {
 	const user = useSelector(getUser)
+	const navigate = useNavigate()
 
 	const memoizedTimeAgo = useMemo(() => {
 		return timeAgo(friend?.last_message?.created_at)
@@ -72,11 +74,16 @@ const FriendButton = ({ onClick, friend, ref, showLastMessage = true }) => {
 			ref={ref}
 			style={{ backgroundColor: 'var(--blue)' }}
 		>
-			<img
-				src={Profile}
-				alt='profile_picture'
-				className='friend-fetched-profile-picture c-pointer'
-			/>
+			<button
+				className='no-btn'
+				onClick={() => navigate('/profile_overview/' + friend.username)}
+			>
+				<img
+					src={Profile}
+					alt='profile_picture'
+					className='friend-fetched-profile-picture c-pointer'
+				/>
+			</button>
 			<button
 				className='friend-fetched-writings c-pointer no-btn'
 				onClick={() => onClick(friend)}

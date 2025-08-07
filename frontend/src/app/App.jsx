@@ -68,7 +68,7 @@ const App = () => {
 											<Route path='/settings' element={<Settings />} />
 											<Route path='/profile' element={<Profile />} />
 											<Route
-												path='/profile_overview'
+												path='/profile_overview/:username'
 												element={<ProfileOverview />}
 											/>
 											<Route path='/transfers' element={<TransfersPage />} />

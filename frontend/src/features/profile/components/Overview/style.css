@@ -1,0 +1,58 @@
+.overview-wrapper {
+	position: relative;
+	display: flex;
+	align-items: start;
+	flex-direction: column;
+	gap: 4rem;
+	width: 80vw;
+}
+
+.overview-wrapper center {
+	width: 100%;
+}
+
+.overview-wrapper p {
+	margin: 0;
+}
+
+.overview-wrapper span {
+	font-family: cartoon-2;
+	text-transform: none;
+}
+
+.overview-wrapper ul {
+	padding-left: 6rem;
+}
+
+.overview-header {
+	display: flex;
+	width: 100%;
+}
+
+.overview-header h1 {
+	flex: 1;
+}
+
+.overview-friend-btn {
+	flex-shrink: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.profile-overview-separator {
+	height: 1rem;
+	border-radius: 0.5rem;
+	background: linear-gradient(to right, black, transparent);
+	width: 100%;
+}
+
+.profile-overview-info {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	width: 100%;
+	max-height: calc(100svh - 50rem);
+	padding-left: 2rem;
+	box-sizing: border-box;
+}

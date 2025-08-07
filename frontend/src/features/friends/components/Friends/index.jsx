@@ -11,11 +11,12 @@ import SeeFriends from '../SeeFriends'
 const Friends = () => {
 	const [open, setOpen] = useState(false)
 	const [isSeeking, setIsSeeking] = useState(false)
+	const [friend, setFriend] = useState({})
+
 	const openPopUp = () => {
 		setOpen(true)
 		setIsSeeking(false)
 	}
-	const [friend, setFriend] = useState({})
 
 	return (
 		<>

@@ -1,5 +1,5 @@
 import './style.css'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, scale } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useDeleteMessage, useGetConversation } from '@features/messages'
 import Loader from '@components/Loader'
@@ -70,58 +70,64 @@ const ChatViewer = ({ friendUsername, messages, setMessages }) => {
 		>
 			{(isLoading || isFetchingNextPage) && <Loader />}
 			<AnimatePresence>
-				{messages.map((message, index) => (
-					<motion.div
-						key={index}
-						className='chat-message'
-						variants={messageVariants}
-						initial='hidden'
-						animate='visible'
-						exit='hidden'
-						layout
-					>
+				{messages?.length > 0 &&
+					messages.map((message, index) => (
 						<motion.div
-							className='chat-label-wrapper'
-							style={
-								message.sender.username !== user.username && {
-									flexDirection: 'row-reverse'
-								}
-							}
+							key={index}
+							className='chat-message'
+							variants={messageVariants}
+							initial='hidden'
+							animate='visible'
+							exit='hidden'
+							layout
 						>
-							<p className='cartoon-short-txt chatter-label'>
-								{message.sender.username === user.username ? 'you' : friendUsername}
-							</p>
-							{message.sender.id === user.id && (
-								<motion.button
-									className='link'
-									style={{ color: 'red' }}
-									onClick={() => handleDelete(message)}
-								>
-									delete
-								</motion.button>
-							)}
+							<motion.div
+								className='chat-label-wrapper'
+								style={
+									message.sender?.username !== user.username && {
+										flexDirection: 'row-reverse'
+									}
+								}
+							>
+								<p className='cartoon-short-txt chatter-label'>
+									{message.sender?.username === user.username
+										? 'you'
+										: friendUsername}
+								</p>
+								{message.sender?.id === user.id && (
+									<motion.button
+										className='link'
+										style={{ color: 'red' }}
+										onClick={() => handleDelete(message)}
+									>
+										delete
+									</motion.button>
+								)}
+							</motion.div>
+							<motion.p
+								className='shadowed-simple p-20 br-20 bg-green cartoon2-txt chat-message-content'
+								style={
+									message.sender?.username === user.username && {
+										backgroundColor: 'var(--red)'
+									}
+								}
+							>
+								{message.content}
+							</motion.p>
 						</motion.div>
-						<motion.p
-							className='shadowed-simple p-20 br-20 bg-green cartoon2-txt chat-message-content'
-							style={
-								message.sender.username === user.username && {
-									backgroundColor: 'var(--red)'
-								}
-							}
-						>
-							{message.content}
-						</motion.p>
-					</motion.div>
-				))}
+					))}
 			</AnimatePresence>
 		</motion.section>
 	)
 }
 
 const wrapperVariants = {
+	hidden: {
+		scaleY: 0
+	},
 	visible: {
+		scaleY: 1,
 		transition: {
-			delay: 1,
 			staggerChildren: 0.2, // Échelonne l'animation des enfants
 			delayChildren: 0.1 // Ajoute un délai avant le début du stagger
 		}

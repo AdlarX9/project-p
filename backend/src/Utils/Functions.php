@@ -4,7 +4,7 @@ namespace App\Utils;
 
 use App\Entity\Notification;
 use App\Entity\User;
-use App\Service\GameManager;
+use App\Repository\ConversationRepository;
 use Symfony\Component\Mercure\Update;
 
 class Functions {
@@ -90,4 +90,24 @@ class Functions {
         $update = new Update($_ENV['MAIN_URL'] . '/' . $user->getUsername() . '/chat' . '/' . $message['sender']['username'], $jsonData);
         $mercurePublisher($update);
 	}
+
+
+    public static function serializeFriend(
+            ConversationRepository $conversationRepository,
+            User $friend,
+            User $me
+        ): array {
+        $conversation = $conversationRepository->findConversationBetweenTwoUsers($me, $friend);
+        $lastMessage = $conversation?->getLastMessage();
+        return [
+            'id' => $friend->getId(),
+            'username' => $friend->getUsername(),
+            'money' => $friend->getMoney(),
+            'last_message' => [
+                'content' => $lastMessage?->getContent(),
+                'created_at' => $lastMessage?->getTimestamp()?->format('Y-m-d H:i:s'),
+                'sender' => $lastMessage?->getSender()?->getUsername()
+            ],
+        ];
+    }
 }

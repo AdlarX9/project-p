@@ -169,6 +169,10 @@ class PublicController extends AbstractController
             ->setSerializeNull(true);
         $jsonContent = $serializer->serialize($user, 'json', $context);
 
+        $content = json_decode($jsonContent, true);
+        $content['gender'] = $user->getGender()->getGender();
+        $jsonContent = json_encode($content);
+
         return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 }

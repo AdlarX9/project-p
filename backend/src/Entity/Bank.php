@@ -14,7 +14,7 @@ class Bank
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getUser', 'getBank', 'getPublicBank'])]
+    #[Groups(['getUser', 'getBank', 'getPublicBank', 'getPublicProfile'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'banks')]
@@ -40,7 +40,7 @@ class Bank
     private Collection $bankLogs;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getBank', 'getPublicBank'])]
+    #[Groups(['getBank', 'getPublicBank', 'getPublicProfile'])]
     private ?string $name = null;
 
     /**

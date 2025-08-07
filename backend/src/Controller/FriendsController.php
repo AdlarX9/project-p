@@ -71,12 +71,9 @@ class FriendsController extends AbstractController
 
 		$entityManager->flush();
 
-		$context = SerializationContext::create()->setGroups(['getFriend']);
-		$jsonFriend = $serializer->serialize($newFriend, 'json', $context);
-
 		Functions::postNotification($publisher, $entityManager, $me, 'friends', "You added {$newFriend->getUsername()} as a friend");
 		Functions::postNotification($publisher, $entityManager, $newFriend, 'friends', "{$me->getUsername()} added you as a friend", 'addFriend', $newFriend->getUsername());
-		return new JsonResponse($jsonFriend, Response::HTTP_OK, [], true);
+		return new JsonResponse(Functions::serializeFriend($conversationRepository, $newFriend, $me), Response::HTTP_OK, [], false);
 	}
 
 

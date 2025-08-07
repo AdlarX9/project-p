@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ConversationRepository;
 use App\Repository\UserRepository;
+use App\Utils\Functions;
 use Doctrine\ORM\EntityManagerInterface;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 use JMS\Serializer\SerializationContext;
@@ -33,18 +34,7 @@ class UserController extends AbstractController
         $user = json_decode($jsonUser, true);
         $user['friends'] = array_map(function ($friend) use ($userRepository, $conversationRepository, $me) {
             $realFriend = $userRepository->find($friend['id']);
-            $conversation = $conversationRepository->findConversationBetweenTwoUsers($me, $realFriend);
-            $lastMessage = $conversation?->getLastMessage();
-            return [
-                'id' => $friend['id'],
-                'username' => $friend['username'],
-                'money' => $friend['money'],
-                'last_message' => [
-                    'content' => $lastMessage?->getContent(),
-                    'created_at' => $lastMessage?->getTimestamp()?->format('Y-m-d H:i:s'),
-                    'sender' => $lastMessage?->getSender()?->getUsername()
-                ],
-            ];
+            return Functions::serializeFriend($conversationRepository, $realFriend, $me);
         }, $user['friends']);
 
         usort($user['friends'], function ($a, $b) {

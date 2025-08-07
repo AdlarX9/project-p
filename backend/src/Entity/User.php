@@ -81,7 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Bank>
      */
     #[ORM\OneToMany(targetEntity: Bank::class, mappedBy: 'owner')]
-    #[Groups(['getBank', 'getUser'])]
+    #[Groups(['getBank', 'getUser', 'getPublicProfile'])]
     private Collection $banks;
 
     /**
@@ -101,7 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?GenderEnum $gender = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['getProfile'])]
+    #[Groups(['getProfile', 'getPublicProfile'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
